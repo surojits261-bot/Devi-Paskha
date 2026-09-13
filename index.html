@@ -5,18 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>দেবীপক্ষ — Devi Paksha</title>
 
-  <!-- WhatsApp & Social Media Preview Cards -->
+  <!-- Social Media & WhatsApp Preview Tags -->
   <meta property="og:title" content="দেবীপক্ষ — Devi Paksha | Durga Puja Backdrop & Melodies" />
-  <meta property="og:description" content="Live countdown to Mahalaya & Durga Puja with 15 curated classic melodies, authentic Dhak, and dynamic day-wise backdrops." />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1601655781342-d6c701777d12?q=80&w=1200" />
+  <meta property="og:description" content="Live countdown to Mahalaya & Durga Puja with classic melodies, authentic Dhak, and auto-changing festive backdrops." />
+  <meta property="og:image" content="Mahaloya.png" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#881337" />
 
-  <!-- Bengali & Serif Typography -->
+  <!-- Bengali & Serif Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -58,12 +59,12 @@
       100% { filter: drop-shadow(0 0 9px #f59e0b) drop-shadow(0 0 22px #ef4444); }
     }
     
-    /* Smooth Transition for Dynamic Day Backdrops */
+    /* Smooth 1-second crossfade for background image transitions */
     .backdrop-image {
-      transition: opacity 0.6s ease-in-out, transform 0.8s ease-out;
+      transition: opacity 1000ms ease-in-out, transform 1200ms ease-out;
     }
 
-    /* Day Mode Aesthetic (Sharodiya Autumn Morning) */
+    /* Day Mode (Sharodiya Autumn Morning Palette) */
     body.day-mode {
       background-color: #FAF7F2;
       color: #26221F;
@@ -110,9 +111,9 @@
 </head>
 <body class="bg-[#09080F] text-stone-100 min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white relative">
 
-  <!-- Dynamic Photographic Backdrop Layer -->
+  <!-- Dynamic Image Backdrop Layer -->
   <div class="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
-    <!-- Day-Specific Background Image -->
+    <!-- Active Rotating Background Image -->
     <div id="photoBackdrop" class="backdrop-image absolute inset-0 bg-cover bg-center opacity-45 mix-blend-luminosity scale-100"></div>
     
     <!-- Ambient Festive Glow Elements -->
@@ -132,7 +133,11 @@
     </div>
     
     <div class="flex items-center space-x-2">
-      <!-- Image Opacity Toggle (High / Subtle / Dark) -->
+      <!-- 5-Minute Auto-Slide Status Indicator -->
+      <span id="autoSlideBadge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-stone-800 glass-card text-[11px] text-amber-300">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> 5m Auto-Slide
+      </span>
+      <!-- Photo Opacity Toggle -->
       <button id="backdropToggle" onclick="toggleBackdropVisibility()" class="px-3 py-1.5 rounded-full border border-stone-700 glass-card text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-500 shadow">
         <span id="backdropIcon">🖼️</span> <span id="backdropText">Photo On</span>
       </button>
@@ -146,7 +151,7 @@
   <!-- Main View -->
   <main class="w-full max-w-4xl mx-auto px-4 flex-1 flex flex-col gap-5 py-2 relative z-10">
 
-    <!-- Nav Tabs (মহালয়া - দশমী) -->
+    <!-- Puja Days Tabs (মহালয়া - দশমী) -->
     <nav class="flex items-center justify-between overflow-x-auto pb-1 gap-2 border-b border-stone-800 custom-scrollbar text-sm font-medium">
       <button onclick="switchTab(0)" class="tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-amber-400 border-b-2 border-amber-400 bg-amber-950/30 nav-tab-active" data-index="0">
         মহালয়া <span class="text-[10px] opacity-70 block font-cinzel">Mahalaya</span>
@@ -217,7 +222,7 @@
 
     <!-- Category Filters -->
     <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 text-xs">
-      <button onclick="filterCategory('all')" class="cat-filter px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 whitespace-nowrap" data-category="all">All Songs</button>
+      <button onclick="filterCategory('all')" class="cat-filter px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 whitespace-nowrap" data-category="all">All Songs</button>
       <button onclick="filterCategory('og')" class="cat-filter px-3.5 py-1.5 rounded-full bg-stone-900/80 border border-stone-800 hover:border-amber-500/30 text-stone-400 whitespace-nowrap" data-category="og">Pandal OG</button>
       <button onclick="filterCategory('classic')" class="cat-filter px-3.5 py-1.5 rounded-full bg-stone-900/80 border border-stone-800 hover:border-amber-500/30 text-stone-400 whitespace-nowrap" data-category="classic">Classic Hits</button>
       <button onclick="filterCategory('adhunik')" class="cat-filter px-3.5 py-1.5 rounded-full bg-stone-900/80 border border-stone-800 hover:border-amber-500/30 text-stone-400 whitespace-nowrap" data-category="adhunik">Adhunik Pujo Mix</button>
@@ -286,7 +291,17 @@
   </footer>
 
   <script>
-    // 15 Curated Tracks
+    // ==========================================
+    // 1. YOUR 3 MAHALAYA IMAGES (ROTATING EVERY 5 MINS)
+    // ==========================================
+    const mahalayaImages = [
+      "Mahaloya.png",
+      "Mohaloya1.png",
+      "Mohaloya2.png"
+    ];
+    let currentMahalayaImgIdx = 0;
+
+    // 15 Curated Bengali Songs
     const tracks = [
       { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
       { id: 2, title: "Bajlo Tomar Alor Benu", artist: "Debolina Nandy", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
@@ -305,7 +320,7 @@
       { id: 15, title: "🥇 Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" }
     ];
 
-    // Day-by-Day Tithi Details & Individual Image Backdrops
+    // Day-by-Day Tithi Details & Background Images
     const tithiData = [
       {
         name: "মহালয়া",
@@ -315,9 +330,7 @@
         subtitle: "The City Is Waiting • Oct 10, 2026",
         mood: "sacred, nostalgic, early-morning radio",
         badge: "মহালয়া (Oct 10) in",
-        fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931.",
-        // Misty Dawn River / Ganga Ghat Sunrise
-        bgImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920"
+        fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931."
       },
       {
         name: "ষষ্ঠী",
@@ -328,7 +341,6 @@
         mood: "arrival, excitement, new clothes & fragrance",
         badge: "ষষ্ঠী (Oct 16) in",
         fact: "Kalparambho and Bodhon take place on Shashthi, awakening the goddess and officially opening pandals for darshan.",
-        // Traditional Maa Durga Idol Face & Kumortuli Art
         bgImage: "https://images.unsplash.com/photo-1601655781342-d6c701777d12?q=80&w=1920"
       },
       {
@@ -340,7 +352,6 @@
         mood: "morning riverbank rituals & rhythm of dhak",
         badge: "সপ্তমী (Oct 17) in",
         fact: "The Nabapatrika (nine plant bundle wrapped in a yellow saree with red border) is bathed at dawn, symbolizing nine avatars of nature.",
-        // Marigold and Festive Autumn Colors
         bgImage: "https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?q=80&w=1920"
       },
       {
@@ -352,7 +363,6 @@
         mood: "reverence, fasting, 108 lotus flowers & deep devotion",
         badge: "অষ্টমী (Oct 18) in",
         fact: "Sandhi Puja occurs at the transition between Ashtami and Nabami — 108 diyas are lit to celebrate Chamunda slaying Chanda and Munda.",
-        // Sacred 108 Glowing Diyas & Evening Aarti
         bgImage: "https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=1920"
       },
       {
@@ -364,7 +374,6 @@
         mood: "smoke of frankincense, frantic dhak, twilight sadness",
         badge: "নবমী (Oct 19) in",
         fact: "Maha Nabami culminates in the grand Dhunuchi dance and marks the final complete day of celebration before bidding farewell.",
-        // Illuminated Pandal Night & Grand Festivities
         bgImage: "https://images.unsplash.com/photo-1570701123784-2d41777f5e93?q=80&w=1920"
       },
       {
@@ -376,7 +385,6 @@
         mood: "bittersweet farewell, sweet distribution, 'Aschhe bochhor abar hobe'",
         badge: "দশমী (Oct 20) in",
         fact: "Married women smear vermilion on Maa Durga and each other during Sindoor Khela before the idol is immersed into the holy river.",
-        // Sindoor Khela / Red Vermilion Celebration
         bgImage: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1920"
       }
     ];
@@ -392,7 +400,30 @@
       updateCountdown();
       setInterval(updateCountdown, 1000);
       setupAudioListeners();
+
+      // Auto-slide to the next Mahalaya image every 5 minutes (300,000 milliseconds)
+      setInterval(rotateMahalayaImage, 5 * 60 * 1000);
     });
+
+    function rotateMahalayaImage() {
+      // Only rotate automatically if user is on Mahalaya (Tab 0)
+      if (currentTabIndex === 0 && isPhotoVisible) {
+        currentMahalayaImgIdx = (currentMahalayaImgIdx + 1) % mahalayaImages.length;
+        setBackdropImage(mahalayaImages[currentMahalayaImgIdx]);
+      }
+    }
+
+    function setBackdropImage(imgSrc) {
+      const bgEl = document.getElementById('photoBackdrop');
+      if (!isPhotoVisible) return;
+      bgEl.style.opacity = '0';
+      bgEl.style.transform = 'scale(1.04)';
+      setTimeout(() => {
+        bgEl.style.backgroundImage = `url('${imgSrc}')`;
+        bgEl.style.opacity = isDay ? '0.35' : '0.45';
+        bgEl.style.transform = 'scale(1)';
+      }, 500);
+    }
 
     function setupAudioListeners() {
       audio.addEventListener('timeupdate', () => {
@@ -488,12 +519,12 @@
       renderPlaylist();
     }
 
-    // Switch Tithi & Cross-Fade Day-Specific Background
+    // Switch Tithi Tabs
     function switchTab(index) {
       currentTabIndex = index;
       const d = tithiData[index];
 
-      // Update Navigation Buttons
+      // Update Nav Buttons
       document.querySelectorAll('.tab-btn').forEach(btn => {
         const isActive = parseInt(btn.dataset.index) === index;
         btn.className = isActive
@@ -501,23 +532,18 @@
           : 'tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-stone-400 hover:text-stone-200';
       });
 
-      // Update Card Text
+      // Update Card Info
       document.getElementById('heroBadge').innerText = d.badge;
       document.getElementById('heroTitle').innerText = d.name;
       document.getElementById('heroSubtitle').innerText = d.subtitle;
       document.getElementById('heroMood').innerText = d.mood;
       document.getElementById('tithiFact').innerText = d.fact;
 
-      // Cross-fade the Background Image
-      const bgEl = document.getElementById('photoBackdrop');
-      if (isPhotoVisible) {
-        bgEl.style.opacity = '0';
-        bgEl.style.transform = 'scale(1.04)';
-        setTimeout(() => {
-          bgEl.style.backgroundImage = `url('${d.bgImage}')`;
-          bgEl.style.opacity = isDay ? '0.35' : '0.45';
-          bgEl.style.transform = 'scale(1)';
-        }, 300);
+      // Switch Image
+      if (index === 0) {
+        setBackdropImage(mahalayaImages[currentMahalayaImgIdx]);
+      } else {
+        setBackdropImage(d.bgImage);
       }
 
       updateCountdown();
@@ -532,7 +558,7 @@
       document.getElementById('countdownSeconds').innerText = Math.floor((diff / 1000) % 60);
     }
 
-    // Audio FX & Soundboard
+    // Soundboard Audio FX
     let audioCtx = null;
     function getAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -560,7 +586,7 @@
           osc.connect(g); g.connect(ctx.destination);
           osc.start(); osc.stop(ctx.currentTime + decay);
         };
-        let b = 0;
+        let beat = 0;
         dhakInterval = setInterval(() => { stroke(b % 4 === 0 ? 180 : 320, b % 4 === 0 ? 0.28 : 0.12); b++; }, 160);
       }
     }
@@ -612,7 +638,7 @@
       }
     }
 
-    // Day / Night Theme Controller
+    // Day / Night Theme Toggle
     function toggleDayNight() {
       isDay = !isDay;
       const body = document.body;
