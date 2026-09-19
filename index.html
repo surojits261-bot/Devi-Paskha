@@ -292,7 +292,7 @@
 
   <script>
     // ==========================================
-    // 1. YOUR 3 MAHALAYA IMAGES (ROTATING EVERY 5 MINS)
+    // 1. MAHALAYA 3-IMAGE AUTO-ROTATOR (5 MINS)
     // ==========================================
     const mahalayaImages = [
       "Mahaloya.png",
@@ -320,7 +320,7 @@
       { id: 15, title: "🥇 Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" }
     ];
 
-    // Day-by-Day Tithi Details & Background Images
+    // Day-by-Day Tithi Details & High-Resolution Web Backdrops
     const tithiData = [
       {
         name: "মহালয়া",
@@ -330,7 +330,8 @@
         subtitle: "The City Is Waiting • Oct 10, 2026",
         mood: "sacred, nostalgic, early-morning radio",
         badge: "মহালয়া (Oct 10) in",
-        fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931."
+        fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931.",
+        bgImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920"
       },
       {
         name: "ষষ্ঠী",
@@ -406,7 +407,8 @@
     });
 
     function rotateMahalayaImage() {
-      if (currentTabIndex === 0 && isPhotoVisible) {
+      // Only rotate automatically when viewing Mahalaya (Tab 0)
+      if (currentTabIndex === 0 && isPhotoVisible && mahalayaImages.length > 0) {
         currentMahalayaImgIdx = (currentMahalayaImgIdx + 1) % mahalayaImages.length;
         setBackdropImage(mahalayaImages[currentMahalayaImgIdx]);
       }
@@ -518,12 +520,12 @@
       renderPlaylist();
     }
 
-    // Switch Tithi Tabs
+    // Switch Tithi Tabs and Cross-Fade Background
     function switchTab(index) {
       currentTabIndex = index;
       const d = tithiData[index];
 
-      // Update Nav Buttons
+      // Update Tab Navigation Active State
       document.querySelectorAll('.tab-btn').forEach(btn => {
         const isActive = parseInt(btn.dataset.index) === index;
         btn.className = isActive
@@ -531,15 +533,15 @@
           : 'tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-stone-400 hover:text-stone-200';
       });
 
-      // Update Card Info
+      // Update Card Header Details
       document.getElementById('heroBadge').innerText = d.badge;
       document.getElementById('heroTitle').innerText = d.name;
       document.getElementById('heroSubtitle').innerText = d.subtitle;
       document.getElementById('heroMood').innerText = d.mood;
       document.getElementById('tithiFact').innerText = d.fact;
 
-      // Switch Image
-      if (index === 0) {
+      // Switch to Day Backdrop (Tab 0 uses rotating images; Tabs 1-5 use high-res web images)
+      if (index === 0 && mahalayaImages.length > 0) {
         setBackdropImage(mahalayaImages[currentMahalayaImgIdx]);
       } else {
         setBackdropImage(d.bgImage);
@@ -585,7 +587,7 @@
           osc.connect(g); g.connect(ctx.destination);
           osc.start(); osc.stop(ctx.currentTime + decay);
         };
-        let beat = 0;
+        let b = 0;
         dhakInterval = setInterval(() => { stroke(b % 4 === 0 ? 180 : 320, b % 4 === 0 ? 0.28 : 0.12); b++; }, 160);
       }
     }
