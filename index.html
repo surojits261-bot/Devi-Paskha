@@ -1,18 +1,15 @@
+// app/page.js
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Play, Pause, SkipBack, SkipForward, Sun, Moon, Sparkles, Volume2, VolumeX, Music } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Sun, Moon, Sparkles, Volume2 } from "lucide-react";
 
 export default function DeviPakshaApp() {
   const [activeTab, setActiveTab] = useState("মহালয়া");
-  const [theme, setTheme] = useState("day"); 
+  const [theme, setTheme] = useState("day"); // 'day', 'night', 'realistic'
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
-  
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  
-  const [isAmbiencePlaying, setIsAmbiencePlaying] = useState(true); 
-  const [hasInteracted, setHasInteracted] = useState(false); 
 
   const audioRef = useRef(null);
   const ambientRef = useRef(null);
@@ -25,13 +22,14 @@ export default function DeviPakshaApp() {
     { id: 3, title: "Aaji E Probhat Robir Kar", artist: "Saheli Chanda", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
   ];
 
-  const dhakAudioUrl = "/dhak.mp3"; 
-
+  // Countdown Timer Logic (Target: Oct 10, 2026)
   useEffect(() => {
     const targetDate = new Date("2026-10-10T04:00:00+05:30").getTime();
+    
     const updateCountdown = () => {
       const now = new Date().getTime();
       const difference = targetDate - now;
+      
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -40,43 +38,18 @@ export default function DeviPakshaApp() {
         });
       }
     };
+    
     const timer = setInterval(updateCountdown, 1000);
     updateCountdown();
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    const handleInteraction = () => {
-      if (!hasInteracted) {
-        setHasInteracted(true);
-        if (isAmbiencePlaying && ambientRef.current) {
-          ambientRef.current.play().catch(e => console.log("Audio play prevented by browser:", e));
-        }
-      }
-    };
-
-    document.addEventListener("click", handleInteraction, { once: true });
-    return () => document.removeEventListener("click", handleInteraction);
-  }, [hasInteracted, isAmbiencePlaying]);
-
-  const toggleAmbience = (e) => {
-    e.stopPropagation(); 
-    if (isAmbiencePlaying) {
-      ambientRef.current.pause();
-    } else {
-      ambientRef.current.play();
-      setHasInteracted(true); 
-    }
-    setIsAmbiencePlaying(!isAmbiencePlaying);
-  };
-
-  const togglePlay = (e) => {
-    e.stopPropagation();
+  // Audio Controls
+  const togglePlay = () => {
     if (isPlaying) {
       audioRef.current.pause();
     } else {
       audioRef.current.play();
-      setHasInteracted(true);
     }
     setIsPlaying(!isPlaying);
   };
@@ -84,22 +57,29 @@ export default function DeviPakshaApp() {
   const playTrack = (index) => {
     setCurrentTrackIndex(index);
     setIsPlaying(true);
-    setHasInteracted(true);
     setTimeout(() => audioRef.current.play(), 100);
   };
 
+  const playAmbience = (type) => {
+    // Placeholder for ambient sounds like Dhak
+    ambientRef.current.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3";
+    ambientRef.current.play();
+  };
+
+  // Theme styling logic
   const getThemeStyles = () => {
     if (theme === "night") return "bg-slate-900 text-slate-200";
     if (theme === "realistic") return "bg-[#d9cab3] text-[#5c4033] bg-opacity-90 transition-all shadow-inner";
-    return "bg-amber-50 text-amber-950"; 
+    return "bg-amber-50 text-amber-950"; // Day
   };
 
   return (
     <div className={`min-h-screen pb-24 font-sans transition-colors duration-500 ${getThemeStyles()}`}>
-      
+      {/* Hidden Audio Elements */}
       <audio ref={audioRef} src={tracks[currentTrackIndex].url} onEnded={() => playTrack((currentTrackIndex + 1) % tracks.length)} />
-      <audio ref={ambientRef} src={dhakAudioUrl} loop volume="0.5" />
+      <audio ref={ambientRef} loop />
 
+      {/* Header & Tabs */}
       <header className="p-4 flex flex-col items-center border-b border-opacity-20 border-current shadow-sm">
         <h1 className="text-3xl font-bold mb-2 tracking-wider">দেবীপক্ষ</h1>
         <p className="text-sm opacity-80 mb-4">Devi Paksha</p>
@@ -119,8 +99,10 @@ export default function DeviPakshaApp() {
         </div>
       </header>
 
+      {/* Main Content Area */}
       <main className="max-w-md mx-auto p-6 flex flex-col gap-8">
         
+        {/* Countdown Card */}
         <div className="bg-black/5 rounded-2xl p-6 text-center backdrop-blur-sm border border-black/10 shadow-sm">
           <h2 className="text-xl mb-2 font-semibold">মহালয়া (Oct 10) in</h2>
           <div className="text-3xl font-bold font-mono tracking-tighter">
@@ -128,32 +110,16 @@ export default function DeviPakshaApp() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <div className="flex justify-center gap-2">
-            <button onClick={() => setTheme("day")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${theme === 'day' ? 'bg-black/10 shadow-inner' : 'hover:bg-black/5'}`}><Sun size={14}/> Day</button>
-            <button onClick={() => setTheme("night")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${theme === 'night' ? 'bg-white/10 shadow-inner' : 'hover:bg-black/5'}`}><Moon size={14}/> Night</button>
-            <button onClick={() => setTheme("realistic")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${theme === 'realistic' ? 'bg-black/10 shadow-inner' : 'hover:bg-black/5'}`}><Sparkles size={14}/> Realistic</button>
-          </div>
-          
-          <div className="flex justify-center mt-2">
-            <button 
-              onClick={toggleAmbience} 
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 ${
-                isAmbiencePlaying 
-                  ? 'bg-red-700 text-white shadow-lg shadow-red-700/30' 
-                  : 'bg-black/10 text-current hover:bg-black/20'
-              }`}
-            >
-              {isAmbiencePlaying ? <Volume2 size={18} className="animate-pulse" /> : <VolumeX size={18} />}
-              Ambience: {isAmbiencePlaying ? 'ON' : 'OFF'}
-            </button>
-          </div>
+        {/* Theme Toggles */}
+        <div className="flex justify-center gap-4">
+          <button onClick={() => setTheme("day")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${theme === 'day' ? 'bg-black/10' : ''}`}><Sun size={16}/> Day</button>
+          <button onClick={() => setTheme("night")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${theme === 'night' ? 'bg-white/10' : ''}`}><Moon size={16}/> Night</button>
+          <button onClick={() => setTheme("realistic")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${theme === 'realistic' ? 'bg-black/10' : ''}`}><Sparkles size={16}/> Realistic</button>
         </div>
 
-        <div className="space-y-2 mt-4">
-          <h3 className="font-semibold text-lg border-b border-black/10 pb-2 mb-4 flex items-center gap-2">
-            <Music size={18} /> Classic Hits
-          </h3>
+        {/* Music Player List */}
+        <div className="space-y-2">
+          <h3 className="font-semibold text-lg border-b border-black/10 pb-2 mb-4">Classic Hits</h3>
           {tracks.map((track, idx) => (
             <div 
               key={track.id} 
@@ -168,19 +134,27 @@ export default function DeviPakshaApp() {
             </div>
           ))}
         </div>
+
+        {/* Ambience Buttons */}
+        <div className="flex gap-4 justify-center mt-4">
+          <button onClick={() => playAmbience('dhak')} className="px-4 py-3 bg-red-800 text-white rounded-xl shadow-lg hover:scale-105 transition-transform flex items-center gap-2">
+            🔥 Dhak Sequence
+          </button>
+        </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-900 text-white p-4 flex items-center justify-between shadow-[0_-10px_40px_rgba(0,0,0,0.2)] pb-safe z-50">
+      {/* Persistent Bottom Player */}
+      <div className="fixed bottom-0 left-0 right-0 bg-black text-white p-4 flex items-center justify-between shadow-2xl pb-safe">
         <div className="flex-1 truncate pr-4">
           <p className="font-medium truncate">{tracks[currentTrackIndex].title}</p>
-          <p className="text-xs text-slate-400 truncate">{tracks[currentTrackIndex].artist}</p>
+          <p className="text-xs opacity-70 truncate">{tracks[currentTrackIndex].artist}</p>
         </div>
         <div className="flex items-center gap-6">
-          <button onClick={() => playTrack((currentTrackIndex - 1 + tracks.length) % tracks.length)} className="hover:text-red-400 transition-colors"><SkipBack size={20}/></button>
-          <button onClick={togglePlay} className="w-12 h-12 bg-white text-slate-900 rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-lg">
-            {isPlaying ? <Pause size={22}/> : <Play size={22} className="ml-1"/>}
+          <button onClick={() => playTrack((currentTrackIndex - 1 + tracks.length) % tracks.length)}><SkipBack size={20}/></button>
+          <button onClick={togglePlay} className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center">
+            {isPlaying ? <Pause size={20}/> : <Play size={20} className="ml-1"/>}
           </button>
-          <button onClick={() => playTrack((currentTrackIndex + 1) % tracks.length)} className="hover:text-red-400 transition-colors"><SkipForward size={20}/></button>
+          <button onClick={() => playTrack((currentTrackIndex + 1) % tracks.length)}><SkipForward size={20}/></button>
         </div>
       </div>
     </div>
