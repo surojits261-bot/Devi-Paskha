@@ -102,13 +102,9 @@
     </div>
     
     <div class="flex items-center space-x-2">
-      <!-- Day/Night Toggle Switch -->
+      <!-- Day/Night Toggle Switch (Realistic/Artistic button removed) -->
       <button onclick="toggleDayNight()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
         <span id="themeIcon">☀️</span> <span id="themeText">Day</span>
-      </button>
-      <!-- Realism / Artistic Mode Switch -->
-      <button onclick="toggleRealisticMode()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
-        <span>🎨</span> <span id="realisticText">Realistic</span>
       </button>
     </div>
   </header>
@@ -116,7 +112,7 @@
   <!-- Main View -->
   <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 flex-1 flex flex-col justify-center py-4 relative z-10">
 
-    <!-- Top Tithi Selector Pills (Mahalaya -> Mohadashami with Moha prefixes) -->
+    <!-- Top Tithi Selector Pills -->
     <nav class="flex items-center justify-start sm:justify-center overflow-x-auto pb-4 gap-2.5 custom-scrollbar mb-6">
       <button onclick="switchTab(0)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="0">
         <span class="font-semibold">মহালয়া</span>
@@ -147,14 +143,14 @@
     <!-- Central Hero & Countdown Section -->
     <div class="flex flex-col items-center text-center my-auto py-6 relative">
       
-      <!-- Top Countdown Badge (Scaled 25% bigger via text-sm sm:text-base and px-5 py-2) -->
+      <!-- Top Countdown Badge -->
       <div id="heroBadgeContainer" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 border border-white/15 text-amber-300 text-sm sm:text-base font-medium mb-4 glassmorphism shadow-md">
         <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
         <span id="heroBadgeText">মহাদশমী (Oct 21, 2026) in <strong id="countdownInline" class="font-mono text-white ml-1">31d 13h 46m</strong></span>
       </div>
 
-      <!-- Large Stylized Bengali Title -->
-      <h2 id="heroTitle" class="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-amber-300 accent-heading font-bengali drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
+      <!-- Large Stylized Bengali Title (Italicized and font size reduced by 25%: text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem]) -->
+      <h2 id="heroTitle" class="text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
       
       <!-- Subtitle / Tagline -->
       <p id="heroSubtitle" class="text-lg sm:text-xl font-medium text-stone-200 sub-text drop-shadow tracking-wide mb-1">Abar Esho Maa</p>
@@ -236,7 +232,7 @@
   </div>
 
   <script>
-    // 6 Authentic Tithis & Corresponding Backgrounds with "Moha" Prefix
+    // 6 Authentic Tithis & Corresponding Backgrounds
     const tithiData = [
       {
         name: "মহালয়া",
@@ -337,7 +333,6 @@
     let audio = new Audio();
     let currentFilter = 'og';
     let isDay = false;
-    let isRealistic = true;
 
     window.addEventListener('DOMContentLoaded', () => {
       renderPlaylist();
@@ -354,7 +349,7 @@
       bgEl.style.opacity = '0';
       setTimeout(() => {
         bgEl.style.backgroundImage = `url('${imgSrc}')`;
-        bgEl.style.opacity = isDay ? '0.4' : (isRealistic ? '0.75' : '0.5');
+        bgEl.style.opacity = isDay ? '0.4' : '0.7';
       }, 300);
     }
 
@@ -486,12 +481,6 @@
       document.body.classList.toggle('day-mode', isDay);
       document.getElementById('themeIcon').innerText = isDay ? '🌙' : '☀️';
       document.getElementById('themeText').innerText = isDay ? 'Night' : 'Day';
-      setBackdropImage(tithiData[currentTabIndex].bgImage);
-    }
-
-    function toggleRealisticMode() {
-      isRealistic = !isRealistic;
-      document.getElementById('realisticText').innerText = isRealistic ? 'Realistic' : 'Artistic';
       setBackdropImage(tithiData[currentTabIndex].bgImage);
     }
   </script>
