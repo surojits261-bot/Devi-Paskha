@@ -70,8 +70,8 @@
       color: #26221F;
     }
     body.day-mode .glass-card {
-      background: rgba(255, 255, 255, 0.90);
-      border-color: #E7DFD5;
+      background: rgba(255, 255, 255, 0.82) !important;
+      border-color: #E7DFD5 !important;
       box-shadow: 0 10px 25px -5px rgba(180, 83, 9, 0.08);
       color: #1C1917;
     }
@@ -79,18 +79,18 @@
       opacity: 0.15;
     }
     body.day-mode .sub-text {
-      color: #57534E;
+      color: #57534E !important;
     }
     body.day-mode .accent-heading {
-      color: #881337;
+      color: #881337 !important;
     }
     body.day-mode .clock-box {
-      background: #FFFBF5;
-      border-color: #F3E8D3;
+      background: rgba(255, 251, 245, 0.85) !important;
+      border-color: #F3E8D3 !important;
       box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.02);
     }
     body.day-mode .clock-number {
-      color: #B45309;
+      color: #B45309 !important;
     }
     body.day-mode .nav-tab-active {
       color: #991B1B !important;
@@ -173,47 +173,47 @@
       </button>
     </nav>
 
-    <!-- Countdown & Festive Hero Card -->
-    <section class="glassmorphism glass-card bg-[#16141E]/80 border border-stone-800 rounded-2xl p-6 relative overflow-hidden shadow-2xl transition">
+    <!-- Countdown & Festive Hero Card (Translucent Glassmorphism) -->
+    <section class="glassmorphism glass-card bg-black/35 hover:bg-black/40 border border-white/15 rounded-2xl p-6 relative overflow-hidden shadow-2xl transition duration-300">
       <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-400 text-xs font-semibold mb-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold mb-3 backdrop-blur-sm">
             <span class="animate-pulse">🪔</span> <span id="heroBadge">মহালয়া (Oct 10) in</span>
           </div>
-          <h2 id="heroTitle" class="text-3xl font-bold tracking-tight text-white accent-heading mb-1">মহালয়া</h2>
-          <p id="heroSubtitle" class="text-sm text-stone-300 sub-text max-w-md">The City Is Waiting • Oct 10, 2026</p>
-          <p id="heroMood" class="text-xs text-amber-300/90 sub-text mt-1 italic">sacred, nostalgic, early-morning radio</p>
+          <h2 id="heroTitle" class="text-3xl font-bold tracking-tight text-white accent-heading mb-1 drop-shadow-md">মহালয়া</h2>
+          <p id="heroSubtitle" class="text-sm text-stone-200 sub-text max-w-md drop-shadow">The City Is Waiting • Oct 10, 2026</p>
+          <p id="heroMood" class="text-xs text-amber-300/90 sub-text mt-1 italic drop-shadow">sacred, nostalgic, early-morning radio</p>
         </div>
 
-        <!-- Clock Display -->
-        <div class="clock-box bg-black/50 border border-stone-800 rounded-xl p-4 flex items-center gap-3 text-center self-stretch md:self-auto justify-center shadow-inner">
+        <!-- Clock Display (Translucent Glass Box) -->
+        <div class="clock-box bg-black/30 border border-white/10 backdrop-blur-md rounded-xl p-4 flex items-center gap-3 text-center self-stretch md:self-auto justify-center shadow-inner">
           <div>
             <span id="countdownDays" class="clock-number text-2xl font-bold text-amber-400 font-cinzel">00</span>
-            <span class="text-[10px] block text-stone-400 sub-text uppercase tracking-widest font-mono">Days</span>
+            <span class="text-[10px] block text-stone-300 sub-text uppercase tracking-widest font-mono">Days</span>
           </div>
-          <span class="text-stone-500 text-xl font-thin">:</span>
+          <span class="text-stone-400 text-xl font-thin">:</span>
           <div>
             <span id="countdownHours" class="clock-number text-2xl font-bold text-amber-400 font-cinzel">00</span>
-            <span class="text-[10px] block text-stone-400 sub-text uppercase tracking-widest font-mono">Hours</span>
+            <span class="text-[10px] block text-stone-300 sub-text uppercase tracking-widest font-mono">Hours</span>
           </div>
-          <span class="text-stone-500 text-xl font-thin">:</span>
+          <span class="text-stone-400 text-xl font-thin">:</span>
           <div>
             <span id="countdownMinutes" class="clock-number text-2xl font-bold text-amber-400 font-cinzel">00</span>
-            <span class="text-[10px] block text-stone-400 sub-text uppercase tracking-widest font-mono">Mins</span>
+            <span class="text-[10px] block text-stone-300 sub-text uppercase tracking-widest font-mono">Mins</span>
           </div>
-          <span class="text-stone-500 text-xl font-thin">:</span>
+          <span class="text-stone-400 text-xl font-thin">:</span>
           <div>
             <span id="countdownSeconds" class="clock-number text-2xl font-bold text-amber-400 font-cinzel">00</span>
-            <span class="text-[10px] block text-stone-400 sub-text uppercase tracking-widest font-mono">Secs</span>
+            <span class="text-[10px] block text-stone-300 sub-text uppercase tracking-widest font-mono">Secs</span>
           </div>
         </div>
       </div>
 
-      <div class="mt-5 pt-4 border-t border-stone-800/80 flex items-start gap-2.5">
+      <div class="mt-5 pt-4 border-t border-white/10 flex items-start gap-2.5">
         <span class="text-base text-amber-400">💡</span>
         <div>
           <span class="text-xs font-semibold text-amber-300 accent-heading tracking-wider uppercase">Did You Know</span>
-          <p id="tithiFact" class="text-xs text-stone-300 sub-text mt-0.5 leading-relaxed">
+          <p id="tithiFact" class="text-xs text-stone-200 sub-text mt-0.5 leading-relaxed drop-shadow">
             Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931.
           </p>
         </div>
@@ -230,7 +230,7 @@
     </div>
 
     <!-- Playlist Section -->
-    <section class="glassmorphism glass-card bg-[#16141E]/80 border border-stone-800 rounded-2xl p-5 shadow-xl transition">
+    <section class="glassmorphism glass-card bg-black/35 border border-white/10 rounded-2xl p-5 shadow-xl transition">
       <div class="flex items-center justify-between mb-3">
         <span class="text-xs tracking-wider text-amber-200/80 accent-heading font-semibold uppercase">Tap a Track to Play Inline</span>
         <button id="toggleListBtn" onclick="toggleSongList()" class="text-xs text-stone-400 hover:text-amber-300 sub-text transition flex items-center gap-1">
@@ -241,14 +241,14 @@
       <div id="playlistContainer" class="space-y-1.5 max-h-64 overflow-y-auto custom-scrollbar pr-1"></div>
 
       <!-- Festive Soundboard -->
-      <div class="mt-4 pt-4 border-t border-stone-800 grid grid-cols-3 gap-2 sm:gap-3">
-        <button id="dhakFxBtn" onclick="toggleDhakFx()" class="py-2.5 px-3 rounded-xl border border-stone-700 bg-stone-900/70 hover:border-amber-500 text-xs font-semibold text-amber-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
+      <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-3">
+        <button id="dhakFxBtn" onclick="toggleDhakFx()" class="py-2.5 px-3 rounded-xl border border-white/10 bg-black/40 hover:border-amber-500 text-xs font-semibold text-amber-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
           <span>🔥</span> <span>Dhak Loop</span>
         </button>
-        <button id="shankhoBtn" onclick="playShankhoSound()" class="py-2.5 px-3 rounded-xl border border-stone-700 bg-stone-900/70 hover:border-yellow-500 text-xs font-semibold text-yellow-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
+        <button id="shankhoBtn" onclick="playShankhoSound()" class="py-2.5 px-3 rounded-xl border border-white/10 bg-black/40 hover:border-yellow-500 text-xs font-semibold text-yellow-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
           <span>🐚</span> <span>Shankho</span>
         </button>
-        <button id="bisorjonFxBtn" onclick="triggerBisorjonFade()" class="py-2.5 px-3 rounded-xl border border-stone-700 bg-stone-900/70 hover:border-rose-500 text-xs font-semibold text-rose-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
+        <button id="bisorjonFxBtn" onclick="triggerBisorjonFade()" class="py-2.5 px-3 rounded-xl border border-white/10 bg-black/40 hover:border-rose-500 text-xs font-semibold text-rose-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
           <span>🕯️</span> <span>Bisorjon</span>
         </button>
       </div>
@@ -406,7 +406,6 @@
     });
 
     function rotateMahalayaImage() {
-      // Only rotate automatically if user is on Mahalaya (Tab 0)
       if (currentTabIndex === 0 && isPhotoVisible) {
         currentMahalayaImgIdx = (currentMahalayaImgIdx + 1) % mahalayaImages.length;
         setBackdropImage(mahalayaImages[currentMahalayaImgIdx]);
@@ -449,7 +448,7 @@
         const isCurrent = track.id === tracks[currentTrackIndex].id;
         const item = document.createElement('div');
         item.className = `flex items-center justify-between p-2.5 rounded-xl cursor-pointer border transition text-sm ${
-          isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 track-card-active shadow-sm font-semibold' : 'bg-stone-900/40 border-stone-800/80 hover:bg-stone-800/60 text-stone-300 glass-card'
+          isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 track-card-active shadow-sm font-semibold' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glass-card'
         }`;
         item.onclick = () => {
           const idx = tracks.findIndex(t => t.id === track.id);
