@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,8 +7,8 @@
 
   <!-- Social Media & WhatsApp Preview Tags -->
   <meta property="og:title" content="দেবীপক্ষ — Devi Paksha | Durga Puja Backdrop & Melodies" />
-  <meta property="og:description" content="Live countdown to Mahalaya & Durga Puja with classic melodies, authentic Dhak, and auto-changing festive backdrops." />
-  <meta property="og:image" content="Mahaloya.png" />
+  <meta property="og:description" content="Live countdown to Mahalaya & Durga Puja with classic melodies, authentic Dhak, and immersive festive backdrops." />
+  <meta property="og:image" content="dashami.jpg" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#881337" />
 
@@ -42,9 +42,10 @@
       font-family: 'Hind Siliguri', sans-serif;
       transition: background-color 0.4s ease, color 0.4s ease;
       -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
     }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.4); border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
     
     .glassmorphism {
       backdrop-filter: blur(16px);
@@ -59,24 +60,19 @@
       100% { filter: drop-shadow(0 0 9px #f59e0b) drop-shadow(0 0 22px #ef4444); }
     }
     
-    /* Smooth 1-second crossfade for background image transitions */
     .backdrop-image {
       transition: opacity 1000ms ease-in-out, transform 1200ms ease-out;
     }
 
-    /* Day Mode (Sharodiya Autumn Morning Palette) */
+    /* Day Mode UI Styling */
     body.day-mode {
       background-color: #FAF7F2;
       color: #26221F;
     }
     body.day-mode .glass-card {
-      background: rgba(255, 255, 255, 0.82) !important;
-      border-color: #E7DFD5 !important;
-      box-shadow: 0 10px 25px -5px rgba(180, 83, 9, 0.08);
+      background: rgba(255, 255, 255, 0.78) !important;
+      border-color: rgba(231, 223, 213, 0.8) !important;
       color: #1C1917;
-    }
-    body.day-mode .ambient-glow {
-      opacity: 0.15;
     }
     body.day-mode .sub-text {
       color: #57534E !important;
@@ -84,222 +80,237 @@
     body.day-mode .accent-heading {
       color: #881337 !important;
     }
-    body.day-mode .clock-box {
-      background: rgba(255, 251, 245, 0.85) !important;
-      border-color: #F3E8D3 !important;
-      box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.02);
-    }
-    body.day-mode .clock-number {
-      color: #B45309 !important;
-    }
-    body.day-mode .nav-tab-active {
-      color: #991B1B !important;
-      border-color: #991B1B !important;
-      background-color: #FEE2E2 !important;
-    }
-    body.day-mode .track-card-active {
-      background-color: #FEF3C7 !important;
-      border-color: #F59E0B !important;
-      color: #78350F !important;
-    }
-    body.day-mode .bottom-bar {
-      background-color: rgba(255, 255, 255, 0.95);
-      border-color: #E7DFD5;
-      color: #1C1917;
-    }
   </style>
 </head>
 <body class="bg-[#09080F] text-stone-100 min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white relative">
 
   <!-- Dynamic Image Backdrop Layer -->
   <div class="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
-    <!-- Active Rotating Background Image -->
-    <div id="photoBackdrop" class="backdrop-image absolute inset-0 bg-cover bg-center opacity-45 mix-blend-luminosity scale-100"></div>
-    
-    <!-- Ambient Festive Glow Elements -->
-    <div class="ambient-glow absolute -top-32 -left-32 w-96 h-96 rounded-full bg-red-950/60 blur-3xl transition-opacity duration-500"></div>
-    <div class="ambient-glow absolute top-1/3 -right-32 w-96 h-96 rounded-full bg-amber-950/50 blur-3xl transition-opacity duration-500"></div>
-    <div class="ambient-glow absolute -bottom-32 left-1/3 w-[30rem] h-[30rem] rounded-full bg-rose-950/40 blur-3xl transition-opacity duration-500"></div>
+    <div id="photoBackdrop" class="backdrop-image absolute inset-0 bg-cover bg-center opacity-65 scale-100"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#09080F] via-transparent to-black/60 opacity-80"></div>
   </div>
 
   <!-- Header -->
-  <header class="w-full max-w-4xl mx-auto px-4 pt-5 pb-3 flex items-center justify-between relative z-10">
+  <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-3 flex items-center justify-between relative z-10">
     <div class="flex items-center space-x-3">
-      <span class="text-3xl pulse-diya">🪔</span>
+      <span class="text-2xl sm:text-3xl pulse-diya">🪔</span>
       <div>
-        <h1 class="text-2xl font-bold tracking-wide text-amber-400 accent-heading">দেবীপক্ষ <span class="text-xs font-normal text-stone-400 sub-text ml-1 font-cinzel">Devi Paksha</span></h1>
-        <p class="text-xs text-amber-200/70 sub-text tracking-wider">Durga Puja Backdrop & Melodies</p>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-wide text-amber-400 accent-heading flex items-center gap-2">
+          দেবীপক্ষ <span class="text-xs font-normal text-stone-400 sub-text font-cinzel">Devi Paksha</span>
+        </h1>
       </div>
     </div>
     
     <div class="flex items-center space-x-2">
-      <!-- 5-Minute Auto-Slide Status Indicator -->
-      <span id="autoSlideBadge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-stone-800 glass-card text-[11px] text-amber-300">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> 5m Auto-Slide
-      </span>
-      <!-- Photo Opacity Toggle -->
-      <button id="backdropToggle" onclick="toggleBackdropVisibility()" class="px-3 py-1.5 rounded-full border border-stone-700 glass-card text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-500 shadow">
-        <span id="backdropIcon">🖼️</span> <span id="backdropText">Photo On</span>
-      </button>
-      <!-- Day / Night Mode Switcher -->
-      <button id="themeToggle" onclick="toggleDayNight()" class="px-3 py-1.5 rounded-full border border-stone-700 glass-card text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-500 shadow">
+      <!-- Day/Night Toggle Switch (Pill Style as in reference) -->
+      <button onclick="toggleDayNight()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
         <span id="themeIcon">☀️</span> <span id="themeText">Day</span>
+      </button>
+      <!-- Realism / Artistic Mode Switch -->
+      <button onclick="toggleRealisticMode()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
+        <span>🎨</span> <span id="realisticText">Realistic</span>
       </button>
     </div>
   </header>
 
-  <!-- Main View -->
-  <main class="w-full max-w-4xl mx-auto px-4 flex-1 flex flex-col gap-5 py-2 relative z-10">
+  <!-- Main View matching reference layout -->
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 flex-1 flex flex-col justify-center py-4 relative z-10">
 
-    <!-- Puja Days Tabs (মহালয়া - দশমী) -->
-    <nav class="flex items-center justify-between overflow-x-auto pb-1 gap-2 border-b border-stone-800 custom-scrollbar text-sm font-medium">
-      <button onclick="switchTab(0)" class="tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-amber-400 border-b-2 border-amber-400 bg-amber-950/30 nav-tab-active" data-index="0">
-        মহালয়া <span class="text-[10px] opacity-70 block font-cinzel">Mahalaya</span>
+    <!-- Top Tithi Selector Pills (Mahalaya -> Dashami) -->
+    <nav class="flex items-center justify-start sm:justify-center overflow-x-auto pb-4 gap-2.5 custom-scrollbar mb-6">
+      <button onclick="switchTab(0)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="0">
+        <span class="font-semibold">মহালয়া</span>
+        <span class="text-[10px] opacity-70 font-cinzel tracking-wider">MAHALAYA</span>
       </button>
-      <button onclick="switchTab(1)" class="tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-stone-400 hover:text-stone-200" data-index="1">
-        ষষ্ঠী <span class="text-[10px] opacity-70 block font-cinzel">Shashti</span>
+      <button onclick="switchTab(1)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="1">
+        <span class="font-semibold">ষষ্ঠী</span>
+        <span class="text-[10px] opacity-70 font-cinzel tracking-wider">SHASHTI</span>
       </button>
-      <button onclick="switchTab(2)" class="tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-stone-400 hover:text-stone-200" data-index="2">
-        সপ্তমী <span class="text-[10px] opacity-70 block font-cinzel">Saptami</span>
+      <button onclick="switchTab(2)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="2">
+        <span class="font-semibold">সপ্তমী</span>
+        <span class="text-[10px] opacity-70 font-cinzel tracking-wider">SAPTAMI</span>
       </button>
-      <button onclick="switchTab(3)" class="tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-stone-400 hover:text-stone-200" data-index="3">
-        অষ্টমী <span class="text-[10px] opacity-70 block font-cinzel">Ashtami</span>
+      <button onclick="switchTab(3)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="3">
+        <span class="font-semibold">অষ্টমী</span>
+        <span class="text-[10px] opacity-70 font-cinzel tracking-wider">ASHTAMI</span>
       </button>
-      <button onclick="switchTab(4)" class="tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-stone-400 hover:text-stone-200" data-index="4">
-        নবমী <span class="text-[10px] opacity-70 block font-cinzel">Nabami</span>
+      <button onclick="switchTab(4)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="4">
+        <span class="font-semibold">নবমী</span>
+        <span class="text-[10px] opacity-70 font-cinzel tracking-wider">NABAMI</span>
       </button>
-      <button onclick="switchTab(5)" class="tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-stone-400 hover:text-stone-200" data-index="5">
-        দশমী <span class="text-[10px] opacity-70 block font-cinzel">Dashami</span>
+      <button onclick="switchTab(5)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-amber-400 border border-amber-400/80 bg-amber-950/40 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px] shadow-lg shadow-amber-900/20 nav-tab-active" data-index="5">
+        <span class="font-semibold">দশমী</span>
+        <span class="text-[10px] opacity-80 font-cinzel tracking-wider">DASHAMI</span>
       </button>
     </nav>
 
-    <!-- Countdown & Festive Hero Card (Translucent Glassmorphism) -->
-    <section class="glassmorphism glass-card bg-black/35 hover:bg-black/40 border border-white/15 rounded-2xl p-6 relative overflow-hidden shadow-2xl transition duration-300">
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold mb-3 backdrop-blur-sm">
-            <span class="animate-pulse">🪔</span> <span id="heroBadge">মহালয়া (Oct 10) in</span>
-          </div>
-          <h2 id="heroTitle" class="text-3xl font-bold tracking-tight text-white accent-heading mb-1 drop-shadow-md">মহালয়া</h2>
-          <p id="heroSubtitle" class="text-sm text-stone-200 sub-text max-w-md drop-shadow">The City Is Waiting • Oct 10, 2026</p>
-          <p id="heroMood" class="text-xs text-amber-300/90 sub-text mt-1 italic drop-shadow">sacred, nostalgic, early-morning radio</p>
-        </div>
-
-        <!-- Clock Display (Translucent Glass Box) -->
-        <div class="clock-box bg-black/30 border border-white/10 backdrop-blur-md rounded-xl p-4 flex items-center gap-3 text-center self-stretch md:self-auto justify-center shadow-inner">
-          <div>
-            <span id="countdownDays" class="clock-number text-2xl font-bold text-amber-400 font-cinzel">00</span>
-            <span class="text-[10px] block text-stone-300 sub-text uppercase tracking-widest font-mono">Days</span>
-          </div>
-          <span class="text-stone-400 text-xl font-thin">:</span>
-          <div>
-            <span id="countdownHours" class="clock-number text-2xl font-bold text-amber-400 font-cinzel">00</span>
-            <span class="text-[10px] block text-stone-300 sub-text uppercase tracking-widest font-mono">Hours</span>
-          </div>
-          <span class="text-stone-400 text-xl font-thin">:</span>
-          <div>
-            <span id="countdownMinutes" class="clock-number text-2xl font-bold text-amber-400 font-cinzel">00</span>
-            <span class="text-[10px] block text-stone-300 sub-text uppercase tracking-widest font-mono">Mins</span>
-          </div>
-          <span class="text-stone-400 text-xl font-thin">:</span>
-          <div>
-            <span id="countdownSeconds" class="clock-number text-2xl font-bold text-amber-400 font-cinzel">00</span>
-            <span class="text-[10px] block text-stone-300 sub-text uppercase tracking-widest font-mono">Secs</span>
-          </div>
-        </div>
+    <!-- Central Hero & Countdown Section -->
+    <div class="flex flex-col items-center text-center my-auto py-6 relative">
+      
+      <!-- Top Countdown Badge matching reference (e.g. দশমী (Oct 21) in 31d 13h 46m) -->
+      <div id="heroBadgeContainer" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/40 border border-white/15 text-amber-300 text-xs sm:text-sm font-medium mb-4 glassmorphism shadow-md">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        <span id="heroBadgeText">দশমী (Oct 21) in <strong id="countdownInline" class="font-mono text-white ml-1">00d 00h 00m</strong></span>
       </div>
 
-      <div class="mt-5 pt-4 border-t border-white/10 flex items-start gap-2.5">
-        <span class="text-base text-amber-400">💡</span>
-        <div>
-          <span class="text-xs font-semibold text-amber-300 accent-heading tracking-wider uppercase">Did You Know</span>
-          <p id="tithiFact" class="text-xs text-stone-200 sub-text mt-0.5 leading-relaxed drop-shadow">
-            Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931.
-          </p>
-        </div>
-      </div>
-    </section>
+      <!-- Large Stylized Bengali Title matching reference (দশমী) -->
+      <h2 id="heroTitle" class="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-amber-300 accent-heading font-bengali drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">দশমী</h2>
+      
+      <!-- Subtitle / Tagline -->
+      <p id="heroSubtitle" class="text-lg sm:text-xl font-medium text-stone-200 sub-text drop-shadow tracking-wide mb-1">Abar Esho Maa</p>
+      <p id="heroDateSub" class="text-xs sm:text-sm text-amber-200/80 font-mono tracking-widest uppercase mb-6">Oct 21, 2026 • sindoor khela, family, final darshan</p>
 
-    <!-- Category Filters -->
-    <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 text-xs">
-      <button onclick="filterCategory('all')" class="cat-filter px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 whitespace-nowrap" data-category="all">All Songs</button>
-      <button onclick="filterCategory('og')" class="cat-filter px-3.5 py-1.5 rounded-full bg-stone-900/80 border border-stone-800 hover:border-amber-500/30 text-stone-400 whitespace-nowrap" data-category="og">Pandal OG</button>
-      <button onclick="filterCategory('classic')" class="cat-filter px-3.5 py-1.5 rounded-full bg-stone-900/80 border border-stone-800 hover:border-amber-500/30 text-stone-400 whitespace-nowrap" data-category="classic">Classic Hits</button>
-      <button onclick="filterCategory('adhunik')" class="cat-filter px-3.5 py-1.5 rounded-full bg-stone-900/80 border border-stone-800 hover:border-amber-500/30 text-stone-400 whitespace-nowrap" data-category="adhunik">Adhunik Pujo Mix</button>
-      <button onclick="filterCategory('ambience')" class="cat-filter px-3.5 py-1.5 rounded-full bg-stone-900/80 border border-stone-800 hover:border-amber-500/30 text-stone-400 whitespace-nowrap flex items-center gap-1" data-category="ambience">🥁 Ambience</button>
+      <!-- Category Filter Pills matching screenshot layout -->
+      <div class="flex items-center justify-center gap-2 flex-wrap mb-8">
+        <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow" data-category="og">Pandal OG Classic Hits</button>
+        <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow" data-category="adhunik">Adhunik Pujo Mix</button>
+        <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow" data-category="ambience">Ambience</button>
+      </div>
+
+      <!-- Did You Know / Fact Card matching reference bottom card -->
+      <div class="w-full max-w-2xl glassmorphism glass-card bg-black/45 border border-white/15 rounded-2xl p-4 sm:p-5 text-left shadow-2xl relative">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider font-mono">DID YOU KNOW</span>
+          <div class="flex gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-stone-600"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-stone-600"></span>
+          </div>
+        </div>
+        <p id="tithiFact" class="text-xs sm:text-sm text-stone-200 sub-text leading-relaxed">
+          Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon, right before the goddess departs.
+        </p>
+      </div>
+
     </div>
-
-    <!-- Playlist Section -->
-    <section class="glassmorphism glass-card bg-black/35 border border-white/10 rounded-2xl p-5 shadow-xl transition">
-      <div class="flex items-center justify-between mb-3">
-        <span class="text-xs tracking-wider text-amber-200/80 accent-heading font-semibold uppercase">Tap a Track to Play Inline</span>
-        <button id="toggleListBtn" onclick="toggleSongList()" class="text-xs text-stone-400 hover:text-amber-300 sub-text transition flex items-center gap-1">
-          <span id="toggleListIcon">▾</span> <span id="toggleListText">Hide list</span>
-        </button>
-      </div>
-
-      <div id="playlistContainer" class="space-y-1.5 max-h-64 overflow-y-auto custom-scrollbar pr-1"></div>
-
-      <!-- Festive Soundboard -->
-      <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-3">
-        <button id="dhakFxBtn" onclick="toggleDhakFx()" class="py-2.5 px-3 rounded-xl border border-white/10 bg-black/40 hover:border-amber-500 text-xs font-semibold text-amber-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
-          <span>🔥</span> <span>Dhak Loop</span>
-        </button>
-        <button id="shankhoBtn" onclick="playShankhoSound()" class="py-2.5 px-3 rounded-xl border border-white/10 bg-black/40 hover:border-yellow-500 text-xs font-semibold text-yellow-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
-          <span>🐚</span> <span>Shankho</span>
-        </button>
-        <button id="bisorjonFxBtn" onclick="triggerBisorjonFade()" class="py-2.5 px-3 rounded-xl border border-white/10 bg-black/40 hover:border-rose-500 text-xs font-semibold text-rose-200 flex items-center justify-center gap-1.5 transition active:scale-95 shadow">
-          <span>🕯️</span> <span>Bisorjon</span>
-        </button>
-      </div>
-    </section>
 
   </main>
 
-  <!-- Sticky Bottom Audio Player Bar -->
-  <footer class="bottom-bar w-full bg-stone-950/95 border-t border-stone-800 backdrop-blur-lg px-4 py-3 sticky bottom-0 z-50 transition">
-    <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+  <!-- Sticky Bottom Audio Player Bar matching reference layout -->
+  <footer class="bottom-bar w-full bg-stone-950/90 border-t border-white/10 backdrop-blur-xl px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
       
-      <div class="flex items-center gap-3 w-full md:w-auto">
-        <div class="w-10 h-10 rounded-lg bg-amber-950/70 border border-amber-500/40 flex items-center justify-center text-xl text-amber-400 shadow">🪘</div>
-        <div class="overflow-hidden max-w-[200px] sm:max-w-xs">
+      <!-- Track Info -->
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <div class="w-10 h-10 rounded-lg bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-xl text-amber-400 shadow-md">🪘</div>
+        <div class="overflow-hidden">
           <div id="playerTitle" class="text-sm font-semibold text-white accent-heading truncate">Mahishasura Mardini</div>
           <div id="playerArtist" class="text-xs text-stone-400 sub-text truncate">Birendra Krishna Bhadra</div>
         </div>
       </div>
 
-      <div class="flex-1 max-w-md w-full flex flex-col items-center gap-1">
-        <div class="flex items-center gap-5">
-          <button onclick="prevTrack()" class="text-stone-400 hover:text-amber-500 transition active:scale-90 text-sm">⏮</button>
-          <button id="masterPlayBtn" onclick="toggleMasterPlay()" class="w-9 h-9 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold flex items-center justify-center transition shadow-lg active:scale-95 text-base">▶</button>
-          <button onclick="nextTrack()" class="text-stone-400 hover:text-amber-500 transition active:scale-90 text-sm">⏭</button>
+      <!-- Player Controls & Seekbar -->
+      <div class="flex-1 max-w-lg w-full flex flex-col items-center gap-1.5">
+        <div class="flex items-center gap-6">
+          <button onclick="prevTrack()" class="text-stone-400 hover:text-amber-400 transition active:scale-90 text-sm">⏮</button>
+          <button id="masterPlayBtn" onclick="toggleMasterPlay()" class="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold flex items-center justify-center transition shadow-lg active:scale-95 text-base">▶</button>
+          <button onclick="nextTrack()" class="text-stone-400 hover:text-amber-400 transition active:scale-90 text-sm">⏭</button>
         </div>
 
-        <div class="w-full flex items-center gap-2 text-[11px] text-stone-400 sub-text font-mono">
+        <div class="w-full flex items-center gap-2.5 text-[11px] text-stone-400 sub-text font-mono">
           <span id="currentTime">0:00</span>
-          <input id="seekBar" type="range" min="0" max="100" value="0" class="w-full h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-500" onchange="seekAudio(this.value)" />
+          <input id="seekBar" type="range" min="0" max="100" value="0" class="w-full h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="seekAudio(this.value)" />
           <span id="durationTime">0:00</span>
         </div>
       </div>
 
-      <div class="hidden md:flex flex-col items-end text-right">
-        <span id="trackIndexLabel" class="text-xs text-amber-400 font-mono">Track 1 of 15</span>
-        <span class="text-[10px] text-stone-500 sub-text">Six days, one Goddess, endless adda</span>
+      <!-- Right utility button / extra space -->
+      <div class="hidden sm:flex items-center gap-3">
+        <button onclick="toggleSongListModal()" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5">
+          <span>🎵</span> Playlist (<span id="playlistCount">15</span>)
+        </button>
       </div>
 
     </div>
   </footer>
 
+  <!-- Hidden Playlist Drawer / Modal for selection -->
+  <div id="playlistModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-stone-900 border border-amber-500/40 rounded-2xl max-w-md w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-4 border-b border-stone-800 flex items-center justify-between">
+        <h3 class="text-base font-bold text-amber-400 accent-heading">Durga Puja Melody Playlist</h3>
+        <button onclick="toggleSongListModal()" class="text-stone-400 hover:text-white text-lg">✕</button>
+      </div>
+      <div id="playlistContainer" class="p-3 space-y-2 overflow-y-auto custom-scrollbar flex-1"></div>
+    </div>
+  </div>
+
   <script>
-    // ==========================================
-    // 1. MAHALAYA 3-IMAGE AUTO-ROTATOR (5 MINS)
-    // ==========================================
-    const mahalayaImages = [
-      "Mahaloya.png",
-      "Mohaloya1.png",
-      "Mohaloya2.png"
+    // 6 Authentic Tithis & Corresponding Backgrounds matching reference artwork
+    const tithiData = [
+      {
+        name: "মহালয়া",
+        en: "Mahalaya",
+        dateStr: "Oct 10, 2026",
+        targetDate: new Date(2026, 9, 10, 4, 0, 0),
+        subtitle: "The City Is Waiting",
+        dateLabel: "Oct 10, 2026",
+        mood: "sacred, nostalgic, early-morning radio",
+        badge: "মহালয়া (Oct 10) in",
+        fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931.",
+        bgImage: "mahalaya.png"
+      },
+      {
+        name: "ষষ্ঠী",
+        en: "Shashti",
+        dateStr: "Oct 17, 2026",
+        targetDate: new Date(2026, 9, 17, 8, 0, 0),
+        subtitle: "Bodhon & Anondo",
+        dateLabel: "Oct 17, 2026",
+        mood: "arrival, excitement, new clothes & fragrance",
+        badge: "ষষ্ঠী (Oct 17) in",
+        fact: "Kalparambho and Akal Bodhon take place on Shashthi, awakening the goddess and officially unveiling pandals for darshan.",
+        bgImage: "shashti.png"
+      },
+      {
+        name: "সপ্তমী",
+        en: "Saptami",
+        dateStr: "Oct 18, 2026",
+        targetDate: new Date(2026, 9, 18, 7, 0, 0),
+        subtitle: "Kola Bou Snan",
+        dateLabel: "Oct 18, 2026",
+        mood: "morning riverbank rituals & rhythm of dhak",
+        badge: "সপ্তমী (Oct 18) in",
+        fact: "The Nabapatrika (nine sacred plants tied together and draped in a yellow saree with red border) is bathed at dawn at the Ganga ghats.",
+        bgImage: "saptami.png"
+      },
+      {
+        name: "অষ্টমী",
+        en: "Ashtami",
+        dateStr: "Oct 19, 2026",
+        targetDate: new Date(2026, 9, 19, 10, 28, 0),
+        subtitle: "Pushpanjali & Sandhi Puja",
+        dateLabel: "Oct 19, 2026",
+        mood: "reverence, fasting, 108 lotus flowers & deep devotion",
+        badge: "অষ্টমী (Oct 19) in",
+        fact: "Sandhi Puja takes place at the exact junction of Ashtami and Nabami — 108 clay lamps are lit as Chamunda slays Chanda and Munda.",
+        bgImage: "ashtami.png"
+      },
+      {
+        name: "নবমী",
+        en: "Nabami",
+        dateStr: "Oct 20, 2026",
+        targetDate: new Date(2026, 9, 20, 12, 0, 0),
+        subtitle: "Dhunuchi Naach & Grand Adda",
+        dateLabel: "Oct 20, 2026",
+        mood: "smoke of frankincense, frantic dhak, twilight sadness",
+        badge: "নবমী (Oct 20) in",
+        fact: "Maha Nabami culminates in the energetic Dhunuchi Naach and marks the final complete day of celebration before farewell.",
+        bgImage: "nabami.png"
+      },
+      {
+        name: "দশমী",
+        en: "Dashami",
+        dateStr: "Oct 21, 2026",
+        targetDate: new Date(2026, 9, 21, 16, 0, 0),
+        subtitle: "Abar Esho Maa",
+        dateLabel: "Oct 21, 2026",
+        mood: "Sindoor khela, family, final darshan",
+        badge: "দশমী (Oct 21) in",
+        fact: "Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon, right before the goddess departs.",
+        bgImage: "dashami.jpg"
+      }
     ];
-    let currentMahalayaImgIdx = 0;
 
     // 15 Curated Bengali Songs
     const tracks = [
@@ -315,115 +326,36 @@
       { id: 10, title: "Kon Se Alor Swapna Niye", artist: "Asha Bhosle", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
       { id: 11, title: "Ke Prothom Kachhe Esechhi", artist: "Manna Dey & Lata Mangeshkar", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3" },
       { id: 12, title: "Aaj Mon Cheyechhe", artist: "Lata Mangeshkar", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" },
-      { id: 13, title: "🥇 Mone Pore Ruby Roy", artist: "R.D. Burman", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" },
-      { id: 14, title: "🥇 Koto Je Sagor Nodi", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3" },
-      { id: 15, title: "🥇 Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" }
+      { id: 13, title: "Mone Pore Ruby Roy", artist: "R.D. Burman", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" },
+      { id: 14, title: "Koto Je Sagor Nodi", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3" },
+      { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" }
     ];
 
-    // Day-by-Day Tithi Details & High-Resolution Web Backdrops
-    const tithiData = [
-      {
-        name: "মহালয়া",
-        en: "Mahalaya",
-        dateStr: "Oct 10, 2026",
-        targetDate: new Date(2026, 9, 10, 4, 0, 0),
-        subtitle: "The City Is Waiting • Oct 10, 2026",
-        mood: "sacred, nostalgic, early-morning radio",
-        badge: "মহালয়া (Oct 10) in",
-        fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931.",
-        bgImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920"
-      },
-      {
-        name: "ষষ্ঠী",
-        en: "Shashti",
-        dateStr: "Oct 16, 2026",
-        targetDate: new Date(2026, 9, 16, 8, 0, 0),
-        subtitle: "Bodhon & Anondo • Oct 16, 2026",
-        mood: "arrival, excitement, new clothes & fragrance",
-        badge: "ষষ্ঠী (Oct 16) in",
-        fact: "Kalparambho and Bodhon take place on Shashthi, awakening the goddess and officially opening pandals for darshan.",
-        bgImage: "https://images.unsplash.com/photo-1601655781342-d6c701777d12?q=80&w=1920"
-      },
-      {
-        name: "সপ্তমী",
-        en: "Saptami",
-        dateStr: "Oct 17, 2026",
-        targetDate: new Date(2026, 9, 17, 7, 0, 0),
-        subtitle: "Kola Bou Snan • Oct 17, 2026",
-        mood: "morning riverbank rituals & rhythm of dhak",
-        badge: "সপ্তমী (Oct 17) in",
-        fact: "The Nabapatrika (nine plant bundle wrapped in a yellow saree with red border) is bathed at dawn, symbolizing nine avatars of nature.",
-        bgImage: "https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?q=80&w=1920"
-      },
-      {
-        name: "অষ্টমী",
-        en: "Ashtami",
-        dateStr: "Oct 18, 2026",
-        targetDate: new Date(2026, 9, 18, 10, 30, 0),
-        subtitle: "Pushpanjali & Sandhi Puja • Oct 18, 2026",
-        mood: "reverence, fasting, 108 lotus flowers & deep devotion",
-        badge: "অষ্টমী (Oct 18) in",
-        fact: "Sandhi Puja occurs at the transition between Ashtami and Nabami — 108 diyas are lit to celebrate Chamunda slaying Chanda and Munda.",
-        bgImage: "https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=1920"
-      },
-      {
-        name: "নবমী",
-        en: "Nabami",
-        dateStr: "Oct 19, 2026",
-        targetDate: new Date(2026, 9, 19, 12, 0, 0),
-        subtitle: "Dhunuchi Naach & Grand Adda • Oct 19, 2026",
-        mood: "smoke of frankincense, frantic dhak, twilight sadness",
-        badge: "নবমী (Oct 19) in",
-        fact: "Maha Nabami culminates in the grand Dhunuchi dance and marks the final complete day of celebration before bidding farewell.",
-        bgImage: "https://images.unsplash.com/photo-1570701123784-2d41777f5e93?q=80&w=1920"
-      },
-      {
-        name: "দশমী",
-        en: "Dashami",
-        dateStr: "Oct 20, 2026",
-        targetDate: new Date(2026, 9, 20, 16, 0, 0),
-        subtitle: "Sindoor Khela & Bisorjon • Oct 20, 2026",
-        mood: "bittersweet farewell, sweet distribution, 'Aschhe bochhor abar hobe'",
-        badge: "দশমী (Oct 20) in",
-        fact: "Married women smear vermilion on Maa Durga and each other during Sindoor Khela before the idol is immersed into the holy river.",
-        bgImage: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1920"
-      }
-    ];
-
-    let currentTabIndex = 0, currentTrackIndex = 0, isPlaying = false, audio = new Audio(), currentFilter = 'all';
-    let isPhotoVisible = true;
+    let currentTabIndex = 5; // Default to Dashami as in reference screenshot
+    let currentTrackIndex = 0;
+    let isPlaying = false;
+    let audio = new Audio();
+    let currentFilter = 'og';
     let isDay = false;
+    let isRealistic = true;
 
     window.addEventListener('DOMContentLoaded', () => {
       renderPlaylist();
       loadTrack(0, false);
-      switchTab(0);
+      switchTab(5); // Start on Dashami
       updateCountdown();
       setInterval(updateCountdown, 1000);
       setupAudioListeners();
-
-      // Auto-slide to the next Mahalaya image every 5 minutes (300,000 milliseconds)
-      setInterval(rotateMahalayaImage, 5 * 60 * 1000);
+      document.getElementById('playlistCount').innerText = tracks.length;
     });
-
-    function rotateMahalayaImage() {
-      // Only rotate automatically when viewing Mahalaya (Tab 0)
-      if (currentTabIndex === 0 && isPhotoVisible && mahalayaImages.length > 0) {
-        currentMahalayaImgIdx = (currentMahalayaImgIdx + 1) % mahalayaImages.length;
-        setBackdropImage(mahalayaImages[currentMahalayaImgIdx]);
-      }
-    }
 
     function setBackdropImage(imgSrc) {
       const bgEl = document.getElementById('photoBackdrop');
-      if (!isPhotoVisible) return;
       bgEl.style.opacity = '0';
-      bgEl.style.transform = 'scale(1.04)';
       setTimeout(() => {
         bgEl.style.backgroundImage = `url('${imgSrc}')`;
-        bgEl.style.opacity = isDay ? '0.35' : '0.45';
-        bgEl.style.transform = 'scale(1)';
-      }, 500);
+        bgEl.style.opacity = isDay ? '0.4' : (isRealistic ? '0.75' : '0.5');
+      }, 300);
     }
 
     function setupAudioListeners() {
@@ -449,8 +381,8 @@
       filtered.forEach(track => {
         const isCurrent = track.id === tracks[currentTrackIndex].id;
         const item = document.createElement('div');
-        item.className = `flex items-center justify-between p-2.5 rounded-xl cursor-pointer border transition text-sm ${
-          isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 track-card-active shadow-sm font-semibold' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glass-card'
+        item.className = `flex items-center justify-between p-3 rounded-xl cursor-pointer border transition text-sm ${
+          isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-semibold shadow-md' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glassmorphism'
         }`;
         item.onclick = () => {
           const idx = tracks.findIndex(t => t.id === track.id);
@@ -464,7 +396,7 @@
               <span class="text-xs opacity-75 block truncate">${track.artist}</span>
             </div>
           </div>
-          <button class="text-amber-500 hover:text-amber-400 text-xs px-2 py-1 font-bold">${isCurrent && isPlaying ? '❚❚' : '▶'}</button>
+          <button class="text-amber-400 hover:text-amber-300 text-xs px-2.5 py-1 font-bold">${isCurrent && isPlaying ? '❚❚' : '▶'}</button>
         `;
         container.appendChild(item);
       });
@@ -476,7 +408,6 @@
       audio.src = track.url;
       document.getElementById('playerTitle').innerText = track.title;
       document.getElementById('playerArtist').innerText = track.artist;
-      document.getElementById('trackIndexLabel').innerText = `Track ${track.id} of ${tracks.length}`;
       if (autoPlay) {
         audio.play().then(() => { isPlaying = true; updatePlayButtons(); }).catch(() => { isPlaying = false; updatePlayButtons(); });
       } else {
@@ -501,162 +432,67 @@
     function prevTrack() { loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); }
     function seekAudio(val) { if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; }
 
-    let isListVisible = true;
-    function toggleSongList() {
-      const c = document.getElementById('playlistContainer');
-      isListVisible = !isListVisible;
-      c.classList.toggle('hidden', !isListVisible);
-      document.getElementById('toggleListIcon').innerText = isListVisible ? '▾' : '▸';
-      document.getElementById('toggleListText').innerText = isListVisible ? 'Hide list' : 'Show list';
-    }
-
     function filterCategory(cat) {
       currentFilter = cat;
       document.querySelectorAll('.cat-filter').forEach(btn => {
-        btn.className = btn.dataset.category === cat 
-          ? 'cat-filter px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 whitespace-nowrap'
-          : 'cat-filter px-3.5 py-1.5 rounded-full bg-stone-900/80 border border-stone-800 hover:border-amber-500/30 text-stone-400 whitespace-nowrap';
+        const isActive = btn.dataset.category === cat;
+        btn.className = isActive
+          ? 'cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition shadow'
+          : 'cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow';
       });
       renderPlaylist();
     }
 
-    // Switch Tithi Tabs and Cross-Fade Background
     function switchTab(index) {
       currentTabIndex = index;
       const d = tithiData[index];
 
-      // Update Tab Navigation Active State
+      // Update Top Nav Tabs
       document.querySelectorAll('.tab-btn').forEach(btn => {
         const isActive = parseInt(btn.dataset.index) === index;
         btn.className = isActive
-          ? 'tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-amber-400 border-b-2 border-amber-400 bg-amber-950/30 nav-tab-active'
-          : 'tab-btn px-3.5 py-2 rounded-lg transition whitespace-nowrap text-stone-400 hover:text-stone-200';
+          ? 'tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-amber-400 border border-amber-400/80 bg-amber-950/40 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px] shadow-lg shadow-amber-900/20 nav-tab-active'
+          : 'tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]';
       });
 
-      // Update Card Header Details
-      document.getElementById('heroBadge').innerText = d.badge;
+      // Update Hero Content matching reference layout
       document.getElementById('heroTitle').innerText = d.name;
       document.getElementById('heroSubtitle').innerText = d.subtitle;
-      document.getElementById('heroMood').innerText = d.mood;
+      document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
       document.getElementById('tithiFact').innerText = d.fact;
 
-      // Switch to Day Backdrop (Tab 0 uses rotating images; Tabs 1-5 use high-res web images)
-      if (index === 0 && mahalayaImages.length > 0) {
-        setBackdropImage(mahalayaImages[currentMahalayaImgIdx]);
-      } else {
-        setBackdropImage(d.bgImage);
-      }
-
+      setBackdropImage(d.bgImage);
       updateCountdown();
     }
 
     function updateCountdown() {
       let diff = tithiData[currentTabIndex].targetDate - new Date();
       if (diff < 0) diff = 0;
-      document.getElementById('countdownDays').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-      document.getElementById('countdownHours').innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      document.getElementById('countdownMinutes').innerText = Math.floor((diff / 1000 / 60) % 60);
-      document.getElementById('countdownSeconds').innerText = Math.floor((diff / 1000) % 60);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / 1000 / 60) % 60);
+
+      const d = tithiData[currentTabIndex];
+      document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white ml-1">${days}d ${hours}h ${mins}m</strong>`;
     }
 
-    // Soundboard Audio FX
-    let audioCtx = null;
-    function getAudioContext() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      return audioCtx;
+    function toggleSongListModal() {
+      const modal = document.getElementById('playlistModal');
+      modal.classList.toggle('hidden');
     }
 
-    let dhakInterval = null;
-    function toggleDhakFx() {
-      const btn = document.getElementById('dhakFxBtn'), ctx = getAudioContext();
-      if (dhakInterval) {
-        clearInterval(dhakInterval);
-        dhakInterval = null;
-        btn.classList.remove('bg-amber-600', 'text-white');
-        btn.innerHTML = '<span>🔥</span> <span>Dhak Loop</span>';
-      } else {
-        btn.classList.add('bg-amber-600', 'text-white');
-        btn.innerHTML = '<span>⏹</span> <span>Stop Dhak</span>';
-        const stroke = (freq, decay) => {
-          const osc = ctx.createOscillator(), g = ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + decay);
-          g.gain.setValueAtTime(0.8, ctx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + decay);
-          osc.connect(g); g.connect(ctx.destination);
-          osc.start(); osc.stop(ctx.currentTime + decay);
-        };
-        let b = 0;
-        dhakInterval = setInterval(() => { stroke(b % 4 === 0 ? 180 : 320, b % 4 === 0 ? 0.28 : 0.12); b++; }, 160);
-      }
-    }
-
-    function playShankhoSound() {
-      const ctx = getAudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(420, ctx.currentTime);
-      osc.frequency.linearRampToValueAtTime(460, ctx.currentTime + 1.2);
-      osc.frequency.exponentialRampToValueAtTime(380, ctx.currentTime + 2.8);
-      gain.gain.setValueAtTime(0.01, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.5);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.8);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime + 2.8);
-    }
-
-    function triggerBisorjonFade() {
-      const btn = document.getElementById('bisorjonFxBtn'), ctx = getAudioContext();
-      btn.classList.add('bg-rose-700', 'text-white');
-      btn.innerHTML = '<span>🕯️</span> <span>Subho Bijoya</span>';
-      [220, 440, 660, 880].forEach((f, i) => {
-        const osc = ctx.createOscillator(), g = ctx.createGain();
-        osc.type = 'sine'; osc.frequency.value = f * 1.02;
-        g.gain.setValueAtTime(0.3 / (i + 1), ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 4.5);
-        osc.connect(g); g.connect(ctx.destination);
-        osc.start(); osc.stop(ctx.currentTime + 4.5);
-      });
-      setTimeout(() => {
-        btn.classList.remove('bg-rose-700', 'text-white');
-        btn.innerHTML = '<span>🕯️</span> <span>Bisorjon</span>';
-      }, 4500);
-    }
-
-    // Toggle Photo Visibility
-    function toggleBackdropVisibility() {
-      isPhotoVisible = !isPhotoVisible;
-      const bgEl = document.getElementById('photoBackdrop');
-      const text = document.getElementById('backdropText');
-      if (isPhotoVisible) {
-        bgEl.style.opacity = isDay ? '0.35' : '0.45';
-        text.innerText = 'Photo On';
-      } else {
-        bgEl.style.opacity = '0';
-        text.innerText = 'Photo Off';
-      }
-    }
-
-    // Day / Night Theme Toggle
     function toggleDayNight() {
       isDay = !isDay;
-      const body = document.body;
-      body.classList.toggle('day-mode', isDay);
-      
-      const themeIcon = document.getElementById('themeIcon');
-      const themeText = document.getElementById('themeText');
-      themeIcon.innerText = isDay ? '🌙' : '☀️';
-      themeText.innerText = isDay ? 'Night' : 'Day';
+      document.body.classList.toggle('day-mode', isDay);
+      document.getElementById('themeIcon').innerText = isDay ? '🌙' : '☀️';
+      document.getElementById('themeText').innerText = isDay ? 'Night' : 'Day';
+      setBackdropImage(tithiData[currentTabIndex].bgImage);
+    }
 
-      const bgEl = document.getElementById('photoBackdrop');
-      if (isPhotoVisible) {
-        bgEl.style.opacity = isDay ? '0.35' : '0.45';
-      }
-
-      renderPlaylist();
-      switchTab(currentTabIndex);
+    function toggleRealisticMode() {
+      isRealistic = !isRealistic;
+      document.getElementById('realisticText').innerText = isRealistic ? 'Realistic' : 'Artistic';
+      setBackdropImage(tithiData[currentTabIndex].bgImage);
     }
   </script>
 </body>
