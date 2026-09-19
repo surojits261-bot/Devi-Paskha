@@ -52,14 +52,6 @@
       -webkit-backdrop-filter: blur(16px);
     }
     
-    .pulse-diya {
-      animation: flameGlow 2.5s infinite alternate ease-in-out;
-    }
-    @keyframes flameGlow {
-      0% { filter: drop-shadow(0 0 4px #eab308) drop-shadow(0 0 10px #f97316); }
-      100% { filter: drop-shadow(0 0 9px #f59e0b) drop-shadow(0 0 22px #ef4444); }
-    }
-    
     .backdrop-image {
       transition: opacity 1000ms ease-in-out, transform 1200ms ease-out;
     }
@@ -90,10 +82,13 @@
     <div class="absolute inset-0 bg-gradient-to-t from-[#09080F] via-transparent to-black/60 opacity-80"></div>
   </div>
 
-  <!-- Header -->
+  <!-- Header with Custom Logo -->
   <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-3 flex items-center justify-between relative z-10">
-    <div class="flex items-center space-x-3">
-      <span class="text-2xl sm:text-3xl pulse-diya">🪔</span>
+    <div class="flex items-center space-x-3.5">
+      <!-- Custom Goddess Logo Image -->
+      <div class="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center justify-center overflow-hidden flex-shrink-0">
+        <img src="logo.png" alt="Devi Logo" class="w-full h-full object-cover rounded-full bg-stone-900" />
+      </div>
       <div>
         <h1 class="text-xl sm:text-2xl font-bold tracking-wide text-amber-400 accent-heading flex items-center gap-2">
           দেবীপক্ষ <span class="text-xs font-normal text-stone-400 sub-text font-cinzel">Devi Paksha</span>
@@ -102,7 +97,7 @@
     </div>
     
     <div class="flex items-center space-x-2">
-      <!-- Day/Night Toggle Switch (Realistic/Artistic button removed) -->
+      <!-- Day/Night Toggle Switch -->
       <button onclick="toggleDayNight()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
         <span id="themeIcon">☀️</span> <span id="themeText">Day</span>
       </button>
@@ -149,7 +144,7 @@
         <span id="heroBadgeText">মহাদশমী (Oct 21, 2026) in <strong id="countdownInline" class="font-mono text-white ml-1">31d 13h 46m</strong></span>
       </div>
 
-      <!-- Large Stylized Bengali Title (Italicized and font size reduced by 25%: text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem]) -->
+      <!-- Large Italicized Bengali Title (Reduced by 25%) -->
       <h2 id="heroTitle" class="text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
       
       <!-- Subtitle / Tagline -->
@@ -188,7 +183,9 @@
       
       <!-- Track Info -->
       <div class="flex items-center gap-3 w-full sm:w-auto">
-        <div class="w-10 h-10 rounded-lg bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-xl text-amber-400 shadow-md">🪘</div>
+        <div class="w-10 h-10 rounded-lg bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-xl text-amber-400 shadow-md overflow-hidden">
+          <img src="logo.png" alt="Mini Logo" class="w-full h-full object-cover" />
+        </div>
         <div class="overflow-hidden">
           <div id="playerTitle" class="text-sm font-semibold text-white accent-heading truncate">Mahishasura Mardini</div>
           <div id="playerArtist" class="text-xs text-stone-400 sub-text truncate">Birendra Krishna Bhadra</div>
