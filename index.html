@@ -1,4 +1,3 @@
-// app/page.js
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -6,7 +5,7 @@ import { Play, Pause, SkipBack, SkipForward, Sun, Moon, Sparkles, Volume2 } from
 
 export default function DeviPakshaApp() {
   const [activeTab, setActiveTab] = useState("মহালয়া");
-  const [theme, setTheme] = useState("day"); // 'day', 'night', 'realistic'
+  const [theme, setTheme] = useState("day"); 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
@@ -22,7 +21,6 @@ export default function DeviPakshaApp() {
     { id: 3, title: "Aaji E Probhat Robir Kar", artist: "Saheli Chanda", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
   ];
 
-  // Countdown Timer Logic (Target: Oct 10, 2026)
   useEffect(() => {
     const targetDate = new Date("2026-10-10T04:00:00+05:30").getTime();
     
@@ -44,7 +42,6 @@ export default function DeviPakshaApp() {
     return () => clearInterval(timer);
   }, []);
 
-  // Audio Controls
   const togglePlay = () => {
     if (isPlaying) {
       audioRef.current.pause();
@@ -61,25 +58,22 @@ export default function DeviPakshaApp() {
   };
 
   const playAmbience = (type) => {
-    // Placeholder for ambient sounds like Dhak
     ambientRef.current.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3";
     ambientRef.current.play();
   };
 
-  // Theme styling logic
   const getThemeStyles = () => {
     if (theme === "night") return "bg-slate-900 text-slate-200";
     if (theme === "realistic") return "bg-[#d9cab3] text-[#5c4033] bg-opacity-90 transition-all shadow-inner";
-    return "bg-amber-50 text-amber-950"; // Day
+    return "bg-amber-50 text-amber-950"; 
   };
 
   return (
     <div className={`min-h-screen pb-24 font-sans transition-colors duration-500 ${getThemeStyles()}`}>
-      {/* Hidden Audio Elements */}
+      
       <audio ref={audioRef} src={tracks[currentTrackIndex].url} onEnded={() => playTrack((currentTrackIndex + 1) % tracks.length)} />
       <audio ref={ambientRef} loop />
 
-      {/* Header & Tabs */}
       <header className="p-4 flex flex-col items-center border-b border-opacity-20 border-current shadow-sm">
         <h1 className="text-3xl font-bold mb-2 tracking-wider">দেবীপক্ষ</h1>
         <p className="text-sm opacity-80 mb-4">Devi Paksha</p>
@@ -99,10 +93,8 @@ export default function DeviPakshaApp() {
         </div>
       </header>
 
-      {/* Main Content Area */}
       <main className="max-w-md mx-auto p-6 flex flex-col gap-8">
         
-        {/* Countdown Card */}
         <div className="bg-black/5 rounded-2xl p-6 text-center backdrop-blur-sm border border-black/10 shadow-sm">
           <h2 className="text-xl mb-2 font-semibold">মহালয়া (Oct 10) in</h2>
           <div className="text-3xl font-bold font-mono tracking-tighter">
@@ -110,14 +102,12 @@ export default function DeviPakshaApp() {
           </div>
         </div>
 
-        {/* Theme Toggles */}
         <div className="flex justify-center gap-4">
           <button onClick={() => setTheme("day")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${theme === 'day' ? 'bg-black/10' : ''}`}><Sun size={16}/> Day</button>
           <button onClick={() => setTheme("night")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${theme === 'night' ? 'bg-white/10' : ''}`}><Moon size={16}/> Night</button>
           <button onClick={() => setTheme("realistic")} className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${theme === 'realistic' ? 'bg-black/10' : ''}`}><Sparkles size={16}/> Realistic</button>
         </div>
 
-        {/* Music Player List */}
         <div className="space-y-2">
           <h3 className="font-semibold text-lg border-b border-black/10 pb-2 mb-4">Classic Hits</h3>
           {tracks.map((track, idx) => (
@@ -135,7 +125,6 @@ export default function DeviPakshaApp() {
           ))}
         </div>
 
-        {/* Ambience Buttons */}
         <div className="flex gap-4 justify-center mt-4">
           <button onClick={() => playAmbience('dhak')} className="px-4 py-3 bg-red-800 text-white rounded-xl shadow-lg hover:scale-105 transition-transform flex items-center gap-2">
             🔥 Dhak Sequence
@@ -143,7 +132,6 @@ export default function DeviPakshaApp() {
         </div>
       </main>
 
-      {/* Persistent Bottom Player */}
       <div className="fixed bottom-0 left-0 right-0 bg-black text-white p-4 flex items-center justify-between shadow-2xl pb-safe">
         <div className="flex-1 truncate pr-4">
           <p className="font-medium truncate">{tracks[currentTrackIndex].title}</p>
