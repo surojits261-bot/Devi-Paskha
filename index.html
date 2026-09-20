@@ -238,6 +238,89 @@
       min-width: 118px;
       justify-content: center;
     }
+    /* Final music UI: compact, translucent, and safely above the sticky player */
+    .music-panel {
+      position: fixed;
+      right: 1.25rem;
+      bottom: 6.25rem;
+      width: min(370px, calc(100vw - 2rem));
+      max-height: min(62vh, 520px);
+      overflow: hidden;
+      border-radius: 1.1rem;
+      background: rgba(10, 8, 8, 0.88);
+      border: 1px solid rgba(212,175,55,0.28);
+      box-shadow: 0 24px 60px rgba(0,0,0,.42);
+      backdrop-filter: blur(20px) saturate(115%);
+      -webkit-backdrop-filter: blur(20px) saturate(115%);
+      z-index: 80;
+    }
+    .music-panel.hidden { display: none; }
+    .music-panel-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.8rem .9rem; border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .music-panel-body { max-height: calc(min(62vh, 520px) - 58px); overflow-y:auto; }
+    .music-panel-row {
+      width:100%; display:flex; align-items:center; gap:.7rem;
+      padding:.7rem .85rem; color:#e7e5e4; text-align:left;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      transition:background .18s ease,color .18s ease;
+    }
+    .music-panel-row:hover { background:rgba(255,255,255,.055); color:#fcd34d; }
+    .music-panel-row.active { background:rgba(245,158,11,.13); color:#fcd34d; }
+    .music-panel-count { margin-left:auto; font-size:.68rem; color:rgba(255,255,255,.55); white-space:nowrap; }
+    .playlist-back {
+      border:0; background:transparent; color:#d6d3d1; font-size:.75rem;
+      padding:.25rem .5rem; border-radius:.5rem;
+    }
+    .playlist-back:hover { background:rgba(255,255,255,.07); color:#fcd34d; }
+    .queue-current {
+      padding:.7rem .85rem; background:rgba(245,158,11,.10);
+      border-bottom:1px solid rgba(212,175,55,.16);
+    }
+    .queue-next-label {
+      padding:.65rem .85rem .35rem; color:rgba(255,255,255,.48);
+      font:600 .65rem/1 'Hind Siliguri',sans-serif; text-transform:uppercase;
+      letter-spacing:.14em;
+    }
+    .dhak-control {
+      position:fixed; left:1.25rem; bottom:5.85rem; z-index:70;
+      display:inline-flex; align-items:center; gap:.42rem;
+      min-height:2.25rem; padding:.42rem .68rem;
+      border-radius:999px; color:#f5e5bc;
+      background:rgba(12,9,8,.48);
+      border:1px solid rgba(212,175,55,.25);
+      backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+      box-shadow:0 10px 28px rgba(0,0,0,.22);
+      transition:transform .22s ease, border-color .22s ease, background .22s ease;
+    }
+    .dhak-control:hover { transform:translateY(-1px); border-color:rgba(212,175,55,.55); }
+    .dhak-control .dhak-icon { font-size:1rem; line-height:1; }
+    .dhak-control .dhak-status {
+      font:700 .55rem/1 'Hind Siliguri',sans-serif; letter-spacing:.08em;
+      opacity:.64;
+    }
+    .dhak-control.dhak-active {
+      border-color:rgba(212,175,55,.7);
+      background:rgba(74,48,15,.42);
+      box-shadow:0 0 0 1px rgba(212,175,55,.12), 0 10px 30px rgba(0,0,0,.28);
+    }
+    .dhak-control.dhak-active .dhak-icon {
+      animation:dhakPulse 1.05s ease-in-out infinite;
+      filter:drop-shadow(0 0 7px rgba(212,175,55,.55));
+    }
+    .dhak-control.dhak-active::after {
+      content:""; position:absolute; inset:-5px; border-radius:inherit;
+      border:1px solid rgba(212,175,55,.25); pointer-events:none;
+      animation:dhakRipple 1.8s ease-out infinite;
+    }
+    @keyframes dhakPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+    @keyframes dhakRipple { 0%{transform:scale(.96);opacity:.55} 100%{transform:scale(1.12);opacity:0} }
+    @media (max-width: 640px) {
+      .music-panel { right:.7rem; bottom:5.8rem; width:calc(100vw - 1.4rem); }
+      .dhak-control { left:.7rem; bottom:5.45rem; }
+    }
+
   </style>
 </head>
 <body class="bg-[#09080F] text-stone-100 min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white relative">
@@ -323,30 +406,20 @@
       <p id="heroSubtitle" class="text-lg sm:text-xl font-medium text-stone-200 sub-text drop-shadow tracking-wide mb-1">Abar Esho Maa</p>
       <p id="heroDateSub" class="text-xs sm:text-sm text-amber-200/80 font-mono tracking-widest uppercase mb-6">Oct 21, 2026 • sindoor khela, family, final darshan</p>
 
-      <!-- Category Filter Pills -->
+      <!-- Music Playlist Filters -->
       <div class="flex items-center justify-center gap-2 flex-wrap mb-8">
-        <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow" data-category="og">Pandal OG Classic Hits</button>
-        <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow" data-category="adhunik">Adhunik Pujo Mix</button>
-
-        <div class="music-dropdown-wrap">
-          <button onclick="toggleMusicDropdown('ambienceDropdown')" class="px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5">
-            🔊 Ambience <span class="text-[10px]">▾</span>
-          </button>
-          <div id="ambienceDropdown" class="music-dropdown hidden text-left">
-            <div class="px-2.5 py-2 text-[10px] uppercase tracking-wider font-bold text-amber-400 font-mono">Ambient Sound</div>
-            <div id="ambienceOptions"></div>
-          </div>
-        </div>
-
-        <div class="music-dropdown-wrap">
-          <button onclick="toggleMusicDropdown('playlistDropdown')" class="px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5">
-            🎵 Playlist <span class="text-[10px]">▾</span>
-          </button>
-          <div id="playlistDropdown" class="music-dropdown hidden text-left">
-            <div class="px-2.5 py-2 text-[10px] uppercase tracking-wider font-bold text-amber-400 font-mono">Puja Playlist</div>
-            <div id="playlistDropdownContent"></div>
-          </div>
-        </div>
+        <button onclick="filterPlaylist('ambient')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-playlist="ambient">
+          🪷 Ambient Music
+        </button>
+        <button onclick="filterPlaylist('devotional')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-playlist="devotional">
+          🪔 Devotional
+        </button>
+        <button onclick="filterPlaylist('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow flex items-center gap-1.5" data-playlist="og">
+          🎵 OG Bangla Music
+        </button>
+        <button onclick="filterPlaylist('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-playlist="adhunik">
+          🎶 Adhunik Music
+        </button>
       </div>
 
       <!-- Did You Know / Fact Card -->
@@ -367,6 +440,13 @@
     </div>
 
   </main>
+
+  <!-- Minimal independent Dhak ambience control -->
+  <button id="dhakToggleBtn" class="dhak-control" onclick="toggleDhak()" aria-pressed="false" aria-label="Dhak Baja" title="Dhak Baja">
+    <span class="dhak-icon">🥁</span>
+    <span>Dhak Baja</span>
+    <span id="dhakStatus" class="dhak-status">OFF</span>
+  </button>
 
   <!-- Sticky Bottom Audio Player Bar -->
   <footer class="bottom-bar w-full bg-stone-950/90 border-t border-white/10 backdrop-blur-xl px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
@@ -398,22 +478,42 @@
         </div>
       </div>
 
-      <!-- Keep the original bottom player visually clean; playlist is now in the music controls above. -->
-      <div class="hidden sm:flex items-center gap-3 min-w-[80px]"></div>
+      <!-- Compact playlist / queue controls -->
+      <div class="hidden sm:flex items-center gap-2">
+        <button id="playlistBtn" onclick="toggleMusicPanel('playlistPanel')" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5">
+          <span>🎵</span> Playlist
+        </button>
+        <button id="upNextBtn" onclick="toggleMusicPanel('queuePanel')" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-stone-300 hover:border-amber-400 transition flex items-center gap-1.5">
+          <span>≡</span> Up Next
+        </button>
+      </div>
 
     </div>
   </footer>
 
-  <!-- Hidden Playlist Drawer / Modal -->
-  <div id="playlistModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-stone-900 border border-amber-500/40 rounded-2xl max-w-md w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
-      <div class="p-4 border-b border-stone-800 flex items-center justify-between">
-        <h3 class="text-base font-bold text-amber-400 accent-heading">Durga Puja Melody Playlist</h3>
-        <button onclick="toggleSongListModal()" class="text-stone-400 hover:text-white text-lg">✕</button>
+  <!-- Compact Playlist panel -->
+  <section id="playlistPanel" class="music-panel hidden" aria-label="Playlist">
+    <div class="music-panel-header">
+      <div>
+        <div class="text-sm font-semibold text-amber-300">Playlist</div>
+        <div id="playlistPanelSubtitle" class="text-[10px] text-stone-400">Choose a playlist</div>
       </div>
-      <div id="playlistContainer" class="p-3 space-y-2 overflow-y-auto custom-scrollbar flex-1"></div>
+      <button onclick="closeMusicPanels()" class="text-stone-400 hover:text-white text-lg" aria-label="Close">✕</button>
     </div>
-  </div>
+    <div id="playlistPanelBody" class="music-panel-body"></div>
+  </section>
+
+  <!-- Compact Up Next queue panel -->
+  <section id="queuePanel" class="music-panel hidden" aria-label="Up Next">
+    <div class="music-panel-header">
+      <div>
+        <div class="text-sm font-semibold text-amber-300">Up Next</div>
+        <div id="queuePanelSubtitle" class="text-[10px] text-stone-400">Current queue</div>
+      </div>
+      <button onclick="closeMusicPanels()" class="text-stone-400 hover:text-white text-lg" aria-label="Close">✕</button>
+    </div>
+    <div id="queuePanelBody" class="music-panel-body"></div>
+  </section>
 
   <script>
     // 6 Authentic Tithis & Corresponding Background Arrays
@@ -494,11 +594,11 @@
 
     // 15 Curated Bengali Songs
     const tracks = [
-      { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "devotional", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
       { id: 2, title: "Bajlo Tomar Alor Benu", artist: "Debolina Nandy", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-      { id: 3, title: "Aaji E Probhat Robir Kar", artist: "Saheli Chanda", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+      { id: 3, title: "Aaji E Probhat Robir Kar", artist: "Saheli Chanda", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
       { id: 4, title: "Aaj Jyotsna Raatey", artist: "Somlata Acharyya Chowdhury", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
-      { id: 5, title: "Ei Raat Tomar Amar", artist: "Hemanta Mukherjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+      { id: 5, title: "Ei Raat Tomar Amar", artist: "Hemanta Mukherjee", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
       { id: 6, title: "Ei Path Jodi Na Shesh Hoy", artist: "Hemanta & Sandhya Mukherjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
       { id: 7, title: "Aami Chini Go Chini", artist: "Chinmoy Chatterjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
       { id: 8, title: "Hoyto Tomari Jonno", artist: "Manna Dey", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
@@ -584,6 +684,16 @@
       }
     }
 
+    // music-panel-close-listener
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.music-panel') &&
+          !event.target.closest('#playlistBtn') &&
+          !event.target.closest('#upNextBtn') &&
+          !event.target.closest('.cat-filter')) {
+        closeMusicPanels();
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
       applyFestivalMode('day');
       renderPlaylist();
@@ -601,8 +711,7 @@
       
       setupAudioListeners();
       setupAmbienceAutoStart();
-      document.getElementById('playlistCount').innerText = tracks.length;
-      renderAmbienceOptions();
+renderAmbienceOptions();
       renderPlaylistDropdown();
       ambienceAudio.volume = 0.5;
       ambienceAudio.preload = 'auto';
@@ -718,73 +827,315 @@
       return `${m}:${sec < 10 ? '0' : ''}${sec}`;
     }
 
-    function renderPlaylist() {
-      const container = document.getElementById('playlistContainer');
-      container.innerHTML = '';
-      const filtered = tracks.filter(t => currentFilter === 'all' || t.category === currentFilter);
-      filtered.forEach(track => {
-        const isCurrent = track.id === tracks[currentTrackIndex].id;
-        const item = document.createElement('div');
-        item.className = `flex items-center justify-between p-3 rounded-xl cursor-pointer border transition text-sm ${
-          isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-semibold shadow-md' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glassmorphism'
-        }`;
-        item.onclick = () => {
-          const idx = tracks.findIndex(t => t.id === track.id);
-          loadTrack(idx, true);
-        };
-        item.innerHTML = `
-          <div class="flex items-center space-x-3 truncate">
-            <span class="text-xs font-mono opacity-60 w-5 text-right">${track.id}</span>
-            <div class="truncate">
-              <span class="block truncate">${track.title}</span>
-              <span class="text-xs opacity-75 block truncate">${track.artist}</span>
-            </div>
-          </div>
-          <button class="text-amber-400 hover:text-amber-300 text-xs px-2.5 py-1 font-bold">${isCurrent && isPlaying ? '❚❚' : '▶'}</button>
-        `;
-        container.appendChild(item);
-      });
+    function playlistName(key) {
+      return {
+        ambient: 'Ambient Music',
+        devotional: 'Devotional',
+        og: 'OG Bangla Music',
+        adhunik: 'Adhunik Music'
+      }[key] || 'OG Bangla Music';
     }
 
-    function loadTrack(index, autoPlay = true) {
-      currentTrackIndex = index;
-      const track = tracks[currentTrackIndex];
-      audio.src = track.url;
-      document.getElementById('playerTitle').innerText = track.title;
-      document.getElementById('playerArtist').innerText = track.artist;
+    function getPlaylistTracks(key) {
+      if (key === 'ambient') {
+        return ambienceTracks.map((t, i) => ({ ...t, kind: 'ambience', sourceIndex: i }));
+      }
+      return tracks
+        .filter(t => key === 'og' ? t.category === 'og' : t.category === key)
+        .map(t => ({ ...t, kind: 'music' }));
+    }
+
+    function setQueue(key) {
+      currentPlaylistKey = key;
+      queueItems = getPlaylistTracks(key).filter(item => item.kind === 'music');
+      queuePosition = Math.max(0, queueItems.findIndex(item => item.id === tracks[currentTrackIndex]?.id));
+      if (queueItems.length === 0) queuePosition = 0;
+      updatePlaylistFilters();
+      renderQueuePanel();
+    }
+
+    function loadQueueTrack(position, autoPlay = true) {
+      if (!queueItems.length) return;
+      queuePosition = (position + queueItems.length) % queueItems.length;
+      const item = queueItems[queuePosition];
+      const idx = tracks.findIndex(t => t.id === item.id);
+      if (idx < 0) return;
+
+      currentTrackIndex = idx;
+      audio.src = item.url;
+      document.getElementById('playerTitle').innerText = item.title;
+      document.getElementById('playerArtist').innerText = item.artist;
+      document.getElementById('playerType').innerText = categoryLabel(item.category);
+
       if (autoPlay) {
-        audio.play().then(() => { isPlaying = true; updatePlayButtons(); }).catch(() => { isPlaying = false; updatePlayButtons(); });
+        audio.play().then(() => {
+          isPlaying = true;
+          updatePlayButtons();
+          renderQueuePanel();
+          renderPlaylistPanel();
+          renderPlaylist();
+        }).catch(() => {
+          isPlaying = false;
+          updatePlayButtons();
+        });
       } else {
         isPlaying = false;
         updatePlayButtons();
       }
+      renderQueuePanel();
       renderPlaylist();
     }
 
-    function toggleMasterPlay() {
-      if (isPlaying) { audio.pause(); isPlaying = false; }
-      else { audio.play().catch(e => console.log(e)); isPlaying = true; }
-      updatePlayButtons();
-      renderPlaylist();
+    function categoryLabel(cat) {
+      return {
+        devotional: 'Devotional',
+        og: 'OG Bangla Music',
+        adhunik: 'Adhunik Music',
+        classic: 'OG Bangla Music'
+      }[cat] || 'Music';
     }
 
-    function updatePlayButtons() {
-      document.getElementById('masterPlayBtn').innerText = isPlaying ? '❚❚' : '▶';
+    function renderPlaylist() {
+      const container = document.getElementById('playlistContainer');
+      if (!container) return;
+      const selected = tracks.filter(t => t.category === (currentPlaylistKey === 'og' ? 'og' : currentPlaylistKey));
+      container.innerHTML = selected.map((track, i) => {
+        const idx = tracks.indexOf(track);
+        const active = idx === currentTrackIndex;
+        return `
+          <div class="flex items-center justify-between p-3 rounded-xl cursor-pointer border transition text-sm ${active ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-semibold shadow-md' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glassmorphism'}">
+            <button type="button" class="flex items-center space-x-3 truncate flex-1 text-left" onclick="loadTrack(${idx}, true)">
+              <span class="text-xs font-mono opacity-60 w-5 text-right">${track.id}</span>
+              <div class="truncate">
+                <span class="block truncate">${track.title}</span>
+                <span class="text-xs opacity-75 block truncate">${track.artist}</span>
+              </div>
+            </button>
+            <button type="button" class="text-amber-400 text-xs px-2 py-1" onclick="loadTrack(${idx}, true)">${active && isPlaying ? '❚❚' : '▶'}</button>
+          </div>`;
+      }).join('');
     }
 
-    function nextTrack() { loadTrack((currentTrackIndex + 1) % tracks.length, true); }
-    function prevTrack() { loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); }
-    function seekAudio(val) { if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; }
+    function renderPlaylistPanel() {
+      const body = document.getElementById('playlistPanelBody');
+      const subtitle = document.getElementById('playlistPanelSubtitle');
+      if (!body) return;
+
+      const configs = ['ambient','devotional','og','adhunik'];
+      subtitle.innerText = `Selected: ${playlistName(currentPlaylistKey)}`;
+
+      body.innerHTML = configs.map(key => {
+        const list = getPlaylistTracks(key);
+        const active = key === currentPlaylistKey;
+        return `
+          <button type="button" class="music-panel-row ${active ? 'active' : ''}" onclick="openPlaylistTracks('${key}')">
+            <span class="text-lg">${key === 'ambient' ? '🪷' : key === 'devotional' ? '🪔' : key === 'og' ? '🎵' : '🎶'}</span>
+            <span class="min-w-0">
+              <span class="block truncate font-medium">${playlistName(key)}</span>
+              <span class="text-[11px] opacity-60">${list.length} ${key === 'ambient' ? 'sounds' : 'songs'}</span>
+            </span>
+            <span class="music-panel-count">›</span>
+          </button>`;
+      }).join('');
+    }
+
+    function openPlaylistTracks(key) {
+      currentPlaylistKey = key;
+      const body = document.getElementById('playlistPanelBody');
+      const subtitle = document.getElementById('playlistPanelSubtitle');
+      if (!body) return;
+      subtitle.innerText = playlistName(key);
+
+      const list = getPlaylistTracks(key);
+      body.innerHTML =
+        `<div class="px-2 py-2"><button type="button" class="playlist-back" onclick="renderPlaylistPanel()">‹ All Playlists</button></div>` +
+        list.map((item, i) => `
+          <button type="button" class="music-panel-row ${item.kind === 'music' && item.id === tracks[currentTrackIndex]?.id ? 'active' : ''}" onclick="${item.kind === 'ambience' ? 'playAmbienceFromPlaylist(' + i + ')' : 'playPlaylistSong(\\'' + key + '\\',' + i + ')'}">
+            <span class="w-6 text-center text-xs opacity-50">${i + 1}</span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate font-medium">${item.title}</span>
+              <span class="text-[11px] opacity-60 truncate block">${item.artist}</span>
+            </span>
+            <span class="text-xs opacity-60">▶</span>
+          </button>`).join('');
+    }
+
+    function playPlaylistSong(key, i) {
+      const list = getPlaylistTracks(key).filter(item => item.kind === 'music');
+      queueItems = list;
+      queuePosition = i;
+      currentPlaylistKey = key;
+      if (list[i]) {
+        const idx = tracks.findIndex(t => t.id === list[i].id);
+        if (idx >= 0) loadQueueTrack(i, true);
+      }
+      renderPlaylistPanel();
+      openMusicPanel('playlistPanel');
+    }
+
+    function playAmbienceFromPlaylist(i) {
+      currentAmbienceIndex = i;
+      selectAmbience(i);
+    }
+
+    function renderQueuePanel() {
+      const body = document.getElementById('queuePanelBody');
+      const subtitle = document.getElementById('queuePanelSubtitle');
+      if (!body) return;
+
+      const current = queueItems[queuePosition];
+      subtitle.innerText = queueItems.length ? playlistName(currentPlaylistKey) : 'No queued songs';
+
+      let htmlOut = '';
+      if (current) {
+        htmlOut += `
+          <div class="queue-current">
+            <div class="text-[10px] uppercase tracking-wider font-mono text-amber-400">Now Playing</div>
+            <div class="text-sm font-semibold truncate mt-1 text-white">${current.title}</div>
+            <div class="text-[11px] text-stone-400 truncate">${current.artist}</div>
+          </div>`;
+      }
+
+      htmlOut += `<div class="queue-next-label">Next in playlist</div>`;
+      if (queueItems.length > 1) {
+        for (let offset = 1; offset <= Math.min(6, queueItems.length - 1); offset++) {
+          const pos = (queuePosition + offset) % queueItems.length;
+          const item = queueItems[pos];
+          htmlOut += `
+            <button type="button" class="music-panel-row" onclick="loadQueueTrack(${pos}, true)">
+              <span class="w-6 text-center text-xs opacity-50">${offset}</span>
+              <span class="min-w-0 flex-1">
+                <span class="block truncate font-medium">${item.title}</span>
+                <span class="text-[11px] opacity-60 truncate block">${item.artist}</span>
+              </span>
+              <span class="text-xs opacity-60">▶</span>
+            </button>`;
+        }
+      } else {
+        htmlOut += `<div class="px-4 py-5 text-center text-xs text-stone-500">Choose another song from Playlist.</div>`;
+      }
+
+      body.innerHTML = htmlOut;
+    }
+
+    function updatePlaylistFilters() {
+      document.querySelectorAll('.cat-filter').forEach(btn => {
+        const active = btn.dataset.playlist === currentPlaylistKey;
+        btn.className = active
+          ? 'cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition shadow flex items-center gap-1.5'
+          : 'cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5';
+      });
+      renderPlaylistPanel();
+      renderQueuePanel();
+      if (typeof renderPlaylist === 'function') renderPlaylist();
+    }
+
+    function filterPlaylist(key) {
+      currentPlaylistKey = key;
+      if (key === 'ambient') {
+        renderPlaylistPanel();
+        return;
+      }
+      setQueue(key);
+    }
+
+    function toggleMusicPanel(id) {
+      const target = document.getElementById(id);
+      const other = id === 'playlistPanel' ? document.getElementById('queuePanel') : document.getElementById('playlistPanel');
+      if (other) other.classList.add('hidden');
+      if (target) {
+        target.classList.toggle('hidden');
+        if (!target.classList.contains('hidden')) {
+          if (id === 'playlistPanel') renderPlaylistPanel();
+          if (id === 'queuePanel') renderQueuePanel();
+        }
+      }
+    }
+
+    function openMusicPanel(id) {
+      document.getElementById(id)?.classList.remove('hidden');
+      if (id === 'playlistPanel') renderPlaylistPanel();
+      if (id === 'queuePanel') renderQueuePanel();
+    }
+
+    function closeMusicPanels() {
+      document.getElementById('playlistPanel')?.classList.add('hidden');
+      document.getElementById('queuePanel')?.classList.add('hidden');
+    }
+
+    function selectAmbience(index) {
+      currentAmbienceIndex = index;
+      ambienceUserStopped = false;
+      ambienceAudio.src = ambienceTracks[index].url;
+      ambienceAudio.load();
+      ambienceAudio.play().then(() => {
+        ambiencePlaying = true;
+        updateDhakButton();
+        renderPlaylistPanel();
+      }).catch(() => {
+        ambiencePlaying = false;
+        updateDhakButton();
+      });
+    }
+
+    function toggleDhak() {
+      if (!ambienceAudio.src) {
+        ambienceAudio.src = ambienceTracks[currentAmbienceIndex].url;
+        ambienceAudio.load();
+      }
+
+      if (ambiencePlaying) {
+        ambienceAudio.pause();
+        ambiencePlaying = false;
+        ambienceUserStopped = true;
+      } else {
+        ambienceUserStopped = false;
+        ambienceAudio.play().then(() => {
+          ambiencePlaying = true;
+          updateDhakButton();
+        }).catch(() => {});
+      }
+      updateDhakButton();
+    }
+
+    function updateDhakButton() {
+      const btn = document.getElementById('dhakToggleBtn');
+      const status = document.getElementById('dhakStatus');
+      if (!btn || !status) return;
+      const active = ambiencePlaying;
+      btn.classList.toggle('dhak-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+      btn.title = active ? 'Dhak Baja is ON — click to stop' : 'Dhak Baja is OFF — click to play';
+      status.innerText = active ? 'ON' : 'OFF';
+    }
+
+    function setupDhakAutoStart() {
+      const start = () => {
+        if (ambiencePlaying || ambienceUserStopped) return;
+        if (!ambienceAudio.src) {
+          ambienceAudio.src = ambienceTracks[0].url;
+          ambienceAudio.load();
+        }
+        ambienceAudio.play().then(() => {
+          ambiencePlaying = true;
+          updateDhakButton();
+        }).catch(() => {
+          updateDhakButton();
+        });
+      };
+      document.addEventListener('pointerdown', start, { once: true });
+      document.addEventListener('keydown', start, { once: true });
+    }
+
+    ambienceAudio.addEventListener('ended', () => {
+      if (!ambienceUserStopped) {
+        ambienceAudio.currentTime = 0;
+        ambienceAudio.play().catch(() => {});
+      }
+    });
 
     function filterCategory(cat) {
-      currentFilter = cat;
-      document.querySelectorAll('.cat-filter').forEach(btn => {
-        const isActive = btn.dataset.category === cat;
-        btn.className = isActive
-          ? 'cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition shadow'
-          : 'cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow';
-      });
-      renderPlaylist();
+      filterPlaylist(cat === 'classic' ? 'og' : cat);
     }
 
     function switchTab(index) {
@@ -827,51 +1178,6 @@
       document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white ml-1">${days}d ${hours}h ${mins}m</strong>`;
     }
 
-    function renderAmbienceOptions() {
-      const container = document.getElementById('ambienceOptions');
-      if (!container) return;
-
-      container.innerHTML = ambienceTracks.map((track, index) => {
-        const active = index === currentAmbienceIndex;
-        const playing = active && ambiencePlaying;
-        return `
-          <div class="music-option ${active ? 'active' : ''}">
-            <button type="button" class="flex-1 min-w-0" onclick="selectAmbience(${index})">
-              <div class="font-medium truncate">${active ? '✓ ' : ''}${track.title}</div>
-              <div class="text-[11px] opacity-70 truncate">${track.artist}</div>
-            </button>
-            <button type="button" class="shrink-0 px-2 py-1 rounded-lg hover:bg-white/10" onclick="toggleAmbience(event)">
-              ${playing ? '❚❚' : '▶'}
-            </button>
-          </div>`;
-      }).join('');
-    }
-
-    function renderPlaylistDropdown() {
-      const container = document.getElementById('playlistDropdownContent');
-      if (!container) return;
-
-      const ogTracks = tracks.filter(t => t.category === 'og' || t.category === 'classic');
-      const adhunikTracks = tracks.filter(t => t.category === 'adhunik');
-
-      const section = (title, items) => `
-        <div class="px-2.5 pt-2 pb-1 text-[10px] uppercase tracking-wider text-amber-300/80 font-mono">${title} · ${items.length}</div>
-        ${items.map(t => `
-          <button type="button" class="music-option" onclick="loadTrackById(${t.id}); closeMusicDropdowns();">
-            <span class="truncate">${t.id}. ${t.title}</span>
-            <span class="text-[10px] opacity-60 shrink-0">▶</span>
-          </button>`).join('')}`;
-
-      container.innerHTML =
-        section('Pandal OG Classic Hits', ogTracks) +
-        section('Adhunik Pujo Mix', adhunikTracks);
-    }
-
-    function loadTrackById(id) {
-      const index = tracks.findIndex(t => t.id === id);
-      if (index >= 0) loadTrack(index, true);
-    }
-
     function selectAmbience(index) {
       currentAmbienceIndex = index;
       ambienceUserStopped = false;
@@ -910,23 +1216,6 @@
       }
       renderAmbienceOptions();
     }
-
-    function toggleMusicDropdown(id) {
-      document.querySelectorAll('.music-dropdown').forEach(menu => {
-        if (menu.id !== id) menu.classList.add('hidden');
-      });
-      document.getElementById(id)?.classList.toggle('hidden');
-      if (id === 'ambienceDropdown') renderAmbienceOptions();
-      if (id === 'playlistDropdown') renderPlaylistDropdown();
-    }
-
-    function closeMusicDropdowns() {
-      document.querySelectorAll('.music-dropdown').forEach(menu => menu.classList.add('hidden'));
-    }
-
-    document.addEventListener('click', (event) => {
-      if (!event.target.closest('.music-dropdown-wrap')) closeMusicDropdowns();
-    });
 
     function toggleSongListModal() {
       const modal = document.getElementById('playlistModal');
