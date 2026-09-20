@@ -222,6 +222,12 @@
 
   </main>
 
+  <!-- Floating Dhak Baja Ambient Button (Bottom Left) -->
+  <button id="floatingDhakBtn" onclick="toggleDhak()" class="fixed bottom-[88px] sm:bottom-[80px] left-4 z-40 px-3.5 py-2 rounded-full bg-amber-950/80 border border-amber-500/50 glassmorphism text-amber-300 text-[11px] sm:text-xs font-bold shadow-[0_5px_20px_rgba(0,0,0,0.5)] flex items-center gap-1.5 transition-all hover:scale-105 hover:bg-amber-900/80">
+    <span id="dhakIcon" class="animate-pulse text-sm">🪘</span> 
+    <span id="dhakStatus">Dhak Baja: ON</span>
+  </button>
+
   <!-- Sticky Bottom Audio Player Bar -->
   <footer class="bottom-bar w-full bg-stone-950/90 border-t border-white/10 backdrop-blur-xl px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -353,7 +359,7 @@
       }
     ];
 
-    // Curated Bengali Songs with Local Paths (Now featuring all Ambience tracks)
+    // Curated Bengali Songs with Local Paths
     const tracks = [
       { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "og", url: "Music/Mahalaya/mahishasura-mardini.mp3" },
       { id: 2, title: "Bajlo Tomar Alor Benu", artist: "Debolina Nandy", category: "og", url: "Music/OG/bajlo-tomar-alor-benu.mp3" },
@@ -383,8 +389,8 @@
       { id: 26, title: "Durga Puja Vibe", artist: "Ambiant durga vibe -1.mp3", category: "ambience", url: "Music/Ambience/Ambiant durga vibe -1.mp3" }
     ];
 
-    let currentTabIndex = 5; // Default to Mohadashami
-    let currentImageIndex = 0; // Image index for the active tab's synchronized global slot
+    let currentTabIndex = 5;
+    let currentImageIndex = 0;
     let currentTrackIndex = 0;
     let isPlaying = false;
     let audio = new Audio();
@@ -393,11 +399,18 @@
     let currentVolume = 1.0;
     let isMuted = false;
 
-    // All Tithi backdrops share the same real-time 5-minute rotation slot.
-    // This keeps image changes synchronized even when the user switches tabs.
+    // Background rotation variables
     const IMAGE_ROTATION_MS = 5 * 60 * 1000;
     let activeBackdropLayer = 0;
     let lastRenderedBackdrop = '';
+    
+    // Independent Dhak Audio setup
+    const dhakAudio = new Audio("Music/Ambience/durga-puja-dhak-main.mp3");
+    dhakAudio.loop = true;
+    let isDhakOn = true; 
+    let dhakPhase = 'playing'; // 'playing' or 'waiting'
+    let dhakTimer = null;
+    let userInteracted = false;
 
     function getGlobalImageSlot() {
       return Math.floor(Date.now() / IMAGE_ROTATION_MS);
@@ -412,8 +425,6 @@
       return { src: images[index], index, slot };
     }
 
-    // Preload the image currently needed for every Tithi so tab changes do not
-    // wait for a network request. Remaining images are warmed up during idle time.
     function preloadBackgroundImages() {
       const slot = getGlobalImageSlot();
       const urls = new Set();
@@ -453,17 +464,80 @@
       switchTab(5); // Load Dashami by default
       updateCountdown();
       
-      // Update countdown every second
       setInterval(updateCountdown, 1000);
       
-      // Synchronize backdrop changes to a shared real-time 5-minute boundary.
       syncBackdropToGlobalCycle(true);
       scheduleNextBackgroundChange();
       
       setupAudioListeners();
+      initDhak();
     });
 
-    // Changes all Tithi backdrops on the same 5-minute clock boundary.
+    // --- DHAK BAJA BACKGROUND LOGIC --- //
+    
+    function initDhak() {
+      // Browsers block autoplay without interaction, so we wait for the first click anywhere.
+      document.body.addEventListener('click', () => {
+        if (!userInteracted) {
+          userInteracted = true;
+          if (isDhakOn && dhakPhase === 'playing') {
+            dhakAudio.play().catch(e => console.log("Dhak autoplay wait:", e));
+          }
+        }
+      }, { once: true });
+
+      // Start the logical 5-min interval cycle immediately
+      startDhakCycle();
+    }
+
+    function toggleDhak() {
+      isDhakOn = !isDhakOn;
+      const btn = document.getElementById('floatingDhakBtn');
+      const icon = document.getElementById('dhakIcon');
+      const status = document.getElementById('dhakStatus');
+
+      if (isDhakOn) {
+        btn.classList.add('border-amber-500/50', 'text-amber-300');
+        btn.classList.remove('border-stone-500/50', 'text-stone-400');
+        icon.classList.add('animate-pulse');
+        status.innerText = 'Dhak Baja: ON';
+        startDhakCycle();
+      } else {
+        btn.classList.remove('border-amber-500/50', 'text-amber-300');
+        btn.classList.add('border-stone-500/50', 'text-stone-400');
+        icon.classList.remove('animate-pulse');
+        status.innerText = 'Dhak Baja: OFF';
+        stopDhakCycle();
+      }
+    }
+
+    function startDhakCycle() {
+      dhakPhase = 'playing';
+      if (userInteracted) {
+        dhakAudio.play().catch(e => console.log("Dhak play error:", e));
+      }
+      
+      if (dhakTimer) clearInterval(dhakTimer);
+      
+      // Cycle every 5 minutes (300,000 ms) - Play for 5 mins, Pause for 5 mins
+      dhakTimer = setInterval(() => {
+        if (dhakPhase === 'playing') {
+          dhakAudio.pause();
+          dhakPhase = 'waiting';
+        } else {
+          dhakAudio.play().catch(e => console.log(e));
+          dhakPhase = 'playing';
+        }
+      }, 5 * 60 * 1000);
+    }
+
+    function stopDhakCycle() {
+      dhakAudio.pause();
+      if (dhakTimer) clearInterval(dhakTimer);
+    }
+
+    // --- BACKGROUND IMAGE LOGIC --- //
+
     function rotateBackgroundImage() {
       syncBackdropToGlobalCycle();
     }
@@ -528,6 +602,8 @@
       }, delay);
     }
 
+    // --- AUDIO PLAYER LOGIC --- //
+
     function setupAudioListeners() {
       audio.addEventListener('timeupdate', () => {
         if (!isNaN(audio.duration)) {
@@ -537,10 +613,8 @@
         }
       });
       
-      // Auto-play next track
       audio.addEventListener('ended', () => nextTrack());
 
-      // Graceful error handling
       audio.addEventListener('error', (e) => {
         console.warn("Audio playback failed or file missing for:", audio.src);
         isPlaying = false;
@@ -557,30 +631,24 @@
       const modal = document.getElementById('playlistModal');
       if (modal) modal.classList.toggle('hidden');
     }
-
-    // --- NEW DROPDOWN LOGIC FOR AMBIENCE --- //
     
     function toggleAmbientDropdown(event) {
       if (event) event.stopPropagation();
       const dropdown = document.getElementById('ambientDropdown');
       const isHidden = dropdown.classList.contains('hidden');
       
-      // Close the main playlist modal if it's open so they don't overlap awkwardly
       const modal = document.getElementById('playlistModal');
       if (modal && !modal.classList.contains('hidden')) {
         modal.classList.add('hidden');
       }
       
       if (isHidden) {
-        // Show dropdown
         dropdown.classList.remove('hidden');
-        // Trigger a reflow to allow transition to animate
         void dropdown.offsetWidth;
         dropdown.classList.remove('scale-95', 'opacity-0');
         dropdown.classList.add('scale-100', 'opacity-100');
         renderAmbientDropdown();
         
-        // Ensure category highlighting reflects 'ambience'
         currentFilter = 'ambience';
         updateCategoryButtonStyles('ambience');
       } else {
@@ -596,13 +664,11 @@
       dropdown.classList.remove('scale-100', 'opacity-100');
       dropdown.classList.add('scale-95', 'opacity-0');
       
-      // Wait for transition to finish before hiding display
       setTimeout(() => {
         dropdown.classList.add('hidden');
       }, 200);
     }
 
-    // Close dropdown automatically when user clicks anywhere outside of it
     document.addEventListener('click', (event) => {
       const dropdown = document.getElementById('ambientDropdown');
       const ambienceBtn = document.getElementById('ambienceBtn');
@@ -630,7 +696,6 @@
            e.stopPropagation();
            const idx = tracks.findIndex(t => t.id === track.id);
            loadTrack(idx, true);
-           // After clicking, refresh the list to highlight the active track
            renderAmbientDropdown(); 
         };
         
@@ -645,14 +710,11 @@
       });
     }
 
-    // --- MAIN PLAYLIST LOGIC --- //
-
     function renderPlaylist() {
       const container = document.getElementById('playlistContainer');
       if (!container) return;
       container.innerHTML = '';
       
-      // The main modal only displays OG or Adhunik tracks
       const filtered = tracks.filter(t => {
         if (currentFilter === 'og') return t.category === 'og' || t.category === 'classic';
         return t.category === currentFilter;
@@ -704,7 +766,6 @@
 
     function updatePlayButtons() {
       document.getElementById('masterPlayBtn').innerText = isPlaying ? '❚❚' : '▶';
-      // Sync the play/pause icons in whichever list is currently open
       renderPlaylist();
       if (!document.getElementById('ambientDropdown').classList.contains('hidden')) {
         renderAmbientDropdown();
@@ -717,13 +778,17 @@
 
     function setVolume(val) {
       currentVolume = val / 100;
-      if (!isMuted) audio.volume = currentVolume;
+      if (!isMuted) {
+        audio.volume = currentVolume;
+        dhakAudio.volume = currentVolume * 0.6; // Keep ambient dhak slightly softer than main player
+      }
       updateVolumeIcon();
     }
 
     function toggleMute() {
       isMuted = !isMuted;
       audio.volume = isMuted ? 0 : currentVolume;
+      dhakAudio.volume = isMuted ? 0 : (currentVolume * 0.6);
       document.getElementById('volumeBar').value = isMuted ? 0 : currentVolume * 100;
       updateVolumeIcon();
     }
@@ -745,7 +810,6 @@
     }
 
     function filterCategory(cat) {
-      // If the Ambience filter button is clicked, we just close the dropdown and handle main categories
       if (cat !== 'ambience') {
         closeAmbientDropdown();
       }
@@ -770,6 +834,8 @@
       }
     }
 
+    // --- UI/UX LOGIC --- //
+
     function switchTab(index) {
       currentTabIndex = index;
       const d = tithiData[index];
@@ -778,7 +844,6 @@
       const imageCount = d.bgImages.length;
       currentImageIndex = imageCount ? globalSlot % imageCount : 0;
 
-      // Update Top Nav Tabs
       document.querySelectorAll('.tab-btn').forEach(btn => {
         const isActive = parseInt(btn.dataset.index) === index;
         btn.className = isActive
@@ -786,13 +851,11 @@
           : 'tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]';
       });
 
-      // Update Hero Content
       document.getElementById('heroTitle').innerText = d.name;
       document.getElementById('heroSubtitle').innerText = d.subtitle;
       document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
       document.getElementById('tithiFact').innerText = d.fact;
 
-      // Manual tab changes use a faster fade so navigation feels immediate.
       setBackdropImage(d.bgImages[currentImageIndex], false, true);
       updateCountdown();
     }
