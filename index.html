@@ -627,6 +627,7 @@
     let ambiencePlaying = false;
     let currentAmbienceIndex = 0;
     let ambienceUserStopped = false;
+    let playlistPanelView = null;
 
     let dhakAudio = new Audio();
     let dhakPlaying = false;
@@ -930,11 +931,19 @@
       });
     }
 
+    function refreshOpenPlaylistPanel() {
+      if (playlistPanelView) {
+        openPlaylistTracks(playlistPanelView);
+      } else {
+        renderPlaylistPanel();
+      }
+    }
+
     function updatePlayButtons() {
       const btn = document.getElementById('masterPlayBtn');
       if (btn) btn.innerText = isPlaying ? '❚❚' : '▶';
       if (document.getElementById('playlistPanel') && !document.getElementById('playlistPanel').classList.contains('hidden')) {
-        renderPlaylistPanel();
+        refreshOpenPlaylistPanel();
       }
       if (document.getElementById('queuePanel') && !document.getElementById('queuePanel').classList.contains('hidden')) {
         renderQueuePanel();
@@ -1068,6 +1077,7 @@
     }
 
     function renderPlaylistPanel() {
+      playlistPanelView = null;
       const body = document.getElementById('playlistPanelBody');
       const subtitle = document.getElementById('playlistPanelSubtitle');
       if (!body) return;
@@ -1100,12 +1110,14 @@
 
     function openPlaylistTracks(key) {
       currentPlaylistKey = key;
+      playlistPanelView = key;
       const body = document.getElementById('playlistPanelBody');
       const subtitle = document.getElementById('playlistPanelSubtitle');
       if (!body) return;
 
       subtitle.innerText = playlistName(key);
       const list = getPlaylistTracks(key);
+      const { mainState, ambientState } = getCurrentMusicLabel();
 
       const rows = list.map((item, i) => {
         const activeMain = item.kind === 'music' && item.id === tracks[currentTrackIndex]?.id;
@@ -1132,7 +1144,13 @@
         `<div class="px-2 py-2">
           <button type="button" class="playlist-back" onclick="renderPlaylistPanel()">‹ All Playlists</button>
         </div>
-        <div class="px-3 pb-2 text-[10px] text-stone-500">Tap ▶ / ❚❚ to play or pause.</div>
+        <div class="px-3 pb-2 border-b border-white/10">
+          <div class="text-[10px] uppercase tracking-wider font-mono text-amber-400">Current Music</div>
+          <div class="text-sm font-semibold text-white truncate mt-1">${tracks[currentTrackIndex]?.title || 'No music selected'}</div>
+          <div class="text-[11px] text-stone-400 truncate">${tracks[currentTrackIndex]?.artist || ''}</div>
+          <div class="text-[10px] text-stone-500 truncate mt-1">Ambient: ${ambientState}</div>
+        </div>
+        <div class="px-3 py-2 text-[10px] text-stone-500">▶ / ❚❚ Play or pause • Main music and Ambient are independent.</div>
         ${rows}`;
     }
 
@@ -1164,7 +1182,7 @@
           ambienceAudio.pause();
           ambiencePlaying = false;
           ambienceUserStopped = true;
-          renderPlaylistPanel();
+          refreshOpenPlaylistPanel();
           return;
         }
         selectAmbience(i);
@@ -1287,10 +1305,10 @@
       ambienceAudio.load();
       ambienceAudio.play().then(() => {
         ambiencePlaying = true;
-        renderPlaylistPanel();
+        refreshOpenPlaylistPanel();
       }).catch(() => {
         ambiencePlaying = false;
-        renderPlaylistPanel();
+        refreshOpenPlaylistPanel();
       });
     }
 
