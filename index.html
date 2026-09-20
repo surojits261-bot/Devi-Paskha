@@ -236,8 +236,12 @@
 
       <!-- Right utility button -->
       <div class="hidden sm:flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <button id="muteBtn" onclick="toggleMute()" class="text-stone-300 hover:text-amber-400 transition" aria-label="Mute">🔊</button>
+          <input id="volumeBar" type="range" min="0" max="100" value="80" class="w-20 h-1 accent-amber-400 cursor-pointer" oninput="setVolume(this.value)" aria-label="Volume" />
+        </div>
         <button onclick="toggleSongListModal()" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5">
-          <span>🎵</span> Playlist (<span id="playlistCount">15</span>)
+          <span>🎵</span> Playlist (<span id="playlistCount">16</span>)
         </button>
       </div>
 
@@ -332,23 +336,26 @@
       }
     ];
 
-    // 15 Curated Bengali Songs
+    // Music library
+    // Mahalaya is the default track. Add your licensed Mahishasura Mardini
+    // file at Music/Mahalaya/mahishasura-mardini.mp3 when ready.
     const tracks = [
-      { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "og", url: "Music/Mahalaya/mahishasura-mardini.mp3" },
       { id: 2, title: "Bajlo Tomar Alor Benu", artist: "Debolina Nandy", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-      { id: 3, title: "Aaji E Probhat Robir Kar", artist: "Saheli Chanda", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+      { id: 3, title: "Aaji E Probhat Robir Kar", artist: "Saheli Chanda", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
       { id: 4, title: "Aaj Jyotsna Raatey", artist: "Somlata Acharyya Chowdhury", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
-      { id: 5, title: "Ei Raat Tomar Amar", artist: "Hemanta Mukherjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
-      { id: 6, title: "Ei Path Jodi Na Shesh Hoy", artist: "Hemanta & Sandhya Mukherjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
-      { id: 7, title: "Aami Chini Go Chini", artist: "Chinmoy Chatterjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
-      { id: 8, title: "Hoyto Tomari Jonno", artist: "Manna Dey", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
-      { id: 9, title: "Ami Jamini Tumi Shashi", artist: "Manna Dey", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
-      { id: 10, title: "Kon Se Alor Swapna Niye", artist: "Asha Bhosle", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
-      { id: 11, title: "Ke Prothom Kachhe Esechhi", artist: "Manna Dey & Lata Mangeshkar", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3" },
-      { id: 12, title: "Aaj Mon Cheyechhe", artist: "Lata Mangeshkar", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" },
+      { id: 5, title: "Ei Raat Tomar Amar", artist: "Hemanta Mukherjee", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+      { id: 6, title: "Ei Path Jodi Na Shesh Hoy", artist: "Hemanta & Sandhya Mukherjee", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
+      { id: 7, title: "Aami Chini Go Chini", artist: "Chinmoy Chatterjee", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
+      { id: 8, title: "Hoyto Tomari Jonno", artist: "Manna Dey", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+      { id: 9, title: "Ami Jamini Tumi Shashi", artist: "Manna Dey", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+      { id: 10, title: "Kon Se Alor Swapna Niye", artist: "Asha Bhosle", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
+      { id: 11, title: "Ke Prothom Kachhe Esechhi", artist: "Manna Dey & Lata Mangeshkar", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3" },
+      { id: 12, title: "Aaj Mon Cheyechhe", artist: "Lata Mangeshkar", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" },
       { id: 13, title: "Mone Pore Ruby Roy", artist: "R.D. Burman", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" },
       { id: 14, title: "Koto Je Sagor Nodi", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3" },
-      { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" }
+      { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" },
+      { id: 16, title: "Durga Puja Dhak", artist: "Festival Ambience", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" }
     ];
 
     let currentTabIndex = 5; // Default to Mohadashami
@@ -356,6 +363,9 @@
     let currentTrackIndex = 0;
     let isPlaying = false;
     let audio = new Audio();
+    audio.preload = 'metadata';
+    audio.volume = 0.8;
+    let isMuted = false;
     let currentFilter = 'og';
     let isDay = false;
 
@@ -426,6 +436,8 @@
       
       setupAudioListeners();
       document.getElementById('playlistCount').innerText = tracks.length;
+      document.getElementById('volumeBar').value = audio.volume * 100;
+      updateMuteButton();
     });
 
     // Changes all Tithi backdrops on the same 5-minute clock boundary.
@@ -504,6 +516,16 @@
         }
       });
       audio.addEventListener('ended', () => nextTrack());
+      audio.addEventListener('play', () => {
+        isPlaying = true;
+        updatePlayButtons();
+        renderPlaylist();
+      });
+      audio.addEventListener('pause', () => {
+        isPlaying = false;
+        updatePlayButtons();
+        renderPlaylist();
+      });
     }
 
     function formatTime(s) {
@@ -543,6 +565,7 @@
       currentTrackIndex = index;
       const track = tracks[currentTrackIndex];
       audio.src = track.url;
+      audio.muted = isMuted;
       document.getElementById('playerTitle').innerText = track.title;
       document.getElementById('playerArtist').innerText = track.artist;
       if (autoPlay) {
@@ -568,6 +591,33 @@
     function nextTrack() { loadTrack((currentTrackIndex + 1) % tracks.length, true); }
     function prevTrack() { loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); }
     function seekAudio(val) { if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; }
+
+    function setVolume(val) {
+      const volume = Math.max(0, Math.min(100, Number(val))) / 100;
+      audio.volume = volume;
+      isMuted = volume === 0;
+      updateMuteButton();
+    }
+
+    function toggleMute() {
+      if (isMuted || audio.volume === 0) {
+        audio.muted = false;
+        audio.volume = 0.8;
+        isMuted = false;
+        const volumeBar = document.getElementById('volumeBar');
+        if (volumeBar) volumeBar.value = 80;
+      } else {
+        audio.muted = true;
+        isMuted = true;
+      }
+      updateMuteButton();
+    }
+
+    function updateMuteButton() {
+      const btn = document.getElementById('muteBtn');
+      if (!btn) return;
+      btn.innerText = isMuted || audio.muted || audio.volume === 0 ? '🔇' : '🔊';
+    }
 
     function filterCategory(cat) {
       currentFilter = cat;
