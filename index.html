@@ -711,9 +711,7 @@
       
       setupAudioListeners();
       setupAmbienceAutoStart();
-renderAmbienceOptions();
-      renderPlaylistDropdown();
-      ambienceAudio.volume = 0.5;
+ambienceAudio.volume = 0.5;
       ambienceAudio.preload = 'auto';
     });
 
@@ -825,6 +823,86 @@ renderAmbienceOptions();
     function formatTime(s) {
       const m = Math.floor(s / 60), sec = Math.floor(s % 60);
       return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    function loadTrack(index, autoPlay = true) {
+      if (!tracks[index]) return;
+
+      currentTrackIndex = index;
+      const track = tracks[currentTrackIndex];
+      audio.src = track.url;
+      audio.currentTime = 0;
+
+      document.getElementById('playerTitle').innerText = track.title;
+      document.getElementById('playerArtist').innerText = track.artist;
+      const typeEl = document.getElementById('playerType');
+      if (typeEl) typeEl.innerText = categoryLabel(track.category);
+
+      queueItems = tracks.filter(t => t.category === track.category);
+      queuePosition = Math.max(0, queueItems.findIndex(t => t.id === track.id));
+      currentPlaylistKey = track.category === 'classic' ? 'og' : track.category;
+      updatePlaylistFilters();
+
+      if (autoPlay) {
+        audio.play().then(() => {
+          isPlaying = true;
+          updatePlayButtons();
+          renderQueuePanel();
+        }).catch(() => {
+          isPlaying = false;
+          updatePlayButtons();
+        });
+      } else {
+        isPlaying = false;
+        updatePlayButtons();
+      }
+    }
+
+    function toggleMasterPlay() {
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        updatePlayButtons();
+        renderQueuePanel();
+        return;
+      }
+
+      audio.play().then(() => {
+        isPlaying = true;
+        updatePlayButtons();
+        renderQueuePanel();
+      }).catch(() => {
+        isPlaying = false;
+        updatePlayButtons();
+      });
+    }
+
+    function updatePlayButtons() {
+      const btn = document.getElementById('masterPlayBtn');
+      if (btn) btn.innerText = isPlaying ? '❚❚' : '▶';
+    }
+
+    function nextTrack() {
+      if (queueItems.length) {
+        loadQueueTrack(queuePosition + 1, true);
+      } else if (tracks.length) {
+        loadTrack((currentTrackIndex + 1) % tracks.length, true);
+      }
+    }
+
+    function prevTrack() {
+      if (queueItems.length) {
+        loadQueueTrack(queuePosition - 1, true);
+      } else if (tracks.length) {
+        loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true);
+      }
+    }
+
+    function seekAudio(val) {
+      const value = Number(val);
+      if (!Number.isNaN(value) && Number.isFinite(audio.duration)) {
+        audio.currentTime = (value / 100) * audio.duration;
+      }
     }
 
     function playlistName(key) {
@@ -944,20 +1022,31 @@ renderAmbienceOptions();
       const body = document.getElementById('playlistPanelBody');
       const subtitle = document.getElementById('playlistPanelSubtitle');
       if (!body) return;
-      subtitle.innerText = playlistName(key);
 
+      subtitle.innerText = playlistName(key);
       const list = getPlaylistTracks(key);
-      body.innerHTML =
-        `<div class="px-2 py-2"><button type="button" class="playlist-back" onclick="renderPlaylistPanel()">‹ All Playlists</button></div>` +
-        list.map((item, i) => `
-          <button type="button" class="music-panel-row ${item.kind === 'music' && item.id === tracks[currentTrackIndex]?.id ? 'active' : ''}" onclick="${item.kind === 'ambience' ? 'playAmbienceFromPlaylist(' + i + ')' : 'playPlaylistSong(\\'' + key + '\\',' + i + ')'}">
+
+      const rows = list.map((item, i) => {
+        const active = item.kind === 'music' && item.id === tracks[currentTrackIndex]?.id;
+        const action = item.kind === 'ambience'
+          ? `playAmbienceFromPlaylist(${i})`
+          : `playPlaylistSong('${key}', ${i})`;
+
+        return `
+          <button type="button" class="music-panel-row ${active ? 'active' : ''}" onclick="${action}">
             <span class="w-6 text-center text-xs opacity-50">${i + 1}</span>
             <span class="min-w-0 flex-1">
               <span class="block truncate font-medium">${item.title}</span>
               <span class="text-[11px] opacity-60 truncate block">${item.artist}</span>
             </span>
-            <span class="text-xs opacity-60">▶</span>
-          </button>`).join('');
+            <span class="text-xs opacity-60">${active ? '●' : '▶'}</span>
+          </button>`;
+      }).join('');
+
+      body.innerHTML =
+        `<div class="px-2 py-2">
+          <button type="button" class="playlist-back" onclick="renderPlaylistPanel()">‹ All Playlists</button>
+        </div>${rows}`;
     }
 
     function playPlaylistSong(key, i) {
@@ -1033,10 +1122,14 @@ renderAmbienceOptions();
     function filterPlaylist(key) {
       currentPlaylistKey = key;
       if (key === 'ambient') {
-        renderPlaylistPanel();
+        openMusicPanel('playlistPanel');
+        openPlaylistTracks('ambient');
+        updatePlaylistFilters();
         return;
       }
       setQueue(key);
+      openMusicPanel('playlistPanel');
+      openPlaylistTracks(key);
     }
 
     function toggleMusicPanel(id) {
@@ -1123,6 +1216,7 @@ renderAmbienceOptions();
           updateDhakButton();
         });
       };
+      start();
       document.addEventListener('pointerdown', start, { once: true });
       document.addEventListener('keydown', start, { once: true });
     }
@@ -1177,51 +1271,6 @@ renderAmbienceOptions();
       const d = tithiData[currentTabIndex];
       document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white ml-1">${days}d ${hours}h ${mins}m</strong>`;
     }
-
-    function selectAmbience(index) {
-      currentAmbienceIndex = index;
-      ambienceUserStopped = false;
-      ambienceAudio.src = ambienceTracks[index].url;
-      ambienceAudio.load();
-      ambienceAudio.play().then(() => {
-        ambiencePlaying = true;
-        renderAmbienceOptions();
-      }).catch(() => {
-        ambiencePlaying = false;
-        renderAmbienceOptions();
-      });
-    }
-
-    function toggleAmbience(event) {
-      if (event) event.stopPropagation();
-
-      if (!ambienceAudio.src) {
-        ambienceAudio.src = ambienceTracks[currentAmbienceIndex].url;
-        ambienceAudio.load();
-      }
-
-      if (ambiencePlaying) {
-        ambienceAudio.pause();
-        ambiencePlaying = false;
-        ambienceUserStopped = true;
-      } else {
-        ambienceUserStopped = false;
-        ambienceAudio.play().then(() => {
-          ambiencePlaying = true;
-          renderAmbienceOptions();
-        }).catch(() => {
-          ambiencePlaying = false;
-          renderAmbienceOptions();
-        });
-      }
-      renderAmbienceOptions();
-    }
-
-    function toggleSongListModal() {
-      const modal = document.getElementById('playlistModal');
-      modal.classList.toggle('hidden');
-    }
-
     function applyFestivalMode(mode) {
       festivalMode = mode;
 
