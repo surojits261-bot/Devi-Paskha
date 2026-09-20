@@ -1304,28 +1304,32 @@
     }
 
     function setupDhakAutoStart() {
-      const start = () => {
-        if (ambiencePlaying || ambienceUserStopped) return;
-        if (!ambienceAudio.src) {
-          ambienceAudio.src = ambienceTracks[0].url;
-          ambienceAudio.load();
+      const startDhak = () => {
+        if (dhakPlaying || dhakUserStopped) return;
+
+        if (!dhakAudio.src) {
+          dhakAudio.src = dhakTrack.url;
+          dhakAudio.load();
         }
-        ambienceAudio.play().then(() => {
-          ambiencePlaying = true;
+
+        dhakAudio.play().then(() => {
+          dhakPlaying = true;
           updateDhakButton();
         }).catch(() => {
+          // Browser autoplay can be blocked until the user interacts with the page.
           updateDhakButton();
         });
       };
-      start();
-      document.addEventListener('pointerdown', start, { once: true });
-      document.addEventListener('keydown', start, { once: true });
+
+      startDhak();
+      document.addEventListener('pointerdown', startDhak, { once: true });
+      document.addEventListener('keydown', startDhak, { once: true });
     }
 
-    ambienceAudio.addEventListener('ended', () => {
-      if (!ambienceUserStopped) {
-        ambienceAudio.currentTime = 0;
-        ambienceAudio.play().catch(() => {});
+    dhakAudio.addEventListener('ended', () => {
+      if (!dhakUserStopped) {
+        dhakAudio.currentTime = 0;
+        dhakAudio.play().catch(() => {});
       }
     });
 
