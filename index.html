@@ -933,6 +933,12 @@
     function updatePlayButtons() {
       const btn = document.getElementById('masterPlayBtn');
       if (btn) btn.innerText = isPlaying ? '❚❚' : '▶';
+      if (document.getElementById('playlistPanel') && !document.getElementById('playlistPanel').classList.contains('hidden')) {
+        renderPlaylistPanel();
+      }
+      if (document.getElementById('queuePanel') && !document.getElementById('queuePanel').classList.contains('hidden')) {
+        renderQueuePanel();
+      }
     }
 
     function nextTrack() {
@@ -1047,27 +1053,49 @@
       }).join('');
     }
 
+    function getCurrentMusicLabel() {
+      const track = tracks[currentTrackIndex];
+      const mainState = track
+        ? `${track.title} — ${track.artist}${isPlaying ? '' : ' (Paused)'}`
+        : 'No music selected';
+
+      const ambient = ambienceTracks[currentAmbienceIndex];
+      const ambientState = ambient
+        ? `${ambient.title}${ambiencePlaying ? '' : ' (Paused)'}`
+        : 'No ambient sound selected';
+
+      return { mainState, ambientState };
+    }
+
     function renderPlaylistPanel() {
       const body = document.getElementById('playlistPanelBody');
       const subtitle = document.getElementById('playlistPanelSubtitle');
       if (!body) return;
 
       const configs = ['ambient','devotional','og','adhunik'];
-      subtitle.innerText = `Selected: ${playlistName(currentPlaylistKey)}`;
+      const { mainState, ambientState } = getCurrentMusicLabel();
+      subtitle.innerText = `Now: ${mainState}`;
 
-      body.innerHTML = configs.map(key => {
-        const list = getPlaylistTracks(key);
-        const active = key === currentPlaylistKey;
-        return `
-          <button type="button" class="music-panel-row ${active ? 'active' : ''}" onclick="openPlaylistTracks('${key}')">
-            <span class="text-lg">${key === 'ambient' ? '🪷' : key === 'devotional' ? '🪔' : key === 'og' ? '🎵' : '🎶'}</span>
-            <span class="min-w-0">
-              <span class="block truncate font-medium">${playlistName(key)}</span>
-              <span class="text-[11px] opacity-60">${list.length} ${key === 'ambient' ? 'sounds' : 'songs'}</span>
-            </span>
-            <span class="music-panel-count">›</span>
-          </button>`;
-      }).join('');
+      body.innerHTML =
+        `<div class="px-3 pt-2 pb-3 border-b border-white/10">
+          <div class="text-[10px] uppercase tracking-wider font-mono text-amber-400">Current Music</div>
+          <div class="text-sm font-semibold text-white truncate mt-1">${tracks[currentTrackIndex]?.title || 'No music selected'}</div>
+          <div class="text-[11px] text-stone-400 truncate">${tracks[currentTrackIndex]?.artist || ''}</div>
+          <div class="mt-2 text-[10px] text-stone-500 truncate">Ambient: ${ambientState}</div>
+        </div>` +
+        configs.map(key => {
+          const list = getPlaylistTracks(key);
+          const active = key === currentPlaylistKey;
+          return `
+            <button type="button" class="music-panel-row ${active ? 'active' : ''}" onclick="openPlaylistTracks('${key}')">
+              <span class="text-lg">${key === 'ambient' ? '🪷' : key === 'devotional' ? '🪔' : key === 'og' ? '🎵' : '🎶'}</span>
+              <span class="min-w-0">
+                <span class="block truncate font-medium">${playlistName(key)}</span>
+                <span class="text-[11px] opacity-60">${list.length} ${key === 'ambient' ? 'sounds' : 'songs'}</span>
+              </span>
+              <span class="music-panel-count">›</span>
+            </button>`;
+        }).join('');
     }
 
     function openPlaylistTracks(key) {
@@ -1080,26 +1108,32 @@
       const list = getPlaylistTracks(key);
 
       const rows = list.map((item, i) => {
-        const active = item.kind === 'music' && item.id === tracks[currentTrackIndex]?.id;
-        const action = item.kind === 'ambience'
-          ? `playAmbienceFromPlaylist(${i})`
-          : `playPlaylistSong('${key}', ${i})`;
+        const activeMain = item.kind === 'music' && item.id === tracks[currentTrackIndex]?.id;
+        const activeAmbient = item.kind === 'ambience' && i === currentAmbienceIndex;
+        const active = activeMain || activeAmbient;
+        const playing = item.kind === 'ambience' ? (activeAmbient && ambiencePlaying) : (activeMain && isPlaying);
+        const action = `togglePlaylistItem('${key}', ${i})`;
 
         return `
-          <button type="button" class="music-panel-row ${active ? 'active' : ''}" onclick="${action}">
-            <span class="w-6 text-center text-xs opacity-50">${i + 1}</span>
-            <span class="min-w-0 flex-1">
+          <div class="music-panel-row ${active ? 'active' : ''}">
+            <button type="button" class="w-6 h-6 rounded-full flex items-center justify-center text-amber-300 hover:text-amber-200 hover:bg-white/10 transition flex-shrink-0"
+              onclick="${action}" aria-label="${playing ? 'Pause' : 'Play'} ${item.title}">
+              ${playing ? '❚❚' : '▶'}
+            </button>
+            <button type="button" class="min-w-0 flex-1 text-left" onclick="${action}">
               <span class="block truncate font-medium">${item.title}</span>
               <span class="text-[11px] opacity-60 truncate block">${item.artist}</span>
-            </span>
-            <span class="text-xs opacity-60">${active ? '●' : '▶'}</span>
-          </button>`;
+            </button>
+            <span class="text-[10px] opacity-55 uppercase tracking-wider">${playing ? 'Playing' : active ? 'Selected' : ''}</span>
+          </div>`;
       }).join('');
 
       body.innerHTML =
         `<div class="px-2 py-2">
           <button type="button" class="playlist-back" onclick="renderPlaylistPanel()">‹ All Playlists</button>
-        </div>${rows}`;
+        </div>
+        <div class="px-3 pb-2 text-[10px] text-stone-500">Tap ▶ / ❚❚ to play or pause.</div>
+        ${rows}`;
     }
 
     function playPlaylistSong(key, i) {
@@ -1117,6 +1151,37 @@
 
     function playAmbienceFromPlaylist(i) {
       selectAmbience(i);
+    }
+
+    function togglePlaylistItem(key, i) {
+      const list = getPlaylistTracks(key);
+
+      if (!list[i]) return;
+
+      if (list[i].kind === 'ambience') {
+        const sameTrack = i === currentAmbienceIndex && ambienceAudio.src && ambienceAudio.src.includes(encodeURIComponent(list[i].url).split('%2F').pop());
+        if (sameTrack && ambiencePlaying) {
+          ambienceAudio.pause();
+          ambiencePlaying = false;
+          ambienceUserStopped = true;
+          renderPlaylistPanel();
+          return;
+        }
+        selectAmbience(i);
+        return;
+      }
+
+      const idx = tracks.findIndex(t => t.id === list[i].id);
+      if (idx < 0) return;
+
+      if (idx === currentTrackIndex && isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        updatePlayButtons();
+        return;
+      }
+
+      loadQueueTrack(i, true);
     }
 
     function renderQueuePanel() {
