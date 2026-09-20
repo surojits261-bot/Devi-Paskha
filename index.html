@@ -536,14 +536,35 @@
     }
 
     function setupAudioListeners() {
-      audio.addEventListener('timeupdate', () => {
-        if (!isNaN(audio.duration)) {
-          document.getElementById('seekBar').value = (audio.currentTime / audio.duration) * 100 || 0;
-          document.getElementById('currentTime').innerText = formatTime(audio.currentTime);
-          document.getElementById('durationTime').innerText = formatTime(audio.duration);
+      const updateProgress = () => {
+        if (!Number.isFinite(audio.duration) || audio.duration <= 0) {
+          document.getElementById('seekBar').value = 0;
+          document.getElementById('currentTime').innerText = '0:00';
+          document.getElementById('durationTime').innerText = '0:00';
+          return;
         }
+        document.getElementById('seekBar').value = (audio.currentTime / audio.duration) * 100 || 0;
+        document.getElementById('currentTime').innerText = formatTime(audio.currentTime);
+        document.getElementById('durationTime').innerText = formatTime(audio.duration);
+      };
+
+      audio.addEventListener('timeupdate', updateProgress);
+      audio.addEventListener('loadedmetadata', updateProgress);
+      audio.addEventListener('play', () => {
+        isPlaying = true;
+        updatePlayButtons();
+      });
+      audio.addEventListener('pause', () => {
+        isPlaying = false;
+        updatePlayButtons();
       });
       audio.addEventListener('ended', () => nextTrack());
+      audio.addEventListener('error', () => {
+        isPlaying = false;
+        updatePlayButtons();
+        document.getElementById('durationTime').innerText = 'Error';
+        console.warn('Unable to load track:', tracks[currentTrackIndex]?.url);
+      });
     }
 
     function formatTime(s) {
@@ -583,23 +604,50 @@
     }
 
     function loadTrack(index, autoPlay = true) {
+      if (!tracks[index]) return;
+
       currentTrackIndex = index;
       const track = tracks[currentTrackIndex];
+
+      audio.pause();
+      isPlaying = false;
       audio.src = track.url;
+      audio.currentTime = 0;
+
       document.getElementById('playerTitle').innerText = track.title;
       document.getElementById('playerArtist').innerText = track.artist;
+      document.getElementById('currentTime').innerText = '0:00';
+      document.getElementById('durationTime').innerText = '0:00';
+      document.getElementById('seekBar').value = 0;
+
+      currentFilter = track.category;
+      updatePlayButtons();
+
       if (autoPlay) {
-        audio.play().then(() => { isPlaying = true; updatePlayButtons(); }).catch(() => { isPlaying = false; updatePlayButtons(); });
-      } else {
-        isPlaying = false;
-        updatePlayButtons();
+        const playPromise = audio.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.catch(() => {
+            isPlaying = false;
+            updatePlayButtons();
+          });
+        }
       }
+
       renderAmbientPicker();
     }
 
     function toggleMasterPlay() {
-      if (isPlaying) { audio.pause(); isPlaying = false; }
-      else { audio.play().catch(e => console.log(e)); isPlaying = true; }
+      if (audio.paused || audio.ended) {
+        const playPromise = audio.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.catch(() => {
+            isPlaying = false;
+            updatePlayButtons();
+          });
+        }
+      } else {
+        audio.pause();
+      }
       updatePlayButtons();
       renderAmbientPicker();
     }
@@ -609,8 +657,32 @@
       renderAmbientPicker();
     }
 
-    function nextTrack() { loadTrack((currentTrackIndex + 1) % tracks.length, true); }
-    function prevTrack() { loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); }
+    function getCurrentPlaybackList() {
+      if (currentFilter === 'ambient') return tracks.filter(t => t.category === 'ambient');
+      if (currentFilter === 'og') return tracks.filter(t => t.category === 'og' || t.category === 'classic');
+      if (currentFilter === 'devotional' || currentFilter === 'adhunik') return tracks.filter(t => t.category === currentFilter);
+      return tracks;
+    }
+
+    function nextTrack() {
+      const list = getCurrentPlaybackList();
+      if (!list.length) return;
+      const position = list.findIndex(t => t.id === tracks[currentTrackIndex]?.id);
+      const nextPosition = position < 0 ? 0 : (position + 1) % list.length;
+      const next = list[nextPosition];
+      const index = tracks.findIndex(t => t.id === next.id);
+      if (index >= 0) loadTrack(index, true);
+    }
+
+    function prevTrack() {
+      const list = getCurrentPlaybackList();
+      if (!list.length) return;
+      const position = list.findIndex(t => t.id === tracks[currentTrackIndex]?.id);
+      const prevPosition = position < 0 ? list.length - 1 : (position - 1 + list.length) % list.length;
+      const prev = list[prevPosition];
+      const index = tracks.findIndex(t => t.id === prev.id);
+      if (index >= 0) loadTrack(index, true);
+    }
     function seekAudio(val) { if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; }
 
     function filterCategory(cat) {
@@ -623,6 +695,7 @@
       });
 
       if (cat === 'ambient') {
+        currentFilter = 'ambient';
         openAmbientPicker();
         return;
       }
