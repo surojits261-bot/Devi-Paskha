@@ -608,7 +608,11 @@
       { id: 12, title: "Aaj Mon Cheyechhe", artist: "Lata Mangeshkar", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" },
       { id: 13, title: "Mone Pore Ruby Roy", artist: "R.D. Burman", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" },
       { id: 14, title: "Koto Je Sagor Nodi", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3" },
-      { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" }
+      { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" },
+      { id: 16, title: "Durga Puja Ambient", artist: "Ambient Soundscape", category: "ambient", url: "Music/Ambience/Ambiant durga music.mp3" },
+      { id: 17, title: "Divine Puja Atmosphere", artist: "Puja Atmosphere", category: "ambient", url: "Music/Ambience/Ambiant durga music-2.mp3" },
+      { id: 18, title: "Puja Temple Ambience", artist: "Temple Ambience", category: "ambient", url: "Music/Ambience/Ambiant durga sound.mp3" },
+      { id: 19, title: "Sacred Conch", artist: "Sacred Sound", category: "ambient", url: "Music/Ambience/conch-sound-three-sacred Music.mp3" }
     ];
 
     let currentTabIndex = 5; // Default to Mohadashami
@@ -619,14 +623,8 @@
     let currentFilter = 'og';
     let festivalMode = 'day';
     const FESTIVAL_MODES = ['day', 'sandhya', 'night'];
-    // Independent audio channels:
-    // 1) Main music player
-    // 2) Ambient Music playlist
-    // 3) Dedicated Dhak Baja control
-    let ambienceAudio = new Audio();
-    let ambiencePlaying = false;
-    let currentAmbienceIndex = 0;
-    let ambienceUserStopped = false;
+    // One master music player controls Main Music + Ambient Music.
+    // Dhak Baja remains an independent ambience channel.
     let playlistPanelView = null;
 
     let dhakAudio = new Audio();
@@ -640,35 +638,7 @@
       url: 'Music/Ambience/durga-puja-dhak-main.mp3'
     };
 
-    // Ambient Music playlist.
-    // These four files are currently uploaded to Music/Ambience/.
-    // Dhak Baja remains separate and is NOT part of this playlist.
-    const ambienceTracks = [
-      {
-        id: 'durga-puja-ambient',
-        title: 'Durga Puja Ambient',
-        artist: 'Ambient Soundscape',
-        url: 'Music/Ambience/Ambiant durga music.mp3'
-      },
-      {
-        id: 'divine-puja-atmosphere',
-        title: 'Divine Puja Atmosphere',
-        artist: 'Puja Atmosphere',
-        url: 'Music/Ambience/Ambiant durga music-2.mp3'
-      },
-      {
-        id: 'puja-temple-ambience',
-        title: 'Puja Temple Ambience',
-        artist: 'Temple Ambience',
-        url: 'Music/Ambience/Ambiant durga sound.mp3'
-      },
-      {
-        id: 'sacred-conch',
-        title: 'Sacred Conch',
-        artist: 'Sacred Sound',
-        url: 'Music/Ambience/conch-sound-three-sacred Music.mp3'
-      }
-    ];
+    // Ambient Music tracks are part of the master music player above.
 
     // All Tithi backdrops share the same real-time 5-minute rotation slot.
     // This keeps image changes synchronized even when the user switches tabs.
@@ -748,8 +718,8 @@
       
       setupAudioListeners();
       setupDhakAutoStart();
-      ambienceAudio.volume = 0.5;
-      ambienceAudio.preload = 'auto';
+      audio.volume = 0.8;
+      audio.preload = 'auto';
       dhakAudio.volume = 0.5;
       dhakAudio.preload = 'auto';
     });
@@ -821,11 +791,6 @@
       }, delay);
     }
 
-    function setupAmbientAutoStart() {
-      // Ambient Music does not auto-start. It is user-selected from the playlist.
-      ambienceUserStopped = false;
-    }
-
     function setupDhakAutoStart() {
       const startDhak = () => {
         if (dhakPlaying || dhakUserStopped) return;
@@ -849,13 +814,6 @@
       document.addEventListener('keydown', startDhak, { once: true });
     }
 
-    ambienceAudio.addEventListener('ended', () => {
-      if (!ambienceUserStopped) {
-        ambienceAudio.currentTime = 0;
-        ambienceAudio.play().catch(() => {});
-      }
-    });
-
     dhakAudio.addEventListener('ended', () => {
       if (!dhakUserStopped) {
         dhakAudio.currentTime = 0;
@@ -864,14 +822,25 @@
     });
 
     function setupAudioListeners() {
-      audio.addEventListener('timeupdate', () => {
+      const updateMasterPlayerProgress = () => {
         if (!isNaN(audio.duration)) {
           document.getElementById('seekBar').value = (audio.currentTime / audio.duration) * 100 || 0;
           document.getElementById('currentTime').innerText = formatTime(audio.currentTime);
           document.getElementById('durationTime').innerText = formatTime(audio.duration);
         }
-      });
+      };
+
+      audio.addEventListener('timeupdate', updateMasterPlayerProgress);
+      audio.addEventListener('loadedmetadata', updateMasterPlayerProgress);
       audio.addEventListener('ended', () => nextTrack());
+      audio.addEventListener('play', () => {
+        isPlaying = true;
+        updatePlayButtons();
+      });
+      audio.addEventListener('pause', () => {
+        isPlaying = false;
+        updatePlayButtons();
+      });
     }
 
     function formatTime(s) {
@@ -983,11 +952,8 @@
     }
 
     function getPlaylistTracks(key) {
-      if (key === 'ambient') {
-        return ambienceTracks.map((t, i) => ({ ...t, kind: 'ambience', sourceIndex: i }));
-      }
       return tracks
-        .filter(t => key === 'og' ? t.category === 'og' : t.category === key)
+        .filter(t => key === 'og' ? (t.category === 'og' || t.category === 'classic') : t.category === key)
         .map(t => ({ ...t, kind: 'music' }));
     }
 
@@ -1018,7 +984,7 @@
           isPlaying = true;
           updatePlayButtons();
           renderQueuePanel();
-          renderPlaylistPanel();
+          refreshOpenPlaylistPanel();
           renderPlaylist();
         }).catch(() => {
           isPlaying = false;
@@ -1068,12 +1034,7 @@
         ? `${track.title} — ${track.artist}${isPlaying ? '' : ' (Paused)'}`
         : 'No music selected';
 
-      const ambient = ambienceTracks[currentAmbienceIndex];
-      const ambientState = ambient
-        ? `${ambient.title}${ambiencePlaying ? '' : ' (Paused)'}`
-        : 'No ambient sound selected';
-
-      return { mainState, ambientState };
+      return { mainState };
     }
 
     function renderPlaylistPanel() {
@@ -1083,7 +1044,7 @@
       if (!body) return;
 
       const configs = ['ambient','devotional','og','adhunik'];
-      const { mainState, ambientState } = getCurrentMusicLabel();
+      const { mainState } = getCurrentMusicLabel();
       subtitle.innerText = `Now: ${mainState}`;
 
       body.innerHTML =
@@ -1091,7 +1052,7 @@
           <div class="text-[10px] uppercase tracking-wider font-mono text-amber-400">Current Music</div>
           <div class="text-sm font-semibold text-white truncate mt-1">${tracks[currentTrackIndex]?.title || 'No music selected'}</div>
           <div class="text-[11px] text-stone-400 truncate">${tracks[currentTrackIndex]?.artist || ''}</div>
-          <div class="mt-2 text-[10px] text-stone-500 truncate">Ambient: ${ambientState}</div>
+          <div class="mt-2 text-[10px] text-stone-500 truncate">${tracks[currentTrackIndex] ? playlistName(tracks[currentTrackIndex].category) : 'No playlist selected'}</div>
         </div>` +
         configs.map(key => {
           const list = getPlaylistTracks(key);
@@ -1117,13 +1078,10 @@
 
       subtitle.innerText = playlistName(key);
       const list = getPlaylistTracks(key);
-      const { mainState, ambientState } = getCurrentMusicLabel();
 
       const rows = list.map((item, i) => {
-        const activeMain = item.kind === 'music' && item.id === tracks[currentTrackIndex]?.id;
-        const activeAmbient = item.kind === 'ambience' && i === currentAmbienceIndex;
-        const active = activeMain || activeAmbient;
-        const playing = item.kind === 'ambience' ? (activeAmbient && ambiencePlaying) : (activeMain && isPlaying);
+        const active = item.id === tracks[currentTrackIndex]?.id;
+        const playing = active && isPlaying;
         const action = `togglePlaylistItem('${key}', ${i})`;
 
         return `
@@ -1148,49 +1106,44 @@
           <div class="text-[10px] uppercase tracking-wider font-mono text-amber-400">Current Music</div>
           <div class="text-sm font-semibold text-white truncate mt-1">${tracks[currentTrackIndex]?.title || 'No music selected'}</div>
           <div class="text-[11px] text-stone-400 truncate">${tracks[currentTrackIndex]?.artist || ''}</div>
-          <div class="text-[10px] text-stone-500 truncate mt-1">Ambient: ${ambientState}</div>
+          <div class="text-[10px] text-stone-500 truncate mt-1">${tracks[currentTrackIndex] ? playlistName(tracks[currentTrackIndex].category) : 'No playlist selected'}${isPlaying ? ' • Playing' : ' • Paused'}</div>
         </div>
-        <div class="px-3 py-2 text-[10px] text-stone-500">▶ / ❚❚ Play or pause • Main music and Ambient are independent.</div>
+        <div class="px-3 py-2 text-[10px] text-stone-500">▶ / ❚❚ Play or pause • Bottom player controls the selected music.</div>
         ${rows}`;
     }
 
     function playPlaylistSong(key, i) {
-      const list = getPlaylistTracks(key).filter(item => item.kind === 'music');
+      const list = getPlaylistTracks(key);
       queueItems = list;
       queuePosition = i;
       currentPlaylistKey = key;
+      playlistPanelView = key;
+
       if (list[i]) {
         const idx = tracks.findIndex(t => t.id === list[i].id);
         if (idx >= 0) loadQueueTrack(i, true);
       }
-      renderPlaylistPanel();
+
       openMusicPanel('playlistPanel');
+      openPlaylistTracks(key);
     }
 
     function playAmbienceFromPlaylist(i) {
-      selectAmbience(i);
+      playPlaylistSong('ambient', i);
     }
 
     function togglePlaylistItem(key, i) {
       const list = getPlaylistTracks(key);
+      const item = list[i];
+      if (!item) return;
 
-      if (!list[i]) return;
-
-      if (list[i].kind === 'ambience') {
-        const sameTrack = i === currentAmbienceIndex && Boolean(ambienceAudio.src);
-        if (sameTrack && ambiencePlaying) {
-          ambienceAudio.pause();
-          ambiencePlaying = false;
-          ambienceUserStopped = true;
-          refreshOpenPlaylistPanel();
-          return;
-        }
-        selectAmbience(i);
-        return;
-      }
-
-      const idx = tracks.findIndex(t => t.id === list[i].id);
+      const idx = tracks.findIndex(t => t.id === item.id);
       if (idx < 0) return;
+
+      currentPlaylistKey = key;
+      playlistPanelView = key;
+      queueItems = list;
+      queuePosition = i;
 
       if (idx === currentTrackIndex && isPlaying) {
         audio.pause();
@@ -1199,7 +1152,8 @@
         return;
       }
 
-      loadQueueTrack(i, true);
+      loadTrack(idx, true);
+      openPlaylistTracks(key);
     }
 
     function renderQueuePanel() {
@@ -1249,7 +1203,14 @@
           ? 'cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition shadow flex items-center gap-1.5'
           : 'cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5';
       });
-      renderPlaylistPanel();
+
+      const panel = document.getElementById('playlistPanel');
+      if (panel && !panel.classList.contains('hidden') && playlistPanelView) {
+        openPlaylistTracks(playlistPanelView);
+      } else {
+        renderPlaylistPanel();
+      }
+
       renderQueuePanel();
       if (typeof renderPlaylist === 'function') renderPlaylist();
     }
@@ -1297,19 +1258,17 @@
     }
 
     function selectAmbience(index) {
-      if (!ambienceTracks[index]) return;
+      const list = getPlaylistTracks('ambient');
+      const item = list[index];
+      if (!item) return;
 
-      currentAmbienceIndex = index;
-      ambienceUserStopped = false;
-      ambienceAudio.src = ambienceTracks[index].url;
-      ambienceAudio.load();
-      ambienceAudio.play().then(() => {
-        ambiencePlaying = true;
-        refreshOpenPlaylistPanel();
-      }).catch(() => {
-        ambiencePlaying = false;
-        refreshOpenPlaylistPanel();
-      });
+      const idx = tracks.findIndex(t => t.id === item.id);
+      if (idx < 0) return;
+
+      loadTrack(idx, true);
+      currentPlaylistKey = 'ambient';
+      playlistPanelView = 'ambient';
+      openPlaylistTracks('ambient');
     }
 
     function toggleDhak() {
