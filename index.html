@@ -76,6 +76,12 @@
       filter: blur(3px);
     }
 
+    /* Faster transition for manual Tithi/tab changes; automatic rotation
+       keeps the slower cinematic transition above. */
+    .backdrop-image.fast-transition {
+      transition-duration: 650ms, 1100ms, 650ms;
+    }
+
     /* Day Mode UI Styling */
     body.day-mode {
       background-color: #FAF7F2;
@@ -372,8 +378,41 @@
       return { src: images[index], index, slot };
     }
 
+    // Preload the image currently needed for every Tithi so tab changes do not
+    // wait for a network request. Remaining images are warmed up during idle time.
+    function preloadBackgroundImages() {
+      const slot = getGlobalImageSlot();
+      const urls = new Set();
+
+      tithiData.forEach(d => {
+        const images = d.bgImages || [];
+        if (!images.length) return;
+        urls.add(images[slot % images.length]);
+      });
+
+      const preload = url => {
+        if (!url) return;
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = url;
+      };
+
+      urls.forEach(preload);
+
+      const warmRemaining = () => {
+        tithiData.forEach(d => (d.bgImages || []).forEach(preload));
+      };
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(warmRemaining, { timeout: 2500 });
+      } else {
+        setTimeout(warmRemaining, 1200);
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       renderPlaylist();
+      preloadBackgroundImages();
       loadTrack(0, false);
       switchTab(5); // Load Dashami by default
       updateCountdown();
@@ -396,7 +435,7 @@
       syncBackdropToGlobalCycle();
     }
 
-    function setBackdropImage(imgSrc, immediate = false) {
+    function setBackdropImage(imgSrc, immediate = false, fast = false) {
       if (!imgSrc) return;
 
       const layers = [
@@ -414,6 +453,7 @@
       incoming.style.setProperty('--backdrop-opacity', opacity);
       incoming.style.backgroundImage = `url("${imgSrc}")`;
 
+      layers.forEach(layer => layer.classList.toggle('fast-transition', fast));
       incoming.classList.remove('active', 'leaving');
       outgoing.classList.remove('active');
 
@@ -426,6 +466,12 @@
 
       activeBackdropLayer = incomingIndex;
       lastRenderedBackdrop = imgSrc;
+
+      if (fast) {
+        setTimeout(() => {
+          layers.forEach(layer => layer.classList.remove('fast-transition'));
+        }, 750);
+      }
     }
 
     function syncBackdropToGlobalCycle(force = false) {
@@ -558,8 +604,8 @@
       document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
       document.getElementById('tithiFact').innerText = d.fact;
 
-      // Show the image corresponding to the shared global 5-minute slot.
-      setBackdropImage(d.bgImages[currentImageIndex]);
+      // Manual tab changes use a faster fade so navigation feels immediate.
+      setBackdropImage(d.bgImages[currentImageIndex], false, true);
       updateCountdown();
     }
 
