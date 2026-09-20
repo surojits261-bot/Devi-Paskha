@@ -82,6 +82,42 @@
       transition-duration: 650ms, 1100ms, 650ms;
     }
 
+
+    /* Compact music dropdowns */
+    .music-dropdown-wrap { position: relative; display: inline-flex; }
+    .music-dropdown {
+      position: absolute;
+      top: calc(100% + 0.55rem);
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(330px, 90vw);
+      max-height: 360px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      border-radius: 1rem;
+      background: rgba(12,10,10,0.88);
+      border: 1px solid rgba(212,175,55,0.28);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      z-index: 70;
+    }
+    .music-dropdown.hidden { display: none; }
+    .music-option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.65rem 0.7rem;
+      border-radius: 0.7rem;
+      text-align: left;
+      color: #e7e5e4;
+      transition: background .2s ease, color .2s ease;
+    }
+    .music-option:hover { background: rgba(255,255,255,0.07); color: #fcd34d; }
+    .music-option.active { background: rgba(245,158,11,0.14); color: #fcd34d; }
+
     /* Day Mode UI Styling */
     body.day-mode {
       background-color: #FAF7F2;
@@ -182,7 +218,26 @@
       <div class="flex items-center justify-center gap-2 flex-wrap mb-8">
         <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow" data-category="og">Pandal OG Classic Hits</button>
         <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow" data-category="adhunik">Adhunik Pujo Mix</button>
-        <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow" data-category="ambience">Ambience</button>
+
+        <div class="music-dropdown-wrap">
+          <button onclick="toggleMusicDropdown('ambienceDropdown')" class="px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5">
+            🔊 Ambience <span class="text-[10px]">▾</span>
+          </button>
+          <div id="ambienceDropdown" class="music-dropdown hidden text-left">
+            <div class="px-2.5 py-2 text-[10px] uppercase tracking-wider font-bold text-amber-400 font-mono">Ambient Sound</div>
+            <div id="ambienceOptions"></div>
+          </div>
+        </div>
+
+        <div class="music-dropdown-wrap">
+          <button onclick="toggleMusicDropdown('playlistDropdown')" class="px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5">
+            🎵 Playlist <span class="text-[10px]">▾</span>
+          </button>
+          <div id="playlistDropdown" class="music-dropdown hidden text-left">
+            <div class="px-2.5 py-2 text-[10px] uppercase tracking-wider font-bold text-amber-400 font-mono">Puja Playlist</div>
+            <div id="playlistDropdownContent"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Did You Know / Fact Card -->
@@ -234,12 +289,8 @@
         </div>
       </div>
 
-      <!-- Right utility button -->
-      <div class="hidden sm:flex items-center gap-3">
-        <button onclick="toggleSongListModal()" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5">
-          <span>🎵</span> Playlist (<span id="playlistCount">15</span>)
-        </button>
-      </div>
+      <!-- Keep the original bottom player visually clean; playlist is now in the music controls above. -->
+      <div class="hidden sm:flex items-center gap-3 min-w-[80px]"></div>
 
     </div>
   </footer>
@@ -358,6 +409,19 @@
     let audio = new Audio();
     let currentFilter = 'og';
     let isDay = false;
+    let ambienceAudio = new Audio();
+    let ambiencePlaying = false;
+    let currentAmbienceIndex = 0;
+    let ambienceUserStopped = false;
+
+    const ambienceTracks = [
+      {
+        id: 'dhak-main',
+        title: 'Durga Puja Dhak',
+        artist: 'Traditional Dhak',
+        url: 'Music/Ambience/durga-puja-dhak-main.mp3'
+      }
+    ];
 
     // All Tithi backdrops share the same real-time 5-minute rotation slot.
     // This keeps image changes synchronized even when the user switches tabs.
@@ -425,7 +489,12 @@
       scheduleNextBackgroundChange();
       
       setupAudioListeners();
+      setupAmbienceAutoStart();
       document.getElementById('playlistCount').innerText = tracks.length;
+      renderAmbienceOptions();
+      renderPlaylistDropdown();
+      ambienceAudio.volume = 0.5;
+      ambienceAudio.preload = 'auto';
     });
 
     // Changes all Tithi backdrops on the same 5-minute clock boundary.
@@ -494,6 +563,33 @@
         scheduleNextBackgroundChange();
       }, delay);
     }
+
+    function setupAmbienceAutoStart() {
+      const startAmbience = () => {
+        if (ambiencePlaying || ambienceUserStopped) return;
+        if (!ambienceAudio.src) {
+          ambienceAudio.src = ambienceTracks[0].url;
+          ambienceAudio.load();
+        }
+        ambienceAudio.play().then(() => {
+          ambiencePlaying = true;
+          renderAmbienceOptions();
+        }).catch(() => {
+          ambiencePlaying = false;
+          renderAmbienceOptions();
+        });
+      };
+
+      document.addEventListener('pointerdown', startAmbience, { once: true });
+      document.addEventListener('keydown', startAmbience, { once: true });
+    }
+
+    ambienceAudio.addEventListener('ended', () => {
+      if (!ambienceUserStopped) {
+        ambienceAudio.currentTime = 0;
+        ambienceAudio.play().catch(() => {});
+      }
+    });
 
     function setupAudioListeners() {
       audio.addEventListener('timeupdate', () => {
@@ -619,6 +715,107 @@
       const d = tithiData[currentTabIndex];
       document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white ml-1">${days}d ${hours}h ${mins}m</strong>`;
     }
+
+    function renderAmbienceOptions() {
+      const container = document.getElementById('ambienceOptions');
+      if (!container) return;
+
+      container.innerHTML = ambienceTracks.map((track, index) => {
+        const active = index === currentAmbienceIndex;
+        const playing = active && ambiencePlaying;
+        return `
+          <div class="music-option ${active ? 'active' : ''}">
+            <button type="button" class="flex-1 min-w-0" onclick="selectAmbience(${index})">
+              <div class="font-medium truncate">${active ? '✓ ' : ''}${track.title}</div>
+              <div class="text-[11px] opacity-70 truncate">${track.artist}</div>
+            </button>
+            <button type="button" class="shrink-0 px-2 py-1 rounded-lg hover:bg-white/10" onclick="toggleAmbience(event)">
+              ${playing ? '❚❚' : '▶'}
+            </button>
+          </div>`;
+      }).join('');
+    }
+
+    function renderPlaylistDropdown() {
+      const container = document.getElementById('playlistDropdownContent');
+      if (!container) return;
+
+      const ogTracks = tracks.filter(t => t.category === 'og' || t.category === 'classic');
+      const adhunikTracks = tracks.filter(t => t.category === 'adhunik');
+
+      const section = (title, items) => `
+        <div class="px-2.5 pt-2 pb-1 text-[10px] uppercase tracking-wider text-amber-300/80 font-mono">${title} · ${items.length}</div>
+        ${items.map(t => `
+          <button type="button" class="music-option" onclick="loadTrackById(${t.id}); closeMusicDropdowns();">
+            <span class="truncate">${t.id}. ${t.title}</span>
+            <span class="text-[10px] opacity-60 shrink-0">▶</span>
+          </button>`).join('')}`;
+
+      container.innerHTML =
+        section('Pandal OG Classic Hits', ogTracks) +
+        section('Adhunik Pujo Mix', adhunikTracks);
+    }
+
+    function loadTrackById(id) {
+      const index = tracks.findIndex(t => t.id === id);
+      if (index >= 0) loadTrack(index, true);
+    }
+
+    function selectAmbience(index) {
+      currentAmbienceIndex = index;
+      ambienceUserStopped = false;
+      ambienceAudio.src = ambienceTracks[index].url;
+      ambienceAudio.load();
+      ambienceAudio.play().then(() => {
+        ambiencePlaying = true;
+        renderAmbienceOptions();
+      }).catch(() => {
+        ambiencePlaying = false;
+        renderAmbienceOptions();
+      });
+    }
+
+    function toggleAmbience(event) {
+      if (event) event.stopPropagation();
+
+      if (!ambienceAudio.src) {
+        ambienceAudio.src = ambienceTracks[currentAmbienceIndex].url;
+        ambienceAudio.load();
+      }
+
+      if (ambiencePlaying) {
+        ambienceAudio.pause();
+        ambiencePlaying = false;
+        ambienceUserStopped = true;
+      } else {
+        ambienceUserStopped = false;
+        ambienceAudio.play().then(() => {
+          ambiencePlaying = true;
+          renderAmbienceOptions();
+        }).catch(() => {
+          ambiencePlaying = false;
+          renderAmbienceOptions();
+        });
+      }
+      renderAmbienceOptions();
+    }
+
+    function toggleMusicDropdown(id) {
+      document.querySelectorAll('.music-dropdown').forEach(menu => {
+        if (menu.id !== id) menu.classList.add('hidden');
+      });
+      document.getElementById(id)?.classList.toggle('hidden');
+      if (id === 'ambienceDropdown') renderAmbienceOptions();
+      if (id === 'playlistDropdown') renderPlaylistDropdown();
+    }
+
+    function closeMusicDropdowns() {
+      document.querySelectorAll('.music-dropdown').forEach(menu => menu.classList.add('hidden'));
+    }
+
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.music-dropdown-wrap')) closeMusicDropdowns();
+    });
 
     function toggleSongListModal() {
       const modal = document.getElementById('playlistModal');
