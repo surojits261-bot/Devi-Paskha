@@ -53,7 +53,27 @@
     }
     
     .backdrop-image {
-      transition: opacity 1000ms ease-in-out, transform 1200ms ease-out;
+      --backdrop-opacity: 0.7;
+      opacity: 0;
+      transform: scale(1.02);
+      filter: blur(3px);
+      transition:
+        opacity 1800ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 5000ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 1800ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform, filter;
+    }
+
+    .backdrop-image.active {
+      opacity: var(--backdrop-opacity);
+      transform: scale(1.05);
+      filter: blur(0);
+    }
+
+    .backdrop-image.leaving {
+      opacity: 0;
+      transform: scale(1.02);
+      filter: blur(3px);
     }
 
     /* Day Mode UI Styling */
@@ -78,7 +98,8 @@
 
   <!-- Dynamic Image Backdrop Layer -->
   <div class="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
-    <div id="photoBackdrop" class="backdrop-image absolute inset-0 bg-cover bg-center opacity-65 scale-100"></div>
+    <div id="photoBackdropA" class="backdrop-image absolute inset-0 bg-cover bg-center"></div>
+    <div id="photoBackdropB" class="backdrop-image absolute inset-0 bg-cover bg-center"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-[#09080F] via-transparent to-black/60 opacity-80"></div>
   </div>
 
@@ -325,12 +346,31 @@
     ];
 
     let currentTabIndex = 5; // Default to Mohadashami
-    let currentImageIndex = 0; // Tracks which image is showing for the active tab
+    let currentImageIndex = 0; // Image index for the active tab's synchronized global slot
     let currentTrackIndex = 0;
     let isPlaying = false;
     let audio = new Audio();
     let currentFilter = 'og';
     let isDay = false;
+
+    // All Tithi backdrops share the same real-time 5-minute rotation slot.
+    // This keeps image changes synchronized even when the user switches tabs.
+    const IMAGE_ROTATION_MS = 5 * 60 * 1000;
+    let activeBackdropLayer = 0;
+    let lastRenderedBackdrop = '';
+
+    function getGlobalImageSlot() {
+      return Math.floor(Date.now() / IMAGE_ROTATION_MS);
+    }
+
+    function getCurrentTabImage() {
+      const images = tithiData[currentTabIndex].bgImages || [];
+      if (!images.length) return { src: '', index: 0, slot: getGlobalImageSlot() };
+
+      const slot = getGlobalImageSlot();
+      const index = slot % images.length;
+      return { src: images[index], index, slot };
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
       renderPlaylist();
@@ -341,29 +381,72 @@
       // Update countdown every second
       setInterval(updateCountdown, 1000);
       
-      // Setup the 5-minute auto-slide rotation (300,000 milliseconds)
-      setInterval(rotateBackgroundImage, 5 * 60 * 1000);
+      // Synchronize backdrop changes to a shared real-time 5-minute boundary.
+      syncBackdropToGlobalCycle(true);
+      scheduleNextBackgroundChange();
       
       setupAudioListeners();
       document.getElementById('playlistCount').innerText = tracks.length;
     });
 
-    // Auto-rotates between the images in the current tab's bgImages array
+    // Changes all Tithi backdrops on the same 5-minute clock boundary.
+    // A tab switch does not reset the sequence; it shows the image for the
+    // current global slot, so every day stays synchronized.
     function rotateBackgroundImage() {
-      const images = tithiData[currentTabIndex].bgImages;
-      if (images && images.length > 1) {
-        currentImageIndex = (currentImageIndex + 1) % images.length;
-        setBackdropImage(images[currentImageIndex]);
-      }
+      syncBackdropToGlobalCycle();
     }
 
-    function setBackdropImage(imgSrc) {
-      const bgEl = document.getElementById('photoBackdrop');
-      bgEl.style.opacity = '0';
+    function setBackdropImage(imgSrc, immediate = false) {
+      if (!imgSrc) return;
+
+      const layers = [
+        document.getElementById('photoBackdropA'),
+        document.getElementById('photoBackdropB')
+      ].filter(Boolean);
+
+      if (layers.length !== 2) return;
+
+      const incomingIndex = activeBackdropLayer === 0 ? 1 : 0;
+      const incoming = layers[incomingIndex];
+      const outgoing = layers[activeBackdropLayer];
+      const opacity = isDay ? '0.4' : '0.7';
+
+      incoming.style.setProperty('--backdrop-opacity', opacity);
+      incoming.style.backgroundImage = `url("${imgSrc}")`;
+
+      incoming.classList.remove('active', 'leaving');
+      outgoing.classList.remove('active');
+
+      if (immediate) {
+        incoming.classList.add('active');
+      } else {
+        incoming.classList.add('active');
+        outgoing.classList.add('leaving');
+      }
+
+      activeBackdropLayer = incomingIndex;
+      lastRenderedBackdrop = imgSrc;
+    }
+
+    function syncBackdropToGlobalCycle(force = false) {
+      const { src, index, slot } = getCurrentTabImage();
+      currentImageIndex = index;
+
+      if (force || src !== lastRenderedBackdrop) {
+        setBackdropImage(src, force);
+      }
+
+      return slot;
+    }
+
+    function scheduleNextBackgroundChange() {
+      const now = Date.now();
+      const delay = IMAGE_ROTATION_MS - (now % IMAGE_ROTATION_MS) + 50;
+
       setTimeout(() => {
-        bgEl.style.backgroundImage = `url('${imgSrc}')`;
-        bgEl.style.opacity = isDay ? '0.4' : '0.7';
-      }, 300);
+        syncBackdropToGlobalCycle();
+        scheduleNextBackgroundChange();
+      }, delay);
     }
 
     function setupAudioListeners() {
@@ -455,8 +538,11 @@
       currentTabIndex = index;
       const d = tithiData[index];
       
-      // Reset the image index back to 0 so the primary image shows first
-      currentImageIndex = 0;
+      // Keep every Tithi synchronized to the same real-time image slot.
+      // Do not reset to image 1 when the user changes tabs.
+      const globalSlot = getGlobalImageSlot();
+      const imageCount = d.bgImages.length;
+      currentImageIndex = imageCount ? globalSlot % imageCount : 0;
 
       // Update Top Nav Tabs
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -472,7 +558,7 @@
       document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
       document.getElementById('tithiFact').innerText = d.fact;
 
-      // Set background to the first image in the array
+      // Show the image corresponding to the shared global 5-minute slot.
       setBackdropImage(d.bgImages[currentImageIndex]);
       updateCountdown();
     }
@@ -498,8 +584,12 @@
       document.body.classList.toggle('day-mode', isDay);
       document.getElementById('themeIcon').innerText = isDay ? '🌙' : '☀️';
       document.getElementById('themeText').innerText = isDay ? 'Night' : 'Day';
-      // Refresh current backdrop transparency
-      setBackdropImage(tithiData[currentTabIndex].bgImages[currentImageIndex]);
+      // Refresh backdrop opacity without resetting the synchronized image.
+      const opacity = isDay ? '0.4' : '0.7';
+      document.querySelectorAll('.backdrop-image').forEach(el => {
+        el.style.setProperty('--backdrop-opacity', opacity);
+      });
+      syncBackdropToGlobalCycle(true);
     }
   </script>
 </body>
