@@ -53,7 +53,33 @@
     }
     
     .backdrop-image {
-      transition: opacity 1000ms ease-in-out, transform 1200ms ease-out;
+      --backdrop-opacity: 0.7;
+      opacity: 0;
+      transform: scale(1.02);
+      filter: blur(3px);
+      transition:
+        opacity 1800ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 5000ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 1800ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform, filter;
+    }
+
+    .backdrop-image.active {
+      opacity: var(--backdrop-opacity);
+      transform: scale(1.05);
+      filter: blur(0);
+    }
+
+    .backdrop-image.leaving {
+      opacity: 0;
+      transform: scale(1.02);
+      filter: blur(3px);
+    }
+
+    /* Faster transition for manual Tithi/tab changes; automatic rotation
+       keeps the slower cinematic transition above. */
+    .backdrop-image.fast-transition {
+      transition-duration: 650ms, 1100ms, 650ms;
     }
 
     /* Day Mode UI Styling */
@@ -78,7 +104,8 @@
 
   <!-- Dynamic Image Backdrop Layer -->
   <div class="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
-    <div id="photoBackdrop" class="backdrop-image absolute inset-0 bg-cover bg-center opacity-65 scale-100"></div>
+    <div id="photoBackdropA" class="backdrop-image absolute inset-0 bg-cover bg-center"></div>
+    <div id="photoBackdropB" class="backdrop-image absolute inset-0 bg-cover bg-center"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-[#09080F] via-transparent to-black/60 opacity-80"></div>
   </div>
 
@@ -138,13 +165,13 @@
     <!-- Central Hero & Countdown Section -->
     <div class="flex flex-col items-center text-center my-auto py-6 relative">
       
-      <!-- Top Countdown Badge -->
+      <!-- Top Countdown Badge (25% Bigger) -->
       <div id="heroBadgeContainer" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 border border-white/15 text-amber-300 text-sm sm:text-base font-medium mb-4 glassmorphism shadow-md">
         <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
         <span id="heroBadgeText">মহাদশমী (Oct 21, 2026) in <strong id="countdownInline" class="font-mono text-white ml-1">31d 13h 46m</strong></span>
       </div>
 
-      <!-- Large Italicized Bengali Title -->
+      <!-- Large Italicized Bengali Title (Reduced by 25%) -->
       <h2 id="heroTitle" class="text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
       
       <!-- Subtitle / Tagline -->
@@ -207,13 +234,10 @@
         </div>
       </div>
 
-      <!-- Right utility buttons (Volume, Mute, Playlist) -->
+      <!-- Right utility button -->
       <div class="hidden sm:flex items-center gap-3">
-        <button id="muteBtn" onclick="toggleMute()" class="text-stone-400 hover:text-amber-400 transition text-sm">🔊</button>
-        <input id="volumeBar" type="range" min="0" max="100" value="100" class="w-16 h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="setVolume(this.value)" oninput="setVolume(this.value)" />
-
-        <button onclick="toggleSongListModal()" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5 ml-2">
-          <span>🎵</span> Playlist (<span id="playlistCount">0</span>)
+        <button onclick="toggleSongListModal()" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5">
+          <span>🎵</span> Playlist (<span id="playlistCount">15</span>)
         </button>
       </div>
 
@@ -308,79 +332,167 @@
       }
     ];
 
-    // Global background rotation logic
-    const IMAGE_ROTATION_MS = 5 * 60 * 1000;
-    let rotationTimeout;
-    
-    function getGlobalImageSlot(numImages) {
-        const now = Date.now();
-        return Math.floor(now / IMAGE_ROTATION_MS) % numImages;
-    }
-
-    function syncBackdropToGlobalCycle() {
-        const images = tithiData[currentTabIndex].bgImages;
-        currentImageIndex = getGlobalImageSlot(images.length);
-        setBackdropImage(images[currentImageIndex]);
-        scheduleNextBackgroundChange();
-    }
-
-    function scheduleNextBackgroundChange() {
-        if (rotationTimeout) clearTimeout(rotationTimeout);
-        const now = Date.now();
-        const timeToNext = IMAGE_ROTATION_MS - (now % IMAGE_ROTATION_MS);
-        rotationTimeout = setTimeout(syncBackdropToGlobalCycle, timeToNext);
-    }
-
-    // Consolidated Playlist Tracks
+    // 15 Curated Bengali Songs
     const tracks = [
-      { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "og", url: "Music/Mahalaya/mahishasura-mardini.mp3" },
-      { id: 2, title: "Bajlo Tomar Alor Benu", artist: "Debolina Nandy", category: "og", url: "Music/OG/bajlo-tomar-alor-benu.mp3" },
-      { id: 3, title: "Aaji E Probhat Robir Kar", artist: "Saheli Chanda", category: "classic", url: "Music/OG/aaji-e-probhat.mp3" },
-      { id: 4, title: "Aaj Jyotsna Raatey", artist: "Somlata Acharyya Chowdhury", category: "adhunik", url: "Music/Adhunik/aaj-jyotsna-raatey.mp3" },
-      { id: 5, title: "Ei Raat Tomar Amar", artist: "Hemanta Mukherjee", category: "classic", url: "Music/OG/ei-raat-tomar-amar.mp3" },
-      { id: 6, title: "Ei Path Jodi Na Shesh Hoy", artist: "Hemanta & Sandhya Mukherjee", category: "classic", url: "Music/OG/ei-path-jodi.mp3" },
-      { id: 7, title: "Aami Chini Go Chini", artist: "Chinmoy Chatterjee", category: "classic", url: "Music/OG/aami-chini-go-chini.mp3" },
-      { id: 8, title: "Hoyto Tomari Jonno", artist: "Manna Dey", category: "classic", url: "Music/OG/hoyto-tomari-jonno.mp3" },
-      { id: 9, title: "Ami Jamini Tumi Shashi", artist: "Manna Dey", category: "classic", url: "Music/OG/ami-jamini-tumi-shashi.mp3" },
-      { id: 10, title: "Kon Se Alor Swapna Niye", artist: "Asha Bhosle", category: "classic", url: "Music/OG/kon-se-alor.mp3" },
-      { id: 11, title: "Ke Prothom Kachhe Esechhi", artist: "Manna Dey & Lata Mangeshkar", category: "classic", url: "Music/OG/ke-prothom.mp3" },
-      { id: 12, title: "Aaj Mon Cheyechhe", artist: "Lata Mangeshkar", category: "classic", url: "Music/OG/aaj-mon-cheyechhe.mp3" },
-      { id: 13, title: "Mone Pore Ruby Roy", artist: "R.D. Burman", category: "adhunik", url: "Music/Adhunik/mone-pore-ruby-roy.mp3" },
-      { id: 14, title: "Koto Je Sagor Nodi", artist: "Kumar Sanu", category: "adhunik", url: "Music/Adhunik/koto-je-sagor-nodi.mp3" },
-      { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "Music/Adhunik/priyotama-mone-rekho.mp3" },
-      { id: 16, title: "Durga Puja Dhak", artist: "Traditional Dhak / Durga Puja Ambience", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" }
+      { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { id: 2, title: "Bajlo Tomar Alor Benu", artist: "Debolina Nandy", category: "og", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+      { id: 3, title: "Aaji E Probhat Robir Kar", artist: "Saheli Chanda", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+      { id: 4, title: "Aaj Jyotsna Raatey", artist: "Somlata Acharyya Chowdhury", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+      { id: 5, title: "Ei Raat Tomar Amar", artist: "Hemanta Mukherjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+      { id: 6, title: "Ei Path Jodi Na Shesh Hoy", artist: "Hemanta & Sandhya Mukherjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
+      { id: 7, title: "Aami Chini Go Chini", artist: "Chinmoy Chatterjee", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
+      { id: 8, title: "Hoyto Tomari Jonno", artist: "Manna Dey", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+      { id: 9, title: "Ami Jamini Tumi Shashi", artist: "Manna Dey", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+      { id: 10, title: "Kon Se Alor Swapna Niye", artist: "Asha Bhosle", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
+      { id: 11, title: "Ke Prothom Kachhe Esechhi", artist: "Manna Dey & Lata Mangeshkar", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3" },
+      { id: 12, title: "Aaj Mon Cheyechhe", artist: "Lata Mangeshkar", category: "classic", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" },
+      { id: 13, title: "Mone Pore Ruby Roy", artist: "R.D. Burman", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" },
+      { id: 14, title: "Koto Je Sagor Nodi", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3" },
+      { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" }
     ];
 
     let currentTabIndex = 5; // Default to Mohadashami
-    let currentImageIndex = 0; 
+    let currentImageIndex = 0; // Image index for the active tab's synchronized global slot
     let currentTrackIndex = 0;
     let isPlaying = false;
     let audio = new Audio();
     let currentFilter = 'og';
     let isDay = false;
-    let currentVolume = 1.0;
-    let isMuted = false;
+
+    // All Tithi backdrops share the same real-time 5-minute rotation slot.
+    // This keeps image changes synchronized even when the user switches tabs.
+    const IMAGE_ROTATION_MS = 5 * 60 * 1000;
+    let activeBackdropLayer = 0;
+    let lastRenderedBackdrop = '';
+
+    function getGlobalImageSlot() {
+      return Math.floor(Date.now() / IMAGE_ROTATION_MS);
+    }
+
+    function getCurrentTabImage() {
+      const images = tithiData[currentTabIndex].bgImages || [];
+      if (!images.length) return { src: '', index: 0, slot: getGlobalImageSlot() };
+
+      const slot = getGlobalImageSlot();
+      const index = slot % images.length;
+      return { src: images[index], index, slot };
+    }
+
+    // Preload the image currently needed for every Tithi so tab changes do not
+    // wait for a network request. Remaining images are warmed up during idle time.
+    function preloadBackgroundImages() {
+      const slot = getGlobalImageSlot();
+      const urls = new Set();
+
+      tithiData.forEach(d => {
+        const images = d.bgImages || [];
+        if (!images.length) return;
+        urls.add(images[slot % images.length]);
+      });
+
+      const preload = url => {
+        if (!url) return;
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = url;
+      };
+
+      urls.forEach(preload);
+
+      const warmRemaining = () => {
+        tithiData.forEach(d => (d.bgImages || []).forEach(preload));
+      };
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(warmRemaining, { timeout: 2500 });
+      } else {
+        setTimeout(warmRemaining, 1200);
+      }
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Set Playlist Count dynamically
-      document.getElementById('playlistCount').innerText = tracks.length;
-
       renderPlaylist();
-      loadTrack(0, false); // Load Mahishasura Mardini by default
-      switchTab(5); // Load Dashami UI
+      preloadBackgroundImages();
+      loadTrack(0, false);
+      switchTab(5); // Load Dashami by default
       updateCountdown();
       
+      // Update countdown every second
       setInterval(updateCountdown, 1000);
+      
+      // Synchronize backdrop changes to a shared real-time 5-minute boundary.
+      syncBackdropToGlobalCycle(true);
+      scheduleNextBackgroundChange();
+      
       setupAudioListeners();
+      document.getElementById('playlistCount').innerText = tracks.length;
     });
 
-    function setBackdropImage(imgSrc) {
-      const bgEl = document.getElementById('photoBackdrop');
-      bgEl.style.opacity = '0';
+    // Changes all Tithi backdrops on the same 5-minute clock boundary.
+    // A tab switch does not reset the sequence; it shows the image for the
+    // current global slot, so every day stays synchronized.
+    function rotateBackgroundImage() {
+      syncBackdropToGlobalCycle();
+    }
+
+    function setBackdropImage(imgSrc, immediate = false, fast = false) {
+      if (!imgSrc) return;
+
+      const layers = [
+        document.getElementById('photoBackdropA'),
+        document.getElementById('photoBackdropB')
+      ].filter(Boolean);
+
+      if (layers.length !== 2) return;
+
+      const incomingIndex = activeBackdropLayer === 0 ? 1 : 0;
+      const incoming = layers[incomingIndex];
+      const outgoing = layers[activeBackdropLayer];
+      const opacity = isDay ? '0.4' : '0.7';
+
+      incoming.style.setProperty('--backdrop-opacity', opacity);
+      incoming.style.backgroundImage = `url("${imgSrc}")`;
+
+      layers.forEach(layer => layer.classList.toggle('fast-transition', fast));
+      incoming.classList.remove('active', 'leaving');
+      outgoing.classList.remove('active');
+
+      if (immediate) {
+        incoming.classList.add('active');
+      } else {
+        incoming.classList.add('active');
+        outgoing.classList.add('leaving');
+      }
+
+      activeBackdropLayer = incomingIndex;
+      lastRenderedBackdrop = imgSrc;
+
+      if (fast) {
+        setTimeout(() => {
+          layers.forEach(layer => layer.classList.remove('fast-transition'));
+        }, 750);
+      }
+    }
+
+    function syncBackdropToGlobalCycle(force = false) {
+      const { src, index, slot } = getCurrentTabImage();
+      currentImageIndex = index;
+
+      if (force || src !== lastRenderedBackdrop) {
+        setBackdropImage(src, force);
+      }
+
+      return slot;
+    }
+
+    function scheduleNextBackgroundChange() {
+      const now = Date.now();
+      const delay = IMAGE_ROTATION_MS - (now % IMAGE_ROTATION_MS) + 50;
+
       setTimeout(() => {
-        bgEl.style.backgroundImage = `url('${imgSrc}')`;
-        bgEl.style.opacity = isDay ? '0.4' : '0.7';
-      }, 300);
+        syncBackdropToGlobalCycle();
+        scheduleNextBackgroundChange();
+      }, delay);
     }
 
     function setupAudioListeners() {
@@ -391,17 +503,7 @@
           document.getElementById('durationTime').innerText = formatTime(audio.duration);
         }
       });
-      
-      // Auto-play next track when current ends
       audio.addEventListener('ended', () => nextTrack());
-
-      // Graceful error handling for missing audio files
-      audio.addEventListener('error', (e) => {
-        console.warn("Audio playback failed or file missing for:", audio.src);
-        isPlaying = false;
-        updatePlayButtons();
-        // Allow user to manually trigger Next/Prev, we don't auto-skip to prevent infinite loops if all files missing
-      });
     }
 
     function formatTime(s) {
@@ -412,13 +514,7 @@
     function renderPlaylist() {
       const container = document.getElementById('playlistContainer');
       container.innerHTML = '';
-      
-      // Filter mapping: 'og' button shows both 'og' and 'classic' categories
-      const filtered = tracks.filter(t => {
-        if (currentFilter === 'og') return t.category === 'og' || t.category === 'classic';
-        return t.category === currentFilter;
-      });
-
+      const filtered = tracks.filter(t => currentFilter === 'all' || t.category === currentFilter);
       filtered.forEach(track => {
         const isCurrent = track.id === tracks[currentTrackIndex].id;
         const item = document.createElement('div');
@@ -449,16 +545,8 @@
       audio.src = track.url;
       document.getElementById('playerTitle').innerText = track.title;
       document.getElementById('playerArtist').innerText = track.artist;
-      
       if (autoPlay) {
-        audio.play().then(() => { 
-          isPlaying = true; 
-          updatePlayButtons(); 
-        }).catch((e) => { 
-          console.warn("Autoplay blocked or file missing:", e);
-          isPlaying = false; 
-          updatePlayButtons(); 
-        });
+        audio.play().then(() => { isPlaying = true; updatePlayButtons(); }).catch(() => { isPlaying = false; updatePlayButtons(); });
       } else {
         isPlaying = false;
         updatePlayButtons();
@@ -467,17 +555,8 @@
     }
 
     function toggleMasterPlay() {
-      if (isPlaying) { 
-        audio.pause(); 
-        isPlaying = false; 
-      } else { 
-        audio.play().then(() => {
-          isPlaying = true;
-        }).catch(e => {
-          console.warn("Playback error:", e);
-          isPlaying = false;
-        });
-      }
+      if (isPlaying) { audio.pause(); isPlaying = false; }
+      else { audio.play().catch(e => console.log(e)); isPlaying = true; }
       updatePlayButtons();
       renderPlaylist();
     }
@@ -486,37 +565,9 @@
       document.getElementById('masterPlayBtn').innerText = isPlaying ? '❚❚' : '▶';
     }
 
-    function nextTrack() { 
-      loadTrack((currentTrackIndex + 1) % tracks.length, true); 
-    }
-    
-    function prevTrack() { 
-      loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); 
-    }
-    
-    function seekAudio(val) { 
-      if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; 
-    }
-
-    function setVolume(val) {
-      currentVolume = val / 100;
-      if (!isMuted) audio.volume = currentVolume;
-      updateVolumeIcon();
-    }
-
-    function toggleMute() {
-      isMuted = !isMuted;
-      audio.volume = isMuted ? 0 : currentVolume;
-      document.getElementById('volumeBar').value = isMuted ? 0 : currentVolume * 100;
-      updateVolumeIcon();
-    }
-
-    function updateVolumeIcon() {
-      const btn = document.getElementById('muteBtn');
-      if (isMuted || audio.volume === 0) btn.innerText = '🔇';
-      else if (audio.volume < 0.5) btn.innerText = '🔉';
-      else btn.innerText = '🔊';
-    }
+    function nextTrack() { loadTrack((currentTrackIndex + 1) % tracks.length, true); }
+    function prevTrack() { loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); }
+    function seekAudio(val) { if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; }
 
     function filterCategory(cat) {
       currentFilter = cat;
@@ -532,8 +583,14 @@
     function switchTab(index) {
       currentTabIndex = index;
       const d = tithiData[index];
+      
+      // Keep every Tithi synchronized to the same real-time image slot.
+      // Do not reset to image 1 when the user changes tabs.
+      const globalSlot = getGlobalImageSlot();
+      const imageCount = d.bgImages.length;
+      currentImageIndex = imageCount ? globalSlot % imageCount : 0;
 
-      // Update Top Nav Tabs visually
+      // Update Top Nav Tabs
       document.querySelectorAll('.tab-btn').forEach(btn => {
         const isActive = parseInt(btn.dataset.index) === index;
         btn.className = isActive
@@ -547,11 +604,9 @@
       document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
       document.getElementById('tithiFact').innerText = d.fact;
 
-      // Sync background image immediately to the global cycle slot
-      syncBackdropToGlobalCycle();
+      // Manual tab changes use a faster fade so navigation feels immediate.
+      setBackdropImage(d.bgImages[currentImageIndex], false, true);
       updateCountdown();
-      
-      // Note: Audio intentionally not stopped/restarted here to preserve global playback state.
     }
 
     function updateCountdown() {
@@ -575,8 +630,12 @@
       document.body.classList.toggle('day-mode', isDay);
       document.getElementById('themeIcon').innerText = isDay ? '🌙' : '☀️';
       document.getElementById('themeText').innerText = isDay ? 'Night' : 'Day';
-      // Refresh current backdrop transparency visually
-      setBackdropImage(tithiData[currentTabIndex].bgImages[currentImageIndex]);
+      // Refresh backdrop opacity without resetting the synchronized image.
+      const opacity = isDay ? '0.4' : '0.7';
+      document.querySelectorAll('.backdrop-image').forEach(el => {
+        el.style.setProperty('--backdrop-opacity', opacity);
+      });
+      syncBackdropToGlobalCycle(true);
     }
   </script>
 </body>
