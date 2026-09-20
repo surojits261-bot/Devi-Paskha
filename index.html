@@ -8,7 +8,7 @@
   <!-- Social Media & WhatsApp Preview Tags -->
   <meta property="og:title" content="দেবীপক্ষ — Devi Paksha | Durga Puja Backdrop & Melodies" />
   <meta property="og:description" content="Live countdown to Mahalaya & Durga Puja with classic melodies, authentic Dhak, and immersive festive backdrops." />
-  <meta property="og:image" content="dashami.jpg" />
+  <meta property="og:image" content="logo.png" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#881337" />
 
@@ -138,13 +138,13 @@
     <!-- Central Hero & Countdown Section -->
     <div class="flex flex-col items-center text-center my-auto py-6 relative">
       
-      <!-- Top Countdown Badge -->
+      <!-- Top Countdown Badge (25% Bigger) -->
       <div id="heroBadgeContainer" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 border border-white/15 text-amber-300 text-sm sm:text-base font-medium mb-4 glassmorphism shadow-md">
         <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
         <span id="heroBadgeText">মহাদশমী (Oct 21, 2026) in <strong id="countdownInline" class="font-mono text-white ml-1">31d 13h 46m</strong></span>
       </div>
 
-      <!-- Large Italicized Bengali Title -->
+      <!-- Large Italicized Bengali Title (Reduced by 25%) -->
       <h2 id="heroTitle" class="text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
       
       <!-- Subtitle / Tagline -->
@@ -229,7 +229,7 @@
   </div>
 
   <script>
-    // 6 Authentic Tithis & Corresponding Backgrounds
+    // 6 Authentic Tithis & Corresponding Background Arrays
     const tithiData = [
       {
         name: "মহালয়া",
@@ -241,7 +241,7 @@
         mood: "sacred, nostalgic, early-morning radio",
         badge: "মহালয়া (Oct 10) in",
         fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931.",
-        bgImage: "mahalaya.png"
+        bgImages: ["mahalaya-1.png", "mahalaya-2.png", "mahalaya-3.png", "mahalaya-4.png"]
       },
       {
         name: "মহাষষ্ঠী",
@@ -253,7 +253,7 @@
         mood: "arrival, excitement, new clothes & fragrance",
         badge: "মহাষষ্ঠী (Oct 17) in",
         fact: "Kalparambho and Akal Bodhon take place on Shashthi, awakening the goddess and officially unveiling pandals for darshan.",
-        bgImage: "shashti.png"
+        bgImages: ["shashti-1.png", "shashti-2.png", "shashti-3.png"]
       },
       {
         name: "মহাসপ্তমী",
@@ -265,7 +265,7 @@
         mood: "morning riverbank rituals & rhythm of dhak",
         badge: "মহাসপ্তমী (Oct 18) in",
         fact: "The Nabapatrika (nine sacred plants tied together and draped in a yellow saree with red border) is bathed at dawn at the Ganga ghats.",
-        bgImage: "saptami.png"
+        bgImages: ["saptami-1.png", "saptami-2.png", "saptami-3.png"]
       },
       {
         name: "মহাঅষ্টমী",
@@ -277,7 +277,7 @@
         mood: "reverence, fasting, 108 lotus flowers & deep devotion",
         badge: "মহাঅষ্টমী (Oct 19) in",
         fact: "Sandhi Puja takes place at the exact junction of Ashtami and Nabami — 108 clay lamps are lit as Chamunda slays Chanda and Munda.",
-        bgImage: "ashtami.png"
+        bgImages: ["ashtami-1.png", "ashtami-2.png", "ashtami-3.png"]
       },
       {
         name: "মহানবমী",
@@ -289,7 +289,7 @@
         mood: "smoke of frankincense, frantic dhak, twilight sadness",
         badge: "মহানবমী (Oct 20) in",
         fact: "Maha Nabami culminates in the energetic Dhunuchi Naach and marks the final complete day of celebration before farewell.",
-        bgImage: "nabami.png"
+        bgImages: ["nabami-1.png", "nabami-2.png", "nabami-3.png"]
       },
       {
         name: "মহাদশমী",
@@ -301,7 +301,7 @@
         mood: "Sindoor khela, family, final darshan",
         badge: "মহাদশমী (Oct 21) in",
         fact: "Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon, right before the goddess departs.",
-        bgImage: "dashami.jpg"
+        bgImages: ["dashami-1.png", "dashami-2.png", "dashami-3.png", "dashami-4.png"]
       }
     ];
 
@@ -325,6 +325,7 @@
     ];
 
     let currentTabIndex = 5; // Default to Mohadashami
+    let currentImageIndex = 0; // Tracks which image is showing for the active tab
     let currentTrackIndex = 0;
     let isPlaying = false;
     let audio = new Audio();
@@ -334,12 +335,27 @@
     window.addEventListener('DOMContentLoaded', () => {
       renderPlaylist();
       loadTrack(0, false);
-      switchTab(5);
+      switchTab(5); // Load Dashami by default
       updateCountdown();
+      
+      // Update countdown every second
       setInterval(updateCountdown, 1000);
+      
+      // Setup the 5-minute auto-slide rotation (300,000 milliseconds)
+      setInterval(rotateBackgroundImage, 5 * 60 * 1000);
+      
       setupAudioListeners();
       document.getElementById('playlistCount').innerText = tracks.length;
     });
+
+    // Auto-rotates between the images in the current tab's bgImages array
+    function rotateBackgroundImage() {
+      const images = tithiData[currentTabIndex].bgImages;
+      if (images && images.length > 1) {
+        currentImageIndex = (currentImageIndex + 1) % images.length;
+        setBackdropImage(images[currentImageIndex]);
+      }
+    }
 
     function setBackdropImage(imgSrc) {
       const bgEl = document.getElementById('photoBackdrop');
@@ -438,6 +454,9 @@
     function switchTab(index) {
       currentTabIndex = index;
       const d = tithiData[index];
+      
+      // Reset the image index back to 0 so the primary image shows first
+      currentImageIndex = 0;
 
       // Update Top Nav Tabs
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -453,7 +472,8 @@
       document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
       document.getElementById('tithiFact').innerText = d.fact;
 
-      setBackdropImage(d.bgImage);
+      // Set background to the first image in the array
+      setBackdropImage(d.bgImages[currentImageIndex]);
       updateCountdown();
     }
 
@@ -478,7 +498,8 @@
       document.body.classList.toggle('day-mode', isDay);
       document.getElementById('themeIcon').innerText = isDay ? '🌙' : '☀️';
       document.getElementById('themeText').innerText = isDay ? 'Night' : 'Day';
-      setBackdropImage(tithiData[currentTabIndex].bgImage);
+      // Refresh current backdrop transparency
+      setBackdropImage(tithiData[currentTabIndex].bgImages[currentImageIndex]);
     }
   </script>
 </body>
