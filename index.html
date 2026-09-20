@@ -76,8 +76,6 @@
       filter: blur(3px);
     }
 
-    /* Faster transition for manual Tithi/tab changes; automatic rotation
-       keeps the slower cinematic transition above. */
     .backdrop-image.fast-transition {
       transition-duration: 650ms, 1100ms, 650ms;
     }
@@ -112,7 +110,6 @@
   <!-- Header with Custom Logo -->
   <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-3 flex items-center justify-between relative z-10">
     <div class="flex items-center space-x-3.5">
-      <!-- Custom Goddess Logo Image -->
       <div class="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center justify-center overflow-hidden flex-shrink-0">
         <img src="logo.png" alt="Devi Logo" class="w-full h-full object-cover rounded-full bg-stone-900" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23d4af37\'/><text x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23000\' font-family=\'sans-serif\'>মা</text></svg>';" />
       </div>
@@ -124,7 +121,6 @@
     </div>
     
     <div class="flex items-center space-x-2">
-      <!-- Day/Night Toggle Switch -->
       <button onclick="toggleDayNight()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
         <span id="themeIcon">☀️</span> <span id="themeText">Day</span>
       </button>
@@ -165,42 +161,24 @@
     <!-- Central Hero & Countdown Section -->
     <div class="flex flex-col items-center text-center my-auto py-6 relative">
       
-      <!-- Top Countdown Badge (25% Bigger) -->
       <div id="heroBadgeContainer" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 border border-white/15 text-amber-300 text-sm sm:text-base font-medium mb-4 glassmorphism shadow-md">
         <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
         <span id="heroBadgeText">মহাদশমী (Oct 21, 2026) in <strong id="countdownInline" class="font-mono text-white ml-1">31d 13h 46m</strong></span>
       </div>
 
-      <!-- Large Italicized Bengali Title (Reduced by 25%) -->
       <h2 id="heroTitle" class="text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
       
-      <!-- Subtitle / Tagline -->
       <p id="heroSubtitle" class="text-lg sm:text-xl font-medium text-stone-200 sub-text drop-shadow tracking-wide mb-1">Abar Esho Maa</p>
       <p id="heroDateSub" class="text-xs sm:text-sm text-amber-200/80 font-mono tracking-widest uppercase mb-6">Oct 21, 2026 • sindoor khela, family, final darshan</p>
 
-      <!-- Music Category Pills & Dropdown -->
+      <!-- Unified Category Pills -->
       <div class="flex items-center justify-center gap-2 flex-wrap mb-8">
         <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow flex items-center gap-1.5" data-category="og">🎵 Pandal OG Classic Hits</button>
         
         <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="adhunik">🎶 Adhunik Pujo Mix</button>
         
-        <!-- Ambience Button & Dropdown Container -->
-        <div class="relative inline-block">
-          <button id="ambienceBtn" onclick="toggleAmbientDropdown(event)" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambience">
-            🪷 Ambience <span class="text-[9px] ml-0.5 mt-0.5 font-bold">▼</span>
-          </button>
-          
-          <!-- The Absolute Positioned Dropdown -->
-          <div id="ambientDropdown" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[260px] sm:w-[300px] bg-stone-900/95 backdrop-blur-xl border border-amber-500/40 rounded-xl shadow-[0_15px_40px_rgba(0,0,0,0.7)] hidden z-[60] overflow-hidden text-left origin-top scale-95 opacity-0 transition-all duration-200">
-            <div class="px-3 py-2 border-b border-white/10 flex justify-between items-center bg-black/40">
-              <span class="text-[10px] uppercase tracking-wider font-mono text-amber-400">Select Ambient Track</span>
-              <button onclick="closeAmbientDropdown(event)" class="text-stone-400 hover:text-white text-xs px-1">✕</button>
-            </div>
-            <div id="ambientDropdownList" class="max-h-56 overflow-y-auto custom-scrollbar p-1.5 flex flex-col gap-1">
-              <!-- Tracks will be dynamically injected here -->
-            </div>
-          </div>
-        </div>
+        <!-- Ambience Button (Now opens standard modal) -->
+        <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambience">🪷 Ambience</button>
       </div>
 
       <!-- Did You Know / Fact Card -->
@@ -258,7 +236,7 @@
         </div>
       </div>
 
-      <!-- Right utility buttons (Volume, Mute, Playlist) -->
+      <!-- Right utility buttons -->
       <div class="hidden sm:flex items-center gap-3">
         <button id="muteBtn" onclick="toggleMute()" class="text-stone-400 hover:text-amber-400 transition text-sm">🔊</button>
         <input id="volumeBar" type="range" min="0" max="100" value="100" class="w-16 h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="setVolume(this.value)" oninput="setVolume(this.value)" />
@@ -271,11 +249,11 @@
     </div>
   </footer>
 
-  <!-- Hidden Playlist Drawer / Modal (For OG & Adhunik) -->
+  <!-- Unified Hidden Playlist Drawer / Modal (For all categories) -->
   <div id="playlistModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-stone-900 border border-amber-500/40 rounded-2xl max-w-md w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
       <div class="p-4 border-b border-stone-800 flex items-center justify-between">
-        <h3 class="text-base font-bold text-amber-400 accent-heading">Durga Puja Melody Playlist</h3>
+        <h3 class="text-base font-bold text-amber-400 accent-heading">Durga Puja Playlist</h3>
         <button onclick="toggleSongListModal()" class="text-stone-400 hover:text-white text-lg">✕</button>
       </div>
       <div id="playlistContainer" class="p-3 space-y-2 overflow-y-auto custom-scrollbar flex-1"></div>
@@ -283,83 +261,45 @@
   </div>
 
   <script>
-    // 6 Authentic Tithis & Corresponding Background Arrays
     const tithiData = [
       {
-        name: "মহালয়া",
-        en: "Mahalaya",
-        dateStr: "Oct 10, 2026",
-        targetDate: new Date(2026, 9, 10, 4, 0, 0),
-        subtitle: "The City Is Waiting",
-        dateLabel: "Oct 10, 2026",
-        mood: "sacred, nostalgic, early-morning radio",
-        badge: "মহালয়া (Oct 10) in",
-        fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am, a tradition unbroken since 1931.",
+        name: "মহালয়া", en: "Mahalaya", dateStr: "Oct 10, 2026", targetDate: new Date(2026, 9, 10, 4, 0, 0),
+        subtitle: "The City Is Waiting", dateLabel: "Oct 10, 2026", mood: "sacred, nostalgic, early-morning radio",
+        fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am.",
         bgImages: ["mahalaya-1.png", "mahalaya-2.png", "mahalaya-3.png", "mahalaya-4.png"]
       },
       {
-        name: "মহাষষ্ঠী",
-        en: "Shashti",
-        dateStr: "Oct 17, 2026",
-        targetDate: new Date(2026, 9, 17, 8, 0, 0),
-        subtitle: "Bodhon & Anondo",
-        dateLabel: "Oct 17, 2026",
-        mood: "arrival, excitement, new clothes & fragrance",
-        badge: "মহাষষ্ঠী (Oct 17) in",
-        fact: "Kalparambho and Akal Bodhon take place on Shashthi, awakening the goddess and officially unveiling pandals for darshan.",
+        name: "মহাষষ্ঠী", en: "Shashti", dateStr: "Oct 17, 2026", targetDate: new Date(2026, 9, 17, 8, 0, 0),
+        subtitle: "Bodhon & Anondo", dateLabel: "Oct 17, 2026", mood: "arrival, excitement, new clothes & fragrance",
+        fact: "Kalparambho and Akal Bodhon take place on Shashthi, awakening the goddess and officially unveiling pandals.",
         bgImages: ["shashti-1.png", "shashti-2.png", "shashti-3.png"]
       },
       {
-        name: "মহাসপ্তমী",
-        en: "Saptami",
-        dateStr: "Oct 18, 2026",
-        targetDate: new Date(2026, 9, 18, 7, 0, 0),
-        subtitle: "Kola Bou Snan",
-        dateLabel: "Oct 18, 2026",
-        mood: "morning riverbank rituals & rhythm of dhak",
-        badge: "মহাসপ্তমী (Oct 18) in",
-        fact: "The Nabapatrika (nine sacred plants tied together and draped in a yellow saree with red border) is bathed at dawn at the Ganga ghats.",
+        name: "মহাসপ্তমী", en: "Saptami", dateStr: "Oct 18, 2026", targetDate: new Date(2026, 9, 18, 7, 0, 0),
+        subtitle: "Kola Bou Snan", dateLabel: "Oct 18, 2026", mood: "morning riverbank rituals & rhythm of dhak",
+        fact: "The Nabapatrika is bathed at dawn at the Ganga ghats.",
         bgImages: ["saptami-1.png", "saptami-2.png", "saptami-3.png"]
       },
       {
-        name: "মহাঅষ্টমী",
-        en: "Ashtami",
-        dateStr: "Oct 19, 2026",
-        targetDate: new Date(2026, 9, 19, 10, 28, 0),
-        subtitle: "Pushpanjali & Sandhi Puja",
-        dateLabel: "Oct 19, 2026",
-        mood: "reverence, fasting, 108 lotus flowers & deep devotion",
-        badge: "মহাঅষ্টমী (Oct 19) in",
-        fact: "Sandhi Puja takes place at the exact junction of Ashtami and Nabami — 108 clay lamps are lit as Chamunda slays Chanda and Munda.",
+        name: "মহাঅষ্টমী", en: "Ashtami", dateStr: "Oct 19, 2026", targetDate: new Date(2026, 9, 19, 10, 28, 0),
+        subtitle: "Pushpanjali & Sandhi Puja", dateLabel: "Oct 19, 2026", mood: "reverence, fasting, 108 lotus flowers & deep devotion",
+        fact: "Sandhi Puja takes place at the exact junction of Ashtami and Nabami — 108 clay lamps are lit.",
         bgImages: ["ashtami-1.png", "ashtami-2.png", "ashtami-3.png"]
       },
       {
-        name: "মহানবমী",
-        en: "Nabami",
-        dateStr: "Oct 20, 2026",
-        targetDate: new Date(2026, 9, 20, 12, 0, 0),
-        subtitle: "Dhunuchi Naach & Grand Adda",
-        dateLabel: "Oct 20, 2026",
-        mood: "smoke of frankincense, frantic dhak, twilight sadness",
-        badge: "মহানবমী (Oct 20) in",
-        fact: "Maha Nabami culminates in the energetic Dhunuchi Naach and marks the final complete day of celebration before farewell.",
+        name: "মহানবমী", en: "Nabami", dateStr: "Oct 20, 2026", targetDate: new Date(2026, 9, 20, 12, 0, 0),
+        subtitle: "Dhunuchi Naach & Grand Adda", dateLabel: "Oct 20, 2026", mood: "smoke of frankincense, frantic dhak, twilight sadness",
+        fact: "Maha Nabami culminates in the energetic Dhunuchi Naach and marks the final complete day of celebration.",
         bgImages: ["nabami-1.png", "nabami-2.png", "nabami-3.png"]
       },
       {
-        name: "মহাদশমী",
-        en: "Dashami",
-        dateStr: "Oct 21, 2026",
-        targetDate: new Date(2026, 9, 21, 16, 0, 0),
-        subtitle: "Abar Esho Maa",
-        dateLabel: "Oct 21, 2026",
-        mood: "Sindoor khela, family, final darshan",
-        badge: "মহাদশমী (Oct 21) in",
-        fact: "Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon, right before the goddess departs.",
+        name: "মহাদশমী", en: "Dashami", dateStr: "Oct 21, 2026", targetDate: new Date(2026, 9, 21, 16, 0, 0),
+        subtitle: "Abar Esho Maa", dateLabel: "Oct 21, 2026", mood: "Sindoor khela, family, final darshan",
+        fact: "Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon.",
         bgImages: ["dashami-1.png", "dashami-2.png", "dashami-3.png", "dashami-4.png"]
       }
     ];
 
-    // Curated Bengali Songs with Local Paths
     const tracks = [
       { id: 1, title: "Mahishasura Mardini", artist: "Birendra Krishna Bhadra", category: "og", url: "Music/Mahalaya/mahishasura-mardini.mp3" },
       { id: 2, title: "Bajlo Tomar Alor Benu", artist: "Debolina Nandy", category: "og", url: "Music/OG/bajlo-tomar-alor-benu.mp3" },
@@ -377,7 +317,6 @@
       { id: 14, title: "Koto Je Sagor Nodi", artist: "Kumar Sanu", category: "adhunik", url: "Music/Adhunik/koto-je-sagor-nodi.mp3" },
       { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "Music/Adhunik/priyotama-mone-rekho.mp3" },
       
-      // Verified Ambience Tracks
       { id: 16, title: "Durga Puja Dhak Main", artist: "Traditional Dhak", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" },
       { id: 17, title: "Divine Puja Atmosphere", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-2.mp3" },
       { id: 18, title: "Shank Baja", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-4 Shank baja.mp3" },
@@ -395,27 +334,22 @@
     let currentVolume = 1.0;
     let isMuted = false;
 
-    // Background rotation variables
     const IMAGE_ROTATION_MS = 5 * 60 * 1000;
     let activeBackdropLayer = 0;
     let lastRenderedBackdrop = '';
     
-    // Independent Dhak Audio setup
     const dhakAudio = new Audio("Music/Ambience/durga-puja-dhak-main.mp3");
     dhakAudio.loop = true;
     let isDhakOn = true; 
-    let dhakPhase = 'playing'; // 'playing' or 'waiting'
+    let dhakPhase = 'playing';
     let dhakTimer = null;
     let userInteracted = false;
 
-    function getGlobalImageSlot() {
-      return Math.floor(Date.now() / IMAGE_ROTATION_MS);
-    }
+    function getGlobalImageSlot() { return Math.floor(Date.now() / IMAGE_ROTATION_MS); }
 
     function getCurrentTabImage() {
       const images = tithiData[currentTabIndex].bgImages || [];
       if (!images.length) return { src: '', index: 0, slot: getGlobalImageSlot() };
-
       const slot = getGlobalImageSlot();
       const index = slot % images.length;
       return { src: images[index], index, slot };
@@ -424,65 +358,44 @@
     function preloadBackgroundImages() {
       const slot = getGlobalImageSlot();
       const urls = new Set();
-
       tithiData.forEach(d => {
         const images = d.bgImages || [];
         if (!images.length) return;
         urls.add(images[slot % images.length]);
       });
-
       const preload = url => {
         if (!url) return;
         const img = new Image();
         img.decoding = 'async';
         img.src = url;
       };
-
       urls.forEach(preload);
-
-      const warmRemaining = () => {
-        tithiData.forEach(d => (d.bgImages || []).forEach(preload));
-      };
-
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(warmRemaining, { timeout: 2500 });
-      } else {
-        setTimeout(warmRemaining, 1200);
-      }
+      const warmRemaining = () => { tithiData.forEach(d => (d.bgImages || []).forEach(preload)); };
+      if ('requestIdleCallback' in window) requestIdleCallback(warmRemaining, { timeout: 2500 });
+      else setTimeout(warmRemaining, 1200);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('playlistCount').innerText = tracks.length;
-      
       renderPlaylist();
       preloadBackgroundImages();
       loadTrack(0, false);
-      switchTab(5); // Load Dashami by default
+      switchTab(5);
       updateCountdown();
-      
       setInterval(updateCountdown, 1000);
-      
       syncBackdropToGlobalCycle(true);
       scheduleNextBackgroundChange();
-      
       setupAudioListeners();
       initDhak();
     });
 
-    // --- DHAK BAJA BACKGROUND LOGIC --- //
-    
     function initDhak() {
-      // Browsers block autoplay without interaction, so we wait for the first click anywhere.
       document.body.addEventListener('click', () => {
         if (!userInteracted) {
           userInteracted = true;
-          if (isDhakOn && dhakPhase === 'playing') {
-            dhakAudio.play().catch(e => console.log("Dhak autoplay wait:", e));
-          }
+          if (isDhakOn && dhakPhase === 'playing') dhakAudio.play().catch(e => console.log(e));
         }
       }, { once: true });
-
-      // Start the logical 5-min interval cycle immediately
       startDhakCycle();
     }
 
@@ -509,13 +422,8 @@
 
     function startDhakCycle() {
       dhakPhase = 'playing';
-      if (userInteracted) {
-        dhakAudio.play().catch(e => console.log("Dhak play error:", e));
-      }
-      
+      if (userInteracted) dhakAudio.play().catch(e => console.log(e));
       if (dhakTimer) clearInterval(dhakTimer);
-      
-      // Cycle every 5 minutes (300,000 ms) - Play for 5 mins, Pause for 5 mins
       dhakTimer = setInterval(() => {
         if (dhakPhase === 'playing') {
           dhakAudio.pause();
@@ -532,20 +440,11 @@
       if (dhakTimer) clearInterval(dhakTimer);
     }
 
-    // --- BACKGROUND IMAGE LOGIC --- //
-
-    function rotateBackgroundImage() {
-      syncBackdropToGlobalCycle();
-    }
+    function rotateBackgroundImage() { syncBackdropToGlobalCycle(); }
 
     function setBackdropImage(imgSrc, immediate = false, fast = false) {
       if (!imgSrc) return;
-
-      const layers = [
-        document.getElementById('photoBackdropA'),
-        document.getElementById('photoBackdropB')
-      ].filter(Boolean);
-
+      const layers = [document.getElementById('photoBackdropA'), document.getElementById('photoBackdropB')].filter(Boolean);
       if (layers.length !== 2) return;
 
       const incomingIndex = activeBackdropLayer === 0 ? 1 : 0;
@@ -555,50 +454,35 @@
 
       incoming.style.setProperty('--backdrop-opacity', opacity);
       incoming.style.backgroundImage = `url("${imgSrc}")`;
-
       layers.forEach(layer => layer.classList.toggle('fast-transition', fast));
       incoming.classList.remove('active', 'leaving');
       outgoing.classList.remove('active');
 
-      if (immediate) {
-        incoming.classList.add('active');
-      } else {
+      if (immediate) incoming.classList.add('active');
+      else {
         incoming.classList.add('active');
         outgoing.classList.add('leaving');
       }
-
       activeBackdropLayer = incomingIndex;
       lastRenderedBackdrop = imgSrc;
-
-      if (fast) {
-        setTimeout(() => {
-          layers.forEach(layer => layer.classList.remove('fast-transition'));
-        }, 750);
-      }
+      if (fast) setTimeout(() => { layers.forEach(layer => layer.classList.remove('fast-transition')); }, 750);
     }
 
     function syncBackdropToGlobalCycle(force = false) {
       const { src, index, slot } = getCurrentTabImage();
       currentImageIndex = index;
-
-      if (force || src !== lastRenderedBackdrop) {
-        setBackdropImage(src, force);
-      }
-
+      if (force || src !== lastRenderedBackdrop) setBackdropImage(src, force);
       return slot;
     }
 
     function scheduleNextBackgroundChange() {
       const now = Date.now();
       const delay = IMAGE_ROTATION_MS - (now % IMAGE_ROTATION_MS) + 50;
-
       setTimeout(() => {
         syncBackdropToGlobalCycle();
         scheduleNextBackgroundChange();
       }, delay);
     }
-
-    // --- AUDIO PLAYER LOGIC --- //
 
     function setupAudioListeners() {
       audio.addEventListener('timeupdate', () => {
@@ -608,11 +492,8 @@
           document.getElementById('durationTime').innerText = formatTime(audio.duration);
         }
       });
-      
       audio.addEventListener('ended', () => nextTrack());
-
-      audio.addEventListener('error', (e) => {
-        console.warn("Audio playback failed or file missing for:", audio.src);
+      audio.addEventListener('error', () => {
         isPlaying = false;
         updatePlayButtons();
       });
@@ -626,84 +507,6 @@
     function toggleSongListModal() {
       const modal = document.getElementById('playlistModal');
       if (modal) modal.classList.toggle('hidden');
-    }
-    
-    function toggleAmbientDropdown(event) {
-      if (event) event.stopPropagation();
-      const dropdown = document.getElementById('ambientDropdown');
-      const isHidden = dropdown.classList.contains('hidden');
-      
-      const modal = document.getElementById('playlistModal');
-      if (modal && !modal.classList.contains('hidden')) {
-        modal.classList.add('hidden');
-      }
-      
-      if (isHidden) {
-        dropdown.classList.remove('hidden');
-        void dropdown.offsetWidth;
-        dropdown.classList.remove('scale-95', 'opacity-0');
-        dropdown.classList.add('scale-100', 'opacity-100');
-        renderAmbientDropdown();
-        
-        currentFilter = 'ambience';
-        updateCategoryButtonStyles('ambience');
-      } else {
-        closeAmbientDropdown();
-      }
-    }
-
-    function closeAmbientDropdown(event) {
-      if (event) event.stopPropagation();
-      const dropdown = document.getElementById('ambientDropdown');
-      if (!dropdown || dropdown.classList.contains('hidden')) return;
-      
-      dropdown.classList.remove('scale-100', 'opacity-100');
-      dropdown.classList.add('scale-95', 'opacity-0');
-      
-      setTimeout(() => {
-        dropdown.classList.add('hidden');
-      }, 200);
-    }
-
-    document.addEventListener('click', (event) => {
-      const dropdown = document.getElementById('ambientDropdown');
-      const ambienceBtn = document.getElementById('ambienceBtn');
-      if (dropdown && !dropdown.classList.contains('hidden')) {
-        if (!dropdown.contains(event.target) && event.target !== ambienceBtn && !ambienceBtn.contains(event.target)) {
-          closeAmbientDropdown();
-        }
-      }
-    });
-
-    function renderAmbientDropdown() {
-      const container = document.getElementById('ambientDropdownList');
-      if (!container) return;
-      
-      const ambientTracks = tracks.filter(t => t.category === 'ambience');
-      container.innerHTML = '';
-      
-      ambientTracks.forEach(track => {
-        const isCurrent = track.id === tracks[currentTrackIndex].id;
-        const item = document.createElement('button');
-        item.className = `w-full text-left px-3 py-2.5 rounded-lg flex items-center justify-between transition ${
-          isCurrent ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-stone-300 hover:bg-white/10 hover:text-white border border-transparent'
-        }`;
-        item.onclick = (e) => {
-           e.stopPropagation();
-           const idx = tracks.findIndex(t => t.id === track.id);
-           loadTrack(idx, true);
-           renderAmbientDropdown(); 
-        };
-        
-        item.innerHTML = `
-          <div class="truncate pr-2 w-[85%]">
-            <div class="text-xs sm:text-sm font-medium truncate">${track.title}</div>
-            <div class="text-[9px] sm:text-[10px] opacity-70 truncate">${track.artist}</div>
-          </div>
-          <div class="text-xs ${isCurrent && isPlaying ? 'text-amber-400' : 'opacity-0'}">▶</div>
-        `;
-        container.appendChild(item);
-      });
     }
 
     function renderPlaylist() {
@@ -763,9 +566,6 @@
     function updatePlayButtons() {
       document.getElementById('masterPlayBtn').innerText = isPlaying ? '❚❚' : '▶';
       renderPlaylist();
-      if (!document.getElementById('ambientDropdown').classList.contains('hidden')) {
-        renderAmbientDropdown();
-      }
     }
 
     function nextTrack() { loadTrack((currentTrackIndex + 1) % tracks.length, true); }
@@ -776,7 +576,7 @@
       currentVolume = val / 100;
       if (!isMuted) {
         audio.volume = currentVolume;
-        dhakAudio.volume = currentVolume * 0.6; // Keep ambient dhak slightly softer than main player
+        dhakAudio.volume = currentVolume * 0.6;
       }
       updateVolumeIcon();
     }
@@ -806,10 +606,6 @@
     }
 
     function filterCategory(cat) {
-      if (cat !== 'ambience') {
-        closeAmbientDropdown();
-      }
-
       const isNewCategory = currentFilter !== cat;
       currentFilter = cat;
       
@@ -829,8 +625,6 @@
         if (first >= 0) loadTrack(first, true);
       }
     }
-
-    // --- UI/UX LOGIC --- //
 
     function switchTab(index) {
       currentTabIndex = index;
