@@ -619,17 +619,64 @@
     let currentFilter = 'og';
     let festivalMode = 'day';
     const FESTIVAL_MODES = ['day', 'sandhya', 'night'];
+    // Independent audio channels:
+    // 1) Main music player
+    // 2) Ambient Music playlist
+    // 3) Dedicated Dhak Baja control
     let ambienceAudio = new Audio();
     let ambiencePlaying = false;
     let currentAmbienceIndex = 0;
     let ambienceUserStopped = false;
 
+    let dhakAudio = new Audio();
+    let dhakPlaying = false;
+    let dhakUserStopped = false;
+
+    const dhakTrack = {
+      id: 'dhak-main',
+      title: 'Dhak Baja',
+      artist: 'Traditional Dhak',
+      url: 'Music/Ambience/durga-puja-dhak-main.mp3'
+    };
+
+    // Ambient Music playlist.
+    // Upload these files to Music/Ambient/ using these exact filenames.
     const ambienceTracks = [
       {
-        id: 'dhak-main',
-        title: 'Durga Puja Dhak',
-        artist: 'Traditional Dhak',
-        url: 'Music/Ambience/durga-puja-dhak-main.mp3'
+        id: 'durga-puja-ambient',
+        title: 'Durga Puja Ambient',
+        artist: 'Ambient Soundscape',
+        url: 'Music/Ambient/durga-puja-ambient.mp3'
+      },
+      {
+        id: 'divine-puja-atmosphere',
+        title: 'Divine Puja Atmosphere',
+        artist: 'Puja Atmosphere',
+        url: 'Music/Ambient/divine-puja-atmosphere.mp3'
+      },
+      {
+        id: 'puja-temple-ambience',
+        title: 'Puja Temple Ambience',
+        artist: 'Temple Ambience',
+        url: 'Music/Ambient/puja-temple-ambience.mp3'
+      },
+      {
+        id: 'sacred-conch',
+        title: 'Sacred Conch',
+        artist: 'Sacred Sound',
+        url: 'Music/Ambient/sacred-conch.mp3'
+      },
+      {
+        id: 'devi-durga-meditation',
+        title: 'Devi Durga Meditation',
+        artist: 'Devi Durga',
+        url: 'Music/Ambient/devi-durga-meditation.mp3'
+      },
+      {
+        id: 'simhastha-sashisekhara',
+        title: 'Simhastha Sashisekhara',
+        artist: 'Traditional',
+        url: 'Music/Ambient/simhastha-sashisekhara.mp3'
       }
     ];
 
@@ -710,9 +757,11 @@
       scheduleNextBackgroundChange();
       
       setupAudioListeners();
-      setupAmbienceAutoStart();
-ambienceAudio.volume = 0.5;
+      setupDhakAutoStart();
+      ambienceAudio.volume = 0.5;
       ambienceAudio.preload = 'auto';
+      dhakAudio.volume = 0.5;
+      dhakAudio.preload = 'auto';
     });
 
     // Changes all Tithi backdrops on the same 5-minute clock boundary.
@@ -782,30 +831,45 @@ ambienceAudio.volume = 0.5;
       }, delay);
     }
 
-    function setupAmbienceAutoStart() {
-      const startAmbience = () => {
-        if (ambiencePlaying || ambienceUserStopped) return;
-        if (!ambienceAudio.src) {
-          ambienceAudio.src = ambienceTracks[0].url;
-          ambienceAudio.load();
+    function setupAmbientAutoStart() {
+      // Ambient Music does not auto-start. It is user-selected from the playlist.
+      ambienceUserStopped = false;
+    }
+
+    function setupDhakAutoStart() {
+      const startDhak = () => {
+        if (dhakPlaying || dhakUserStopped) return;
+
+        if (!dhakAudio.src) {
+          dhakAudio.src = dhakTrack.url;
+          dhakAudio.load();
         }
-        ambienceAudio.play().then(() => {
-          ambiencePlaying = true;
-          renderAmbienceOptions();
+
+        dhakAudio.play().then(() => {
+          dhakPlaying = true;
+          updateDhakButton();
         }).catch(() => {
-          ambiencePlaying = false;
-          renderAmbienceOptions();
+          // Browser autoplay may be blocked; the first user interaction retries it.
+          updateDhakButton();
         });
       };
 
-      document.addEventListener('pointerdown', startAmbience, { once: true });
-      document.addEventListener('keydown', startAmbience, { once: true });
+      startDhak();
+      document.addEventListener('pointerdown', startDhak, { once: true });
+      document.addEventListener('keydown', startDhak, { once: true });
     }
 
     ambienceAudio.addEventListener('ended', () => {
       if (!ambienceUserStopped) {
         ambienceAudio.currentTime = 0;
         ambienceAudio.play().catch(() => {});
+      }
+    });
+
+    dhakAudio.addEventListener('ended', () => {
+      if (!dhakUserStopped) {
+        dhakAudio.currentTime = 0;
+        dhakAudio.play().catch(() => {});
       }
     });
 
@@ -1063,7 +1127,6 @@ ambienceAudio.volume = 0.5;
     }
 
     function playAmbienceFromPlaylist(i) {
-      currentAmbienceIndex = i;
       selectAmbience(i);
     }
 
@@ -1157,37 +1220,39 @@ ambienceAudio.volume = 0.5;
     }
 
     function selectAmbience(index) {
+      if (!ambienceTracks[index]) return;
+
       currentAmbienceIndex = index;
       ambienceUserStopped = false;
       ambienceAudio.src = ambienceTracks[index].url;
       ambienceAudio.load();
       ambienceAudio.play().then(() => {
         ambiencePlaying = true;
-        updateDhakButton();
         renderPlaylistPanel();
       }).catch(() => {
         ambiencePlaying = false;
-        updateDhakButton();
+        renderPlaylistPanel();
       });
     }
 
     function toggleDhak() {
-      if (!ambienceAudio.src) {
-        ambienceAudio.src = ambienceTracks[currentAmbienceIndex].url;
-        ambienceAudio.load();
+      if (!dhakAudio.src) {
+        dhakAudio.src = dhakTrack.url;
+        dhakAudio.load();
       }
 
-      if (ambiencePlaying) {
-        ambienceAudio.pause();
-        ambiencePlaying = false;
-        ambienceUserStopped = true;
+      if (dhakPlaying) {
+        dhakAudio.pause();
+        dhakPlaying = false;
+        dhakUserStopped = true;
       } else {
-        ambienceUserStopped = false;
-        ambienceAudio.play().then(() => {
-          ambiencePlaying = true;
+        dhakUserStopped = false;
+        dhakAudio.play().then(() => {
+          dhakPlaying = true;
           updateDhakButton();
         }).catch(() => {});
       }
+
       updateDhakButton();
     }
 
@@ -1195,7 +1260,7 @@ ambienceAudio.volume = 0.5;
       const btn = document.getElementById('dhakToggleBtn');
       const status = document.getElementById('dhakStatus');
       if (!btn || !status) return;
-      const active = ambiencePlaying;
+      const active = dhakPlaying;
       btn.classList.toggle('dhak-active', active);
       btn.setAttribute('aria-pressed', String(active));
       btn.title = active ? 'Dhak Baja is ON — click to stop' : 'Dhak Baja is OFF — click to play';
