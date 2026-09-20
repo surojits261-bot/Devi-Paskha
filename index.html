@@ -80,6 +80,30 @@
       transition-duration: 650ms, 1100ms, 650ms;
     }
 
+
+    .dhak-icon-minimal {
+      display: inline-block;
+      transform-origin: 50% 55%;
+      animation: dhakBeat 1.8s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    @keyframes dhakBeat {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      40% { transform: rotate(-3deg) scale(1.045); }
+      55% { transform: rotate(2deg) scale(1.06); }
+      70% { transform: rotate(-1deg) scale(1.02); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dhak-icon-minimal { animation: none; }
+      #tithiFact { transition: none !important; }
+    }
+
+    #tithiFact {
+      transition: opacity 280ms ease, transform 280ms ease;
+    }
+
     /* Day Mode UI Styling */
     body.day-mode {
       background-color: #FAF7F2;
@@ -115,7 +139,8 @@
       </div>
       <div>
         <h1 class="text-xl sm:text-2xl font-bold tracking-wide text-amber-400 accent-heading flex items-center gap-2">
-          দেবীপক্ষ <span class="text-xs font-normal text-stone-400 sub-text font-cinzel">Devi Paksha</span>
+          দেবীপক্ষ <span class="text-base sm:text-lg text-amber-300" aria-hidden="true">🪷</span>
+          <span class="text-xs font-normal text-stone-400 sub-text font-cinzel">Devi Paksha</span>
         </h1>
       </div>
     </div>
@@ -182,15 +207,15 @@
       <div class="w-full max-w-2xl glassmorphism glass-card bg-black/45 border border-white/15 rounded-2xl p-4 sm:p-5 text-left shadow-2xl relative">
         <div class="flex items-center justify-between mb-1">
           <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider font-mono">DID YOU KNOW</span>
-          <div class="flex gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-stone-600"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-stone-600"></span>
-          </div>
+          <button type="button" onclick="openFactModal()" class="text-[10px] sm:text-[11px] text-amber-300/80 hover:text-amber-300 transition font-mono" aria-label="More facts about this Tithi">MORE FACTS ↗</button>
         </div>
         <p id="tithiFact" class="text-xs sm:text-sm text-stone-200 sub-text leading-relaxed">
           Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon, right before the goddess departs.
         </p>
+        <div class="mt-3 flex items-center gap-2 text-[10px] text-stone-400 sub-text font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="factHint">A new fact appears every few seconds</span>
+        </div>
       </div>
 
       <!-- NEW: Inline Playlist Card -->
@@ -212,9 +237,23 @@
 
   </main>
 
+  <!-- Tithi Facts Modal -->
+  <div id="factModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="factModalTitle">
+    <div class="w-full max-w-lg glassmorphism glass-card bg-black/70 border border-amber-400/30 rounded-2xl shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
+        <div>
+          <div id="factModalTitle" class="text-sm font-bold text-amber-300">Durga Puja Facts</div>
+          <div id="factModalSubtitle" class="text-[10px] text-stone-400 font-mono mt-0.5">Current Tithi</div>
+        </div>
+        <button type="button" onclick="closeFactModal()" class="text-stone-400 hover:text-white text-lg leading-none" aria-label="Close facts">✕</button>
+      </div>
+      <div id="factModalBody" class="max-h-[60vh] overflow-y-auto custom-scrollbar p-4 space-y-3"></div>
+    </div>
+  </div>
+
   <!-- Floating Dhak Baja Ambient Button (Bottom Left) -->
   <button id="floatingDhakBtn" onclick="toggleDhak()" class="fixed bottom-[88px] sm:bottom-[80px] left-4 z-40 px-3.5 py-2 rounded-full bg-amber-950/80 border border-amber-500/50 glassmorphism text-amber-300 text-[11px] sm:text-xs font-bold shadow-[0_5px_20px_rgba(0,0,0,0.5)] flex items-center gap-1.5 transition-all hover:scale-105 hover:bg-amber-900/80">
-    <span id="dhakIcon" class="animate-pulse text-sm">🪘</span> 
+    <span id="dhakIcon" class="dhak-icon-minimal text-sm" aria-hidden="true">🪘</span> 
     <span id="dhakStatus">Dhak Baja: ON</span>
   </button>
 
@@ -268,36 +307,66 @@
         name: "মহালয়া", en: "Mahalaya", dateStr: "Oct 10, 2026", targetDate: new Date(2026, 9, 10, 4, 0, 0),
         subtitle: "The City Is Waiting", dateLabel: "Oct 10, 2026", mood: "sacred, nostalgic, early-morning radio",
         fact: "Mahalaya marks the start of Devi Paksha — the day Chandi Path airs on All India Radio at 4am.",
+        facts: [
+          "Mahalaya marks the beginning of Devi Paksha, the fortnight associated with the worship of the Divine Mother.",
+          "Many Bengali households traditionally begin the festive season before dawn by listening to Mahishasura Mardini and Chandi Path.",
+          "Tarpan for ancestors is traditionally offered on Mahalaya morning at rivers and other sacred water bodies."
+        ],
         bgImages: ["mahalaya-1.png", "mahalaya-2.png", "mahalaya-3.png", "mahalaya-4.png"]
       },
       {
         name: "মহাষষ্ঠী", en: "Shashti", dateStr: "Oct 17, 2026", targetDate: new Date(2026, 9, 17, 8, 0, 0),
         subtitle: "Bodhon & Anondo", dateLabel: "Oct 17, 2026", mood: "arrival, excitement, new clothes & fragrance",
         fact: "Kalparambho and Akal Bodhon take place on Shashthi, awakening the goddess and officially unveiling pandals.",
+        facts: [
+          "Maha Shashthi is associated with Bodhon — the ritual awakening and invocation of Goddess Durga.",
+          "Amantran and Adhivas are part of the traditional Shashthi evening observances in many Bengali puja traditions.",
+          "Shashthi marks the ceremonial beginning of the main Durga Puja festivities, with pandal visits and the first major darshan."
+        ],
         bgImages: ["shashti-1.png", "shashti-2.png", "shashti-3.png"]
       },
       {
         name: "মহাসপ্তমী", en: "Saptami", dateStr: "Oct 18, 2026", targetDate: new Date(2026, 9, 18, 7, 0, 0),
         subtitle: "Kola Bou Snan", dateLabel: "Oct 18, 2026", mood: "morning riverbank rituals & rhythm of dhak",
         fact: "The Nabapatrika is bathed at dawn at the Ganga ghats.",
+        facts: [
+          "Maha Saptami begins with the ceremonial bath of the Nabapatrika, a bundle of nine plants representing sacred forms of nature.",
+          "The Nabapatrika is traditionally wrapped in a sari and placed beside Lord Ganesha in the puja arrangement.",
+          "Saptami is marked by morning rituals, pran pratishtha and the continuation of the main Durga Puja worship."
+        ],
         bgImages: ["saptami-1.png", "saptami-2.png", "saptami-3.png"]
       },
       {
         name: "মহাঅষ্টমী", en: "Ashtami", dateStr: "Oct 19, 2026", targetDate: new Date(2026, 9, 19, 10, 28, 0),
         subtitle: "Pushpanjali & Sandhi Puja", dateLabel: "Oct 19, 2026", mood: "reverence, fasting, 108 lotus flowers & deep devotion",
         fact: "Sandhi Puja takes place at the exact junction of Ashtami and Nabami — 108 clay lamps are lit.",
+        facts: [
+          "Maha Ashtami is one of the most important days of Durga Puja and is closely associated with Pushpanjali.",
+          "Sandhi Puja is observed at the transition between Ashtami and Nabami and is traditionally associated with 108 lamps and lotus offerings.",
+          "In many pujas, devotees fast or eat specially prepared bhog before or after the main Ashtami rituals."
+        ],
         bgImages: ["ashtami-1.png", "ashtami-2.png", "ashtami-3.png"]
       },
       {
         name: "মহানবমী", en: "Nabami", dateStr: "Oct 20, 2026", targetDate: new Date(2026, 9, 20, 12, 0, 0),
         subtitle: "Dhunuchi Naach & Grand Adda", dateLabel: "Oct 20, 2026", mood: "smoke of frankincense, frantic dhak, twilight sadness",
         fact: "Maha Nabami culminates in the energetic Dhunuchi Naach and marks the final complete day of celebration.",
+        facts: [
+          "Maha Nabami is the final full day of the main Durga Puja celebration.",
+          "Homam or Homa is an important Nabami ritual in many traditional pujas.",
+          "Dhunuchi Naach, dhak rhythms and communal bhog are among the most recognisable Nabami traditions in Bengal."
+        ],
         bgImages: ["nabami-1.png", "nabami-2.png", "nabami-3.png"]
       },
       {
         name: "মহাদশমী", en: "Dashami", dateStr: "Oct 21, 2026", targetDate: new Date(2026, 9, 21, 16, 0, 0),
         subtitle: "Abar Esho Maa", dateLabel: "Oct 21, 2026", mood: "Sindoor khela, family, final darshan",
         fact: "Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon.",
+        facts: [
+          "Maha Dashami is the day associated with the goddess's farewell and immersion processions.",
+          "Sindoor Khela is a well-known Bengali Dashami tradition performed in many community and household pujas before visarjan.",
+          "After immersion, people exchange Bijoya Dashami greetings and visit relatives and friends as part of the farewell season."
+        ],
         bgImages: ["dashami-1.png", "dashami-2.png", "dashami-3.png", "dashami-4.png"]
       }
     ];
@@ -388,6 +457,7 @@
       syncBackdropToGlobalCycle(true);
       scheduleNextBackgroundChange();
       setupAudioListeners();
+      startFactRotation();
       initDhak();
     });
 
@@ -500,6 +570,89 @@
         updatePlayButtons();
       });
     }
+
+    let currentFactIndex = 0;
+    let factRotationTimer = null;
+
+    function getCurrentTithiFacts() {
+      const d = tithiData[currentTabIndex];
+      return Array.isArray(d.facts) && d.facts.length ? d.facts : [d.fact];
+    }
+
+    function showFact(index = 0, animate = true) {
+      const facts = getCurrentTithiFacts();
+      currentFactIndex = ((index % facts.length) + facts.length) % facts.length;
+      const factElement = document.getElementById('tithiFact');
+      const hint = document.getElementById('factHint');
+      if (!factElement) return;
+
+      if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        factElement.style.opacity = '0';
+        factElement.style.transform = 'translateY(3px)';
+        setTimeout(() => {
+          factElement.innerText = facts[currentFactIndex];
+          factElement.style.opacity = '1';
+          factElement.style.transform = 'translateY(0)';
+        }, 140);
+      } else {
+        factElement.innerText = facts[currentFactIndex];
+        factElement.style.opacity = '1';
+        factElement.style.transform = 'translateY(0)';
+      }
+
+      if (hint) {
+        hint.innerText = `${facts.length > 1 ? `Fact ${currentFactIndex + 1} of ${facts.length}` : 'Tithi highlight'} • updates automatically`;
+      }
+    }
+
+    function startFactRotation() {
+      if (factRotationTimer) clearInterval(factRotationTimer);
+      currentFactIndex = 0;
+      showFact(0, false);
+      factRotationTimer = setInterval(() => {
+        showFact(currentFactIndex + 1, true);
+      }, 6500);
+    }
+
+    function openFactModal() {
+      const d = tithiData[currentTabIndex];
+      const facts = getCurrentTithiFacts();
+      const modal = document.getElementById('factModal');
+      const title = document.getElementById('factModalTitle');
+      const subtitle = document.getElementById('factModalSubtitle');
+      const body = document.getElementById('factModalBody');
+      if (!modal || !body) return;
+
+      title.innerText = `${d.name} • Did You Know?`;
+      subtitle.innerText = `${d.en} • ${d.dateStr}`;
+      body.innerHTML = facts.map((fact, index) => `
+        <div class="rounded-xl border border-white/10 bg-black/25 p-3">
+          <div class="flex items-start gap-2.5">
+            <span class="text-amber-400 font-mono text-[11px] mt-0.5">${String(index + 1).padStart(2, '0')}</span>
+            <p class="text-xs sm:text-sm text-stone-200 leading-relaxed">${fact}</p>
+          </div>
+        </div>
+      `).join('');
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeFactModal() {
+      const modal = document.getElementById('factModal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeFactModal();
+    });
+
+    document.addEventListener('click', event => {
+      const modal = document.getElementById('factModal');
+      if (modal && event.target === modal) closeFactModal();
+    });
 
     function formatTime(s) {
       const m = Math.floor(s / 60), sec = Math.floor(s % 60);
@@ -664,6 +817,8 @@
       document.getElementById('heroSubtitle').innerText = d.subtitle;
       document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
       document.getElementById('tithiFact').innerText = d.fact;
+      currentFactIndex = 0;
+      showFact(0, false);
 
       setBackdropImage(d.bgImages[currentImageIndex], false, true);
       updateCountdown();
