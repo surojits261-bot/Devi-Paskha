@@ -38,25 +38,62 @@
     }
   </script>
   <style>
+    :root {
+      --glass-bg: rgba(8, 10, 18, 0.28);
+      --glass-bg-strong: rgba(8, 10, 18, 0.38);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --gold: #D4AF37;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+    }
+
+    html, body { min-height: 100%; }
+
     body {
       font-family: 'Hind Siliguri', sans-serif;
       transition: background-color 0.4s ease, color 0.4s ease;
       -webkit-tap-highlight-color: transparent;
       overflow-x: hidden;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(212,175,55,.10), transparent 28%),
+        radial-gradient(circle at 82% 28%, rgba(136,19,55,.16), transparent 34%),
+        #09080F;
     }
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
-    
-    .glassmorphism {
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 55, 0.35);
+      border-radius: 999px;
     }
-    
+
+    /* Unified glass system */
+    .glassmorphism,
+    .glass-card,
+    .glass-surface {
+      background: var(--glass-bg) !important;
+      border: 1px solid var(--glass-border) !important;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px) saturate(145%);
+      -webkit-backdrop-filter: blur(22px) saturate(145%);
+    }
+
+    .glassmorphism:hover,
+    .glass-card:hover {
+      border-color: rgba(212, 175, 55, 0.28) !important;
+    }
+
+    .backdrop-vignette {
+      background:
+        radial-gradient(circle at center, transparent 35%, rgba(0,0,0,.12) 65%, rgba(0,0,0,.60) 100%),
+        linear-gradient(90deg, rgba(0,0,0,.30), transparent 22%, transparent 78%, rgba(0,0,0,.34)),
+        linear-gradient(180deg, rgba(0,0,0,.48), transparent 24%, transparent 70%, rgba(0,0,0,.62));
+    }
+
     .backdrop-image {
-      --backdrop-opacity: 0.7;
+      --backdrop-opacity: 0.58;
       opacity: 0;
       transform: scale(1.02);
-      filter: blur(3px);
+      filter: blur(3px) saturate(1.08);
       transition:
         opacity 1800ms cubic-bezier(0.22, 1, 0.36, 1),
         transform 5000ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -67,34 +104,300 @@
     .backdrop-image.active {
       opacity: var(--backdrop-opacity);
       transform: scale(1.05);
-      filter: blur(0);
+      filter: blur(0) saturate(1.08);
     }
 
     .backdrop-image.leaving {
       opacity: 0;
       transform: scale(1.02);
-      filter: blur(3px);
+      filter: blur(3px) saturate(1.08);
     }
 
     .backdrop-image.fast-transition {
       transition-duration: 650ms, 1100ms, 650ms;
     }
 
-    /* Day Mode UI Styling */
+    .brand-mark {
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(212,175,55,.45);
+      box-shadow: 0 0 28px rgba(212,175,55,.16);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    /* Tithi navigation */
+    .tab-btn {
+      min-width: 98px;
+      background: rgba(7, 8, 14, 0.22) !important;
+      border-color: rgba(255,255,255,.13) !important;
+      box-shadow: 0 10px 28px rgba(0,0,0,.18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .tab-btn.nav-tab-active {
+      background: rgba(212,175,55,.16) !important;
+      border-color: rgba(212,175,55,.68) !important;
+      box-shadow: 0 0 28px rgba(212,175,55,.12), 0 14px 34px rgba(0,0,0,.24);
+    }
+
+    .hero-shell {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.15rem;
+      align-items: start;
+    }
+
+    .hero-copy { min-width: 0; }
+
+    .countdown-card {
+      width: min(100%, 760px);
+      margin-inline: auto;
+      padding: 1rem 1.25rem;
+      border-radius: 1.25rem;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .4rem;
+      margin-top: .55rem;
+    }
+
+    .countdown-unit {
+      position: relative;
+      padding: .4rem .6rem;
+      text-align: center;
+    }
+
+    .countdown-unit:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 12%;
+      bottom: 12%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(212,175,55,.5), transparent);
+    }
+
+    .countdown-value {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.55rem, 2.8vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1;
+      color: #f9df86;
+      text-shadow: 0 0 18px rgba(212,175,55,.18);
+    }
+
+    .countdown-label {
+      margin-top: .4rem;
+      font-size: .68rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.62);
+    }
+
+    .hero-title { text-shadow: 0 8px 28px rgba(0,0,0,.58); }
+
+    .hero-divider {
+      width: min(230px, 55%);
+      height: 1px;
+      margin: .7rem auto;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,.75), transparent);
+    }
+
+    /* Category cards */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .65rem;
+      width: min(100%, 760px);
+      margin: 0 auto;
+    }
+
+    .cat-filter {
+      min-height: 62px;
+      justify-content: center;
+      border-radius: 1.05rem !important;
+      background: rgba(7,8,14,.24) !important;
+      border-color: rgba(255,255,255,.13) !important;
+      box-shadow: 0 12px 28px rgba(0,0,0,.17);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .cat-filter.category-active {
+      background: rgba(212,175,55,.18) !important;
+      border-color: rgba(212,175,55,.68) !important;
+      color: #f7d66b !important;
+      box-shadow: 0 0 26px rgba(212,175,55,.11), 0 12px 32px rgba(0,0,0,.20);
+    }
+
+    .category-title { font-size: .82rem; font-weight: 700; }
+    .category-subtitle {
+      margin-top: .14rem;
+      font-size: .65rem;
+      color: rgba(255,255,255,.55);
+      letter-spacing: .05em;
+    }
+
+    /* Right-side glass music library */
+    .playlist-panel {
+      width: 100%;
+      border-radius: 1.35rem;
+      overflow: hidden;
+    }
+
+    .playlist-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .8rem .95rem;
+      border-bottom: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.025);
+    }
+
+    #inlinePlaylistWrapper {
+      max-height: min(55vh, 470px);
+      overflow: hidden;
+    }
+
+    #playlistContainer {
+      max-height: min(55vh, 470px);
+      overflow-y: auto;
+      padding: .45rem;
+    }
+
+    .playlist-row {
+      background: rgba(0,0,0,.14);
+      border-color: rgba(255,255,255,.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .playlist-row-active {
+      background: rgba(212,175,55,.14);
+      border-color: rgba(212,175,55,.44);
+      box-shadow: inset 0 0 24px rgba(212,175,55,.04);
+    }
+
+    .fact-card {
+      border-radius: 1.35rem;
+      background: rgba(7,8,14,.24) !important;
+    }
+
+    .fact-ornament {
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      background: rgba(212,175,55,.10);
+      border: 1px solid rgba(212,175,55,.24);
+      font-size: 1.45rem;
+      box-shadow: inset 0 0 18px rgba(212,175,55,.04);
+    }
+
+    /* Sticky glass player */
+    .bottom-bar {
+      background: rgba(7,8,14,.34) !important;
+      border-top: 1px solid rgba(255,255,255,.14) !important;
+      box-shadow: 0 -18px 42px rgba(0,0,0,.28);
+      backdrop-filter: blur(26px) saturate(150%);
+      -webkit-backdrop-filter: blur(26px) saturate(150%);
+    }
+
+    .player-track-info {
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 1rem;
+      padding: .45rem .6rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .player-round-btn {
+      background: rgba(7,8,14,.26);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 22px rgba(0,0,0,.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .player-round-btn:hover {
+      border-color: rgba(212,175,55,.48);
+      color: #f7d66b;
+    }
+
+    .player-main-btn {
+      box-shadow: 0 0 24px rgba(212,175,55,.16), 0 10px 26px rgba(0,0,0,.22);
+    }
+
+    #seekBar, #volumeBar {
+      filter: drop-shadow(0 0 5px rgba(212,175,55,.08));
+    }
+
+    #floatingDhakBtn {
+      background: rgba(7,8,14,.30) !important;
+      border-color: rgba(212,175,55,.46) !important;
+      box-shadow: 0 12px 28px rgba(0,0,0,.26);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
     body.day-mode {
-      background-color: #FAF7F2;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(212,175,55,.10), transparent 28%),
+        radial-gradient(circle at 82% 28%, rgba(136,19,55,.09), transparent 34%),
+        #f7f2ea;
       color: #26221F;
     }
-    body.day-mode .glass-card {
-      background: rgba(255, 255, 255, 0.78) !important;
-      border-color: rgba(231, 223, 213, 0.8) !important;
-      color: #1C1917;
+
+    body.day-mode .glassmorphism,
+    body.day-mode .glass-card,
+    body.day-mode .glass-surface,
+    body.day-mode .bottom-bar {
+      background: rgba(255,255,255,.30) !important;
+      border-color: rgba(120,100,80,.18) !important;
+      box-shadow: 0 16px 40px rgba(90,70,45,.10);
     }
-    body.day-mode .sub-text {
+
+    body.day-mode .sub-text { color: #57534E !important; }
+    body.day-mode .accent-heading { color: #881337 !important; }
+
+    body.day-mode .tab-btn {
+      background: rgba(255,255,255,.26) !important;
       color: #57534E !important;
     }
-    body.day-mode .accent-heading {
-      color: #881337 !important;
+
+    body.day-mode .tab-btn.nav-tab-active,
+    body.day-mode .cat-filter.category-active {
+      background: rgba(212,175,55,.17) !important;
+    }
+
+    .devotional-footer {
+      color: rgba(255,255,255,.44);
+      text-shadow: 0 2px 10px rgba(0,0,0,.3);
+    }
+
+    @media (min-width: 1024px) {
+      .hero-shell {
+        grid-template-columns: minmax(0, 1.45fr) minmax(320px, .75fr);
+        gap: 1rem;
+      }
+
+      .hero-copy { padding-right: .2rem; }
+      .playlist-panel { position: sticky; top: 1rem; }
+    }
+
+    @media (max-width: 700px) {
+      .countdown-grid { gap: .15rem; }
+      .countdown-value { font-size: 1.45rem; }
+      .category-grid { grid-template-columns: 1fr; }
+      #inlinePlaylistWrapper, #playlistContainer { max-height: 34vh; }
     }
   </style>
 </head>
@@ -104,13 +407,14 @@
   <div class="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
     <div id="photoBackdropA" class="backdrop-image absolute inset-0 bg-cover bg-center"></div>
     <div id="photoBackdropB" class="backdrop-image absolute inset-0 bg-cover bg-center"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-[#09080F] via-transparent to-black/60 opacity-80"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#09080F] via-transparent to-black/60 opacity-75"></div>
+    <div class="backdrop-vignette absolute inset-0"></div>
   </div>
 
   <!-- Header with Custom Logo -->
   <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-3 flex items-center justify-between relative z-10">
     <div class="flex items-center space-x-3.5">
-      <div class="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center justify-center overflow-hidden flex-shrink-0">
+      <div class="brand-mark w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 flex items-center justify-center overflow-hidden flex-shrink-0">
         <img src="logo.png" alt="Devi Logo" class="w-full h-full object-cover rounded-full bg-stone-900" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23d4af37\'/><text x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23000\' font-family=\'sans-serif\'>মা</text></svg>';" />
       </div>
       <div>
@@ -128,88 +432,128 @@
   </header>
 
   <!-- Main View -->
-  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 flex-1 flex flex-col justify-center py-4 relative z-10">
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 flex-1 flex flex-col justify-center py-3 sm:py-4 relative z-10">
 
-    <!-- Top Tithi Selector Pills -->
-    <nav class="flex items-center justify-start sm:justify-center overflow-x-auto pb-4 gap-2.5 custom-scrollbar mb-6">
-      <button onclick="switchTab(0)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="0">
+    <!-- Tithi Navigation -->
+    <nav class="flex items-center justify-start sm:justify-center overflow-x-auto pb-3 gap-2.5 custom-scrollbar mb-4">
+      <button onclick="switchTab(0)" class="tab-btn glassmorphism px-4 py-2.5 rounded-2xl transition whitespace-nowrap text-stone-300 text-xs sm:text-sm flex flex-col items-center" data-index="0">
         <span class="font-semibold">মহালয়া</span>
         <span class="text-[10px] opacity-70 font-cinzel tracking-wider">MAHALAYA</span>
       </button>
-      <button onclick="switchTab(1)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="1">
+      <button onclick="switchTab(1)" class="tab-btn glassmorphism px-4 py-2.5 rounded-2xl transition whitespace-nowrap text-stone-300 text-xs sm:text-sm flex flex-col items-center" data-index="1">
         <span class="font-semibold">মহাষষ্ঠী</span>
         <span class="text-[10px] opacity-70 font-cinzel tracking-wider">SHASHTI</span>
       </button>
-      <button onclick="switchTab(2)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="2">
+      <button onclick="switchTab(2)" class="tab-btn glassmorphism px-4 py-2.5 rounded-2xl transition whitespace-nowrap text-stone-300 text-xs sm:text-sm flex flex-col items-center" data-index="2">
         <span class="font-semibold">মহাসপ্তমী</span>
         <span class="text-[10px] opacity-70 font-cinzel tracking-wider">SAPTAMI</span>
       </button>
-      <button onclick="switchTab(3)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="3">
+      <button onclick="switchTab(3)" class="tab-btn glassmorphism px-4 py-2.5 rounded-2xl transition whitespace-nowrap text-stone-300 text-xs sm:text-sm flex flex-col items-center" data-index="3">
         <span class="font-semibold">মহাঅষ্টমী</span>
         <span class="text-[10px] opacity-70 font-cinzel tracking-wider">ASHTAMI</span>
       </button>
-      <button onclick="switchTab(4)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="4">
+      <button onclick="switchTab(4)" class="tab-btn glassmorphism px-4 py-2.5 rounded-2xl transition whitespace-nowrap text-stone-300 text-xs sm:text-sm flex flex-col items-center" data-index="4">
         <span class="font-semibold">মহানবমী</span>
         <span class="text-[10px] opacity-70 font-cinzel tracking-wider">NABAMI</span>
       </button>
-      <button onclick="switchTab(5)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-amber-400 border border-amber-400/80 bg-amber-950/40 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px] shadow-lg shadow-amber-900/20 nav-tab-active" data-index="5">
+      <button onclick="switchTab(5)" class="tab-btn glassmorphism px-4 py-2.5 rounded-2xl transition whitespace-nowrap text-amber-400 text-xs sm:text-sm flex flex-col items-center nav-tab-active" data-index="5">
         <span class="font-semibold">মহাদশমী</span>
         <span class="text-[10px] opacity-80 font-cinzel tracking-wider">DASHAMI</span>
       </button>
     </nav>
 
-    <!-- Central Hero & Countdown Section -->
-    <div class="flex flex-col items-center text-center my-auto py-6 relative pb-16">
-      
-      <div id="heroBadgeContainer" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 border border-white/15 text-amber-300 text-sm sm:text-base font-medium mb-4 glassmorphism shadow-md">
-        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-        <span id="heroBadgeText">মহাদশমী (Oct 21, 2026) in <strong id="countdownInline" class="font-mono text-white ml-1">31d 13h 46m</strong></span>
-      </div>
+    <div class="hero-shell">
+      <!-- Main Hero -->
+      <section class="hero-copy flex flex-col items-center text-center">
+        <div id="heroBadgeContainer" class="countdown-card glassmorphism text-amber-300">
+          <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-amber-200/90">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_12px_rgba(212,175,55,.5)]"></span>
+            <span id="heroBadgeText">মহাদশমী • Oct 21, 2026</span>
+          </div>
 
-      <h2 id="heroTitle" class="text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
-      
-      <p id="heroSubtitle" class="text-lg sm:text-xl font-medium text-stone-200 sub-text drop-shadow tracking-wide mb-1">Abar Esho Maa</p>
-      <p id="heroDateSub" class="text-xs sm:text-sm text-amber-200/80 font-mono tracking-widest uppercase mb-6">Oct 21, 2026 • sindoor khela, family, final darshan</p>
-
-      <!-- Music Category Pills -->
-      <div class="flex items-center justify-center gap-2 flex-wrap mb-8">
-        <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow flex items-center gap-1.5" data-category="og">🎵 Pandal OG Classic Hits</button>
-        <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="adhunik">🎶 Adhunik Pujo Mix</button>
-        <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambience">🪷 Ambience</button>
-      </div>
-
-      <!-- Did You Know / Fact Card -->
-      <div class="w-full max-w-2xl glassmorphism glass-card bg-black/45 border border-white/15 rounded-2xl p-4 sm:p-5 text-left shadow-2xl relative">
-        <div class="flex items-center justify-between mb-1">
-          <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider font-mono">DID YOU KNOW</span>
-          <div class="flex gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-stone-600"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-stone-600"></span>
+          <div class="countdown-grid">
+            <div class="countdown-unit">
+              <div id="countdownDays" class="countdown-value">31</div>
+              <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-unit">
+              <div id="countdownHours" class="countdown-value">13</div>
+              <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-unit">
+              <div id="countdownMinutes" class="countdown-value">46</div>
+              <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-unit">
+              <div id="countdownSeconds" class="countdown-value">00</div>
+              <div class="countdown-label">Seconds</div>
+            </div>
           </div>
         </div>
-        <p id="tithiFact" class="text-xs sm:text-sm text-stone-200 sub-text leading-relaxed">
-          Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon, right before the goddess departs.
-        </p>
-      </div>
 
-      <!-- NEW: Inline Playlist Card -->
-      <div class="w-full max-w-2xl glassmorphism glass-card bg-black/45 border border-white/15 rounded-2xl p-4 sm:p-5 text-left shadow-2xl relative mt-4">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] sm:text-[11px] font-bold text-stone-300 uppercase tracking-wider font-mono">TAP A TRACK TO PLAY INLINE</span>
-          <button id="inlinePlaylistToggleBtn" onclick="toggleInlinePlaylist()" class="px-3 py-1.5 rounded-full border border-white/10 bg-black/40 text-[10px] text-stone-300 hover:text-white transition flex items-center gap-1">
-            <span id="toggleIcon">+</span> <span id="toggleText">Show list</span>
+        <div class="py-5 sm:py-6">
+          <h2 id="heroTitle" class="hero-title text-[3.65rem] sm:text-[5.3rem] lg:text-[6.2rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic leading-none">মহাদশমী</h2>
+          <div class="hero-divider"></div>
+          <p id="heroSubtitle" class="text-xl sm:text-2xl font-medium text-stone-100 sub-text drop-shadow tracking-wide mb-2">Abar Esho Maa</p>
+          <p id="heroDateSub" class="text-[11px] sm:text-xs text-amber-200/80 font-mono tracking-widest uppercase">Oct 21, 2026 • sindoor khela, family, final darshan</p>
+        </div>
+
+        <!-- Music Categories -->
+        <div class="category-grid">
+          <button onclick="filterCategory('og')" class="cat-filter category-active glassmorphism text-stone-300 text-xs sm:text-sm font-medium transition flex flex-col items-center" data-category="og">
+            <span class="category-title">🎵 Pandal OG Classic Hits</span>
+            <span class="category-subtitle">Timeless Pujo Classics</span>
+          </button>
+          <button onclick="filterCategory('adhunik')" class="cat-filter glassmorphism text-stone-300 text-xs sm:text-sm font-medium transition flex flex-col items-center" data-category="adhunik">
+            <span class="category-title">🎶 Adhunik Pujo Mix</span>
+            <span class="category-subtitle">Modern Bengali Vibes</span>
+          </button>
+          <button onclick="filterCategory('ambience')" class="cat-filter glassmorphism text-stone-300 text-xs sm:text-sm font-medium transition flex flex-col items-center" data-category="ambience">
+            <span class="category-title">🪷 Ambience</span>
+            <span class="category-subtitle">Soothing Pujo Atmosphere</span>
           </button>
         </div>
-        <div id="inlinePlaylistWrapper" class="hidden mt-3 pt-3 border-t border-white/10 transition-all">
-          <div id="playlistContainer" class="max-h-[30vh] overflow-y-auto custom-scrollbar flex flex-col gap-1.5 pr-1">
+
+        <!-- Did You Know -->
+        <div class="fact-card w-full max-w-3xl glass-card mt-4 p-4 sm:p-5 text-left relative">
+          <div class="flex items-start gap-3.5">
+            <div class="fact-ornament">🪔</div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-3 mb-1">
+                <span class="text-[10px] sm:text-[11px] font-bold text-amber-400 uppercase tracking-wider font-mono">DID YOU KNOW</span>
+                <span class="text-amber-300/60 text-xs">✦</span>
+              </div>
+              <p id="tithiFact" class="text-xs sm:text-sm text-stone-200 sub-text leading-relaxed">
+                Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon, right before the goddess departs.
+              </p>
+              <div class="mt-3 pt-2 border-t border-white/10 text-[10px] text-amber-200/60 font-cinzel tracking-wide">Joy Maa Durga • জয় মা দুর্গা</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Glass Music Library -->
+      <aside class="playlist-panel glass-surface relative z-20">
+        <div class="playlist-panel-header">
+          <div>
+            <div class="text-sm sm:text-base font-bold text-amber-300 flex items-center gap-2">
+              <span>🎵</span> Music Library
+            </div>
+            <div class="text-[10px] text-stone-400 mt-0.5">
+              <span id="playlistCount">0</span> tracks • tap a track to play
+            </div>
+          </div>
+          <button id="inlinePlaylistToggleBtn" onclick="toggleInlinePlaylist()" class="px-3 py-1.5 rounded-full border border-white/10 bg-black/20 text-[10px] text-stone-300 hover:text-white transition flex items-center gap-1 glassmorphism">
+            <span id="toggleIcon">−</span> <span id="toggleText">Hide list</span>
+          </button>
+        </div>
+        <div id="inlinePlaylistWrapper">
+          <div id="playlistContainer" class="custom-scrollbar flex flex-col gap-1.5">
             <!-- Tracks dynamically injected here -->
           </div>
         </div>
-      </div>
-
+      </aside>
     </div>
-
   </main>
 
   <!-- Floating Dhak Baja Ambient Button (Bottom Left) -->
@@ -219,11 +563,11 @@
   </button>
 
   <!-- Sticky Bottom Audio Player Bar -->
-  <footer class="bottom-bar w-full bg-stone-950/90 border-t border-white/10 backdrop-blur-xl px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
+  <footer class="bottom-bar glass-surface w-full border-t px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
       
       <!-- Track Info -->
-      <div class="flex items-center gap-3 w-full sm:w-auto">
+      <div class="player-track-info flex items-center gap-3 w-full sm:w-auto">
         <div class="w-10 h-10 rounded-lg bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-xl text-amber-400 shadow-md overflow-hidden">
           <img src="logo.png" alt="Mini Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23d4af37\'/><text x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23000\' font-family=\'sans-serif\'>মা</text></svg>';" />
         </div>
@@ -236,9 +580,9 @@
       <!-- Player Controls & Seekbar -->
       <div class="flex-1 max-w-lg w-full flex flex-col items-center gap-1.5">
         <div class="flex items-center gap-6">
-          <button onclick="prevTrack()" class="text-stone-400 hover:text-amber-400 transition active:scale-90 text-sm">⏮</button>
-          <button id="masterPlayBtn" onclick="toggleMasterPlay()" class="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold flex items-center justify-center transition shadow-lg active:scale-95 text-base">▶</button>
-          <button onclick="nextTrack()" class="text-stone-400 hover:text-amber-400 transition active:scale-90 text-sm">⏭</button>
+          <button onclick="prevTrack()" class="player-round-btn w-9 h-9 rounded-full text-stone-400 hover:text-amber-400 transition active:scale-90 text-sm flex items-center justify-center">⏮</button>
+          <button id="masterPlayBtn" onclick="toggleMasterPlay()" class="player-main-btn w-11 h-11 rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold flex items-center justify-center transition active:scale-95 text-base">▶</button>
+          <button onclick="nextTrack()" class="player-round-btn w-9 h-9 rounded-full text-stone-400 hover:text-amber-400 transition active:scale-90 text-sm flex items-center justify-center">⏭</button>
         </div>
 
         <div class="w-full flex items-center gap-2.5 text-[11px] text-stone-400 sub-text font-mono">
@@ -254,7 +598,7 @@
         <input id="volumeBar" type="range" min="0" max="100" value="100" class="w-16 h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="setVolume(this.value)" oninput="setVolume(this.value)" />
 
         <!-- Triggers the inline playlist dropdown smoothly -->
-        <button onclick="toggleInlinePlaylist(true)" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5 ml-2">
+        <button onclick="toggleInlinePlaylist(true)" class="glassmorphism px-3 py-1.5 rounded-lg border border-white/10 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5 ml-2">
           <span>🎵</span> Tracks (<span id="playlistCount">0</span>)
         </button>
       </div>
@@ -541,8 +885,8 @@
       filtered.forEach(track => {
         const isCurrent = track.id === tracks[currentTrackIndex].id;
         const item = document.createElement('div');
-        item.className = `flex items-center justify-between p-3 rounded-xl cursor-pointer border transition text-sm ${
-          isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-semibold shadow-md' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glassmorphism'
+        item.className = `playlist-row flex items-center justify-between p-3 rounded-xl cursor-pointer border transition text-sm ${
+          isCurrent ? 'playlist-row-active text-amber-300 font-semibold' : 'hover:bg-white/5 text-stone-300'
         }`;
         item.onclick = () => {
           const idx = tracks.findIndex(t => t.id === track.id);
@@ -619,8 +963,8 @@
       document.querySelectorAll('.cat-filter').forEach(btn => {
         const isActive = btn.dataset.category === cat;
         btn.className = isActive
-          ? 'cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition shadow flex items-center gap-1.5'
-          : 'cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5';
+          ? 'cat-filter category-active glassmorphism text-amber-300 text-xs sm:text-sm font-medium transition flex flex-col items-center'
+          : 'cat-filter glassmorphism text-stone-300 text-xs sm:text-sm font-medium transition flex flex-col items-center';
       });
     }
 
@@ -672,12 +1016,20 @@
     function updateCountdown() {
       let diff = tithiData[currentTabIndex].targetDate - new Date();
       if (diff < 0) diff = 0;
+
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const mins = Math.floor((diff / 1000 / 60) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
 
       const d = tithiData[currentTabIndex];
-      document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white ml-1">${days}d ${hours}h ${mins}m</strong>`;
+      const pad = value => String(value).padStart(2, '0');
+
+      document.getElementById('heroBadgeText').innerText = `${d.name} • ${d.dateStr}`;
+      document.getElementById('countdownDays').innerText = String(days);
+      document.getElementById('countdownHours').innerText = pad(hours);
+      document.getElementById('countdownMinutes').innerText = pad(mins);
+      document.getElementById('countdownSeconds').innerText = pad(secs);
     }
 
     function toggleDayNight() {
@@ -693,5 +1045,8 @@
       syncBackdropToGlobalCycle(true);
     }
   </script>
+  <div class="devotional-footer relative z-10 text-center text-[10px] sm:text-xs py-2 px-4 font-cinzel tracking-wide">
+    Devi Paksha • A Celebration of Tradition, Culture & Devotion
+  </div>
 </body>
 </html>
