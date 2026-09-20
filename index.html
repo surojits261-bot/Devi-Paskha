@@ -446,14 +446,48 @@
       else setTimeout(warmRemaining, 1200);
     }
 
+    // Select the opening Tithi from the calendar date.
+    // Before Mahalaya, the page opens on Mahalaya. From each Puja date onward,
+    // it opens on the corresponding Tithi until the next Tithi begins.
+    function getCalendarTithiIndex(now = new Date()) {
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      let selectedIndex = 0;
+
+      tithiData.forEach((tithi, index) => {
+        const tithiDate = new Date(
+          tithi.targetDate.getFullYear(),
+          tithi.targetDate.getMonth(),
+          tithi.targetDate.getDate()
+        );
+
+        if (tithiDate <= today) {
+          selectedIndex = index;
+        }
+      });
+
+      return selectedIndex;
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('playlistCount').innerText = tracks.length;
       renderPlaylist();
       preloadBackgroundImages();
+      const openingTithiIndex = getCalendarTithiIndex();
       loadTrack(0, false);
-      switchTab(5);
+      switchTab(openingTithiIndex);
       updateCountdown();
       setInterval(updateCountdown, 1000);
+
+      let lastAutomaticTithiIndex = openingTithiIndex;
+      setInterval(() => {
+        const automaticTithiIndex = getCalendarTithiIndex();
+        if (automaticTithiIndex !== lastAutomaticTithiIndex && currentTabIndex === lastAutomaticTithiIndex) {
+          lastAutomaticTithiIndex = automaticTithiIndex;
+          switchTab(automaticTithiIndex);
+        } else if (automaticTithiIndex !== lastAutomaticTithiIndex) {
+          lastAutomaticTithiIndex = automaticTithiIndex;
+        }
+      }, 60000);
       syncBackdropToGlobalCycle(true);
       scheduleNextBackgroundChange();
       setupAudioListeners();
