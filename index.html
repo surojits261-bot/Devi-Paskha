@@ -182,7 +182,7 @@
       <div class="flex items-center justify-center gap-2 flex-wrap mb-8">
         <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow flex items-center gap-1.5" data-category="og">🎵 Pandal OG Classic Hits</button>
         <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="adhunik">🎶 Adhunik Pujo Mix</button>
-        <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambience">🪷 Ambience</button>
+        <button onclick="filterCategory('ambient')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambient">🪷 Ambient Music</button>
       </div>
 
       <!-- Did You Know / Fact Card -->
@@ -352,7 +352,9 @@
       { id: 13, title: "Mone Pore Ruby Roy", artist: "R.D. Burman", category: "adhunik", url: "Music/Adhunik/mone-pore-ruby-roy.mp3" },
       { id: 14, title: "Koto Je Sagor Nodi", artist: "Kumar Sanu", category: "adhunik", url: "Music/Adhunik/koto-je-sagor-nodi.mp3" },
       { id: 15, title: "Priyotama Mone Rekho", artist: "Kumar Sanu", category: "adhunik", url: "Music/Adhunik/priyotama-mone-rekho.mp3" },
-      { id: 16, title: "Durga Puja Dhak", artist: "Traditional Dhak / Durga Puja Ambience", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" }
+      { id: 16, title: "Divine Puja Atmosphere", artist: "Ambiant durga music-2.mp3", category: "ambient", url: "Music/Ambience/Ambiant durga music-2.mp3" },
+      { id: 17, title: "Shank Baja", artist: "Ambiant durga music-4 Shank baja.mp3", category: "ambient", url: "Music/Ambience/Ambiant durga music-4 Shank baja.mp3" },
+      { id: 18, title: "Durga Puja Ambient", artist: "Ambiant durga music-4.mp3", category: "ambient", url: "Music/Ambience/Ambiant durga music-4.mp3" }
     ];
 
     let currentTabIndex = 5; // Default to Mohadashami
@@ -503,22 +505,30 @@
     }
 
     function setupAudioListeners() {
-      audio.addEventListener('timeupdate', () => {
-        if (!isNaN(audio.duration)) {
-          document.getElementById('seekBar').value = (audio.currentTime / audio.duration) * 100 || 0;
-          document.getElementById('currentTime').innerText = formatTime(audio.currentTime);
-          document.getElementById('durationTime').innerText = formatTime(audio.duration);
+      const updateProgress = () => {
+        if (!Number.isFinite(audio.duration) || audio.duration <= 0) {
+          document.getElementById('seekBar').value = 0;
+          document.getElementById('currentTime').innerText = '0:00';
+          document.getElementById('durationTime').innerText = '0:00';
+          return;
         }
-      });
-      
-      // Auto-play next track
-      audio.addEventListener('ended', () => nextTrack());
 
-      // Graceful error handling
-      audio.addEventListener('error', (e) => {
-        console.warn("Audio playback failed or file missing for:", audio.src);
+        document.getElementById('seekBar').value = (audio.currentTime / audio.duration) * 100 || 0;
+        document.getElementById('currentTime').innerText = formatTime(audio.currentTime);
+        document.getElementById('durationTime').innerText = formatTime(audio.duration);
+      };
+
+      audio.addEventListener('loadedmetadata', updateProgress);
+      audio.addEventListener('timeupdate', updateProgress);
+      audio.addEventListener('play', updatePlayButtons);
+      audio.addEventListener('pause', updatePlayButtons);
+      audio.addEventListener('ended', nextTrack);
+
+      audio.addEventListener('error', () => {
         isPlaying = false;
+        document.getElementById('durationTime').innerText = 'Error';
         updatePlayButtons();
+        console.warn('Unable to load audio file:', tracks[currentTrackIndex]?.url);
       });
     }
 
@@ -536,21 +546,18 @@
       const container = document.getElementById('playlistContainer');
       if (!container) return;
       container.innerHTML = '';
-      
-      const filtered = tracks.filter(t => {
-        if (currentFilter === 'og') return t.category === 'og' || t.category === 'classic';
-        return t.category === currentFilter;
-      });
+
+      const filtered = getCurrentPlaybackList();
 
       filtered.forEach(track => {
-        const isCurrent = track.id === tracks[currentTrackIndex].id;
+        const isCurrent = track.id === tracks[currentTrackIndex]?.id;
         const item = document.createElement('div');
         item.className = `flex items-center justify-between p-3 rounded-xl cursor-pointer border transition text-sm ${
           isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-semibold shadow-md' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glassmorphism'
         }`;
         item.onclick = () => {
           const idx = tracks.findIndex(t => t.id === track.id);
-          loadTrack(idx, true);
+          if (idx >= 0) loadTrack(idx, true);
         };
         item.innerHTML = `
           <div class="flex items-center space-x-3 truncate">
@@ -560,45 +567,107 @@
               <span class="text-xs opacity-75 block truncate">${track.artist}</span>
             </div>
           </div>
-          <button class="text-amber-400 hover:text-amber-300 text-xs px-2.5 py-1 font-bold">${isCurrent && isPlaying ? '❚❚' : '▶'}</button>
+          <button type="button" class="text-amber-400 hover:text-amber-300 text-xs px-2.5 py-1 font-bold">${isCurrent && isPlaying ? '❚❚' : '▶'}</button>
         `;
         container.appendChild(item);
       });
     }
 
+    function getCurrentPlaybackList() {
+      if (currentFilter === 'ambient') {
+        return tracks.filter(t => t.category === 'ambient');
+      }
+      if (currentFilter === 'og') {
+        return tracks.filter(t => t.category === 'og' || t.category === 'classic');
+      }
+      return tracks.filter(t => t.category === currentFilter);
+    }
+
     function loadTrack(index, autoPlay = true) {
+      if (!tracks[index]) return;
+
       currentTrackIndex = index;
       const track = tracks[currentTrackIndex];
+
+      audio.pause();
       audio.src = track.url;
+      audio.currentTime = 0;
+      isPlaying = false;
+
       document.getElementById('playerTitle').innerText = track.title;
       document.getElementById('playerArtist').innerText = track.artist;
-      if (autoPlay) {
-        audio.play().then(() => { isPlaying = true; updatePlayButtons(); }).catch(() => { isPlaying = false; updatePlayButtons(); });
-      } else {
-        isPlaying = false;
-        updatePlayButtons();
-      }
+      document.getElementById('currentTime').innerText = '0:00';
+      document.getElementById('durationTime').innerText = '0:00';
+      document.getElementById('seekBar').value = 0;
+
+      currentFilter = track.category;
+      updatePlayButtons();
       renderPlaylist();
+
+      if (autoPlay) {
+        const promise = audio.play();
+        if (promise && typeof promise.catch === 'function') {
+          promise.catch(() => {
+            isPlaying = false;
+            updatePlayButtons();
+          });
+        }
+      }
     }
 
     function toggleMasterPlay() {
-      if (isPlaying) { audio.pause(); isPlaying = false; }
-      else { audio.play().catch(e => console.log(e)); isPlaying = true; }
-      updatePlayButtons();
-      renderPlaylist();
+      if (!audio.src) {
+        loadTrack(currentTrackIndex, true);
+        return;
+      }
+
+      if (audio.paused || audio.ended) {
+        const promise = audio.play();
+        if (promise && typeof promise.catch === 'function') {
+          promise.catch(() => {
+            isPlaying = false;
+            updatePlayButtons();
+          });
+        }
+      } else {
+        audio.pause();
+      }
     }
 
     function updatePlayButtons() {
+      isPlaying = !audio.paused && !audio.ended;
       document.getElementById('masterPlayBtn').innerText = isPlaying ? '❚❚' : '▶';
       renderPlaylist();
     }
 
-    function nextTrack() { loadTrack((currentTrackIndex + 1) % tracks.length, true); }
-    function prevTrack() { loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); }
-    function seekAudio(val) { if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; }
+    function nextTrack() {
+      const list = getCurrentPlaybackList();
+      if (!list.length) return;
+      const currentId = tracks[currentTrackIndex]?.id;
+      const position = list.findIndex(t => t.id === currentId);
+      const next = list[(position + 1 + list.length) % list.length];
+      const idx = tracks.findIndex(t => t.id === next.id);
+      if (idx >= 0) loadTrack(idx, true);
+    }
+
+    function prevTrack() {
+      const list = getCurrentPlaybackList();
+      if (!list.length) return;
+      const currentId = tracks[currentTrackIndex]?.id;
+      const position = list.findIndex(t => t.id === currentId);
+      const prev = list[(position - 1 + list.length) % list.length];
+      const idx = tracks.findIndex(t => t.id === prev.id);
+      if (idx >= 0) loadTrack(idx, true);
+    }
+
+    function seekAudio(val) {
+      if (Number.isFinite(audio.duration) && audio.duration > 0) {
+        audio.currentTime = (Number(val) / 100) * audio.duration;
+      }
+    }
 
     function setVolume(val) {
-      currentVolume = val / 100;
+      currentVolume = Number(val) / 100;
       if (!isMuted) audio.volume = currentVolume;
       updateVolumeIcon();
     }
@@ -620,7 +689,7 @@
     function filterCategory(cat) {
       const isNewCategory = currentFilter !== cat;
       currentFilter = cat;
-      
+
       document.querySelectorAll('.cat-filter').forEach(btn => {
         const isActive = btn.dataset.category === cat;
         btn.className = isActive
@@ -636,11 +705,11 @@
       }
 
       if (isNewCategory) {
-        const first = tracks.findIndex(t => {
-          if (cat === 'og') return t.category === 'og' || t.category === 'classic';
-          return t.category === cat;
-        });
-        if (first >= 0) loadTrack(first, true);
+        const first = getCurrentPlaybackList()[0];
+        if (first) {
+          const idx = tracks.findIndex(t => t.id === first.id);
+          if (idx >= 0) loadTrack(idx, true);
+        }
       }
     }
 
