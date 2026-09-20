@@ -1173,12 +1173,17 @@
 
     function filterPlaylist(key) {
       currentPlaylistKey = key;
+
       if (key === 'ambient') {
+        // Render the selected playlist state first, then open its track list.
+        // This prevents updatePlaylistFilters() from replacing the track list
+        // with the All Playlists view immediately after the user clicks Ambient.
+        updatePlaylistFilters();
         openMusicPanel('playlistPanel');
         openPlaylistTracks('ambient');
-        updatePlaylistFilters();
         return;
       }
+
       setQueue(key);
       openMusicPanel('playlistPanel');
       openPlaylistTracks(key);
