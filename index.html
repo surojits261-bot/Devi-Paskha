@@ -201,6 +201,8 @@
         <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow flex items-center gap-1.5" data-category="og">🎵 Pandal OG Classic Hits</button>
         <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="adhunik">🎶 Adhunik Pujo Mix</button>
         <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambience">🪷 Ambience</button>
+        <button onclick="filterCategory('devotional')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="devotional">🪔 Devotional Songs</button>
+        <button onclick="filterCategory('mahalaya')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="mahalaya">🌅 Mahalaya</button>
       </div>
 
       <!-- Did You Know / Fact Card -->
@@ -725,8 +727,20 @@
         return t.category === currentFilter;
       });
 
+      if (!filtered.length) {
+        const labels = {
+          devotional: 'Devotional songs will appear here.',
+          mahalaya: 'Mahalaya tracks will appear here.'
+        };
+        const item = document.createElement('div');
+        item.className = 'p-4 rounded-xl border border-white/10 bg-black/20 text-center text-xs text-stone-400 glassmorphism';
+        item.innerHTML = `<div class="text-amber-300 text-base mb-1">${currentFilter === 'mahalaya' ? '🌅' : '🪔'}</div><div>${labels[currentFilter] || 'No tracks in this category yet.'}</div>`;
+        container.appendChild(item);
+        return;
+      }
+
       filtered.forEach(track => {
-        const isCurrent = track.id === tracks[currentTrackIndex].id;
+        const isCurrent = track.id === tracks[currentTrackIndex]?.id;
         const item = document.createElement('div');
         item.className = `flex items-center justify-between p-3 rounded-xl cursor-pointer border transition text-sm ${
           isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-semibold shadow-md' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glassmorphism'
