@@ -1177,7 +1177,7 @@
       if (!list[i]) return;
 
       if (list[i].kind === 'ambience') {
-        const sameTrack = i === currentAmbienceIndex && ambienceAudio.src && ambienceAudio.src.includes(encodeURIComponent(list[i].url).split('%2F').pop());
+        const sameTrack = i === currentAmbienceIndex && Boolean(ambienceAudio.src);
         if (sameTrack && ambiencePlaying) {
           ambienceAudio.pause();
           ambiencePlaying = false;
