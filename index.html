@@ -159,7 +159,7 @@
     </nav>
 
     <!-- Central Hero & Countdown Section -->
-    <div class="flex flex-col items-center text-center my-auto py-6 relative">
+    <div class="flex flex-col items-center text-center my-auto py-6 relative pb-16">
       
       <div id="heroBadgeContainer" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 border border-white/15 text-amber-300 text-sm sm:text-base font-medium mb-4 glassmorphism shadow-md">
         <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
@@ -171,13 +171,10 @@
       <p id="heroSubtitle" class="text-lg sm:text-xl font-medium text-stone-200 sub-text drop-shadow tracking-wide mb-1">Abar Esho Maa</p>
       <p id="heroDateSub" class="text-xs sm:text-sm text-amber-200/80 font-mono tracking-widest uppercase mb-6">Oct 21, 2026 • sindoor khela, family, final darshan</p>
 
-      <!-- Unified Category Pills -->
+      <!-- Music Category Pills -->
       <div class="flex items-center justify-center gap-2 flex-wrap mb-8">
         <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow flex items-center gap-1.5" data-category="og">🎵 Pandal OG Classic Hits</button>
-        
         <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="adhunik">🎶 Adhunik Pujo Mix</button>
-        
-        <!-- Ambience Button (Now opens standard modal) -->
         <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambience">🪷 Ambience</button>
       </div>
 
@@ -194,6 +191,21 @@
         <p id="tithiFact" class="text-xs sm:text-sm text-stone-200 sub-text leading-relaxed">
           Sindoor Khela — married women smearing each other with vermillion in front of the idol — happens Dashami afternoon, right before the goddess departs.
         </p>
+      </div>
+
+      <!-- NEW: Inline Playlist Card -->
+      <div class="w-full max-w-2xl glassmorphism glass-card bg-black/45 border border-white/15 rounded-2xl p-4 sm:p-5 text-left shadow-2xl relative mt-4">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] sm:text-[11px] font-bold text-stone-300 uppercase tracking-wider font-mono">TAP A TRACK TO PLAY INLINE</span>
+          <button id="inlinePlaylistToggleBtn" onclick="toggleInlinePlaylist()" class="px-3 py-1.5 rounded-full border border-white/10 bg-black/40 text-[10px] text-stone-300 hover:text-white transition flex items-center gap-1">
+            <span id="toggleIcon">+</span> <span id="toggleText">Show list</span>
+          </button>
+        </div>
+        <div id="inlinePlaylistWrapper" class="hidden mt-3 pt-3 border-t border-white/10 transition-all">
+          <div id="playlistContainer" class="max-h-[30vh] overflow-y-auto custom-scrollbar flex flex-col gap-1.5 pr-1">
+            <!-- Tracks dynamically injected here -->
+          </div>
+        </div>
       </div>
 
     </div>
@@ -241,24 +253,14 @@
         <button id="muteBtn" onclick="toggleMute()" class="text-stone-400 hover:text-amber-400 transition text-sm">🔊</button>
         <input id="volumeBar" type="range" min="0" max="100" value="100" class="w-16 h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="setVolume(this.value)" oninput="setVolume(this.value)" />
 
-        <button onclick="toggleSongListModal()" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5 ml-2">
-          <span>🎵</span> Playlist (<span id="playlistCount">0</span>)
+        <!-- Triggers the inline playlist dropdown smoothly -->
+        <button onclick="toggleInlinePlaylist(true)" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5 ml-2">
+          <span>🎵</span> Tracks (<span id="playlistCount">0</span>)
         </button>
       </div>
 
     </div>
   </footer>
-
-  <!-- Unified Hidden Playlist Drawer / Modal (For all categories) -->
-  <div id="playlistModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-stone-900 border border-amber-500/40 rounded-2xl max-w-md w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
-      <div class="p-4 border-b border-stone-800 flex items-center justify-between">
-        <h3 class="text-base font-bold text-amber-400 accent-heading">Durga Puja Playlist</h3>
-        <button onclick="toggleSongListModal()" class="text-stone-400 hover:text-white text-lg">✕</button>
-      </div>
-      <div id="playlistContainer" class="p-3 space-y-2 overflow-y-auto custom-scrollbar flex-1"></div>
-    </div>
-  </div>
 
   <script>
     const tithiData = [
@@ -504,9 +506,26 @@
       return `${m}:${sec < 10 ? '0' : ''}${sec}`;
     }
 
-    function toggleSongListModal() {
-      const modal = document.getElementById('playlistModal');
-      if (modal) modal.classList.toggle('hidden');
+    // --- NEW: INLINE PLAYLIST TOGGLE ---
+    function toggleInlinePlaylist(forceOpen = false) {
+      const wrapper = document.getElementById('inlinePlaylistWrapper');
+      const icon = document.getElementById('toggleIcon');
+      const text = document.getElementById('toggleText');
+
+      if (forceOpen || wrapper.classList.contains('hidden')) {
+        wrapper.classList.remove('hidden');
+        icon.innerText = '−';
+        text.innerText = 'Hide list';
+        
+        // Ensure user can see it when forced open via bottom bar
+        if (forceOpen) {
+          document.getElementById('inlinePlaylistToggleBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else {
+        wrapper.classList.add('hidden');
+        icon.innerText = '+';
+        text.innerText = 'Show list';
+      }
     }
 
     function renderPlaylist() {
@@ -605,6 +624,7 @@
       });
     }
 
+    // --- UPDATED CATEGORY FILTER ---
     function filterCategory(cat) {
       const isNewCategory = currentFilter !== cat;
       currentFilter = cat;
@@ -612,17 +632,16 @@
       updateCategoryButtonStyles(cat);
       renderPlaylist();
 
-      const modal = document.getElementById('playlistModal');
-      if (modal && modal.classList.contains('hidden')) {
-        modal.classList.remove('hidden');
-      }
-
       if (isNewCategory) {
+        // Automatically start playing the first song in this newly selected category
         const first = tracks.findIndex(t => {
           if (cat === 'og') return t.category === 'og' || t.category === 'classic';
           return t.category === cat;
         });
         if (first >= 0) loadTrack(first, true);
+        
+        // Auto-expand the inline playlist so the user sees the new songs
+        toggleInlinePlaylist(true);
       }
     }
 
