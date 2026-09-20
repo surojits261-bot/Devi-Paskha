@@ -118,21 +118,125 @@
     .music-option:hover { background: rgba(255,255,255,0.07); color: #fcd34d; }
     .music-option.active { background: rgba(245,158,11,0.14); color: #fcd34d; }
 
-    /* Day Mode UI Styling */
-    body.day-mode {
-      background-color: #FAF7F2;
-      color: #26221F;
+    /* Festival Atmosphere: Day → Sandhya → Night */
+    body {
+      --festival-overlay: transparent;
+      --festival-glass: rgba(0,0,0,0.45);
+      --festival-border: rgba(255,255,255,0.15);
+      --festival-accent: #fcd34d;
     }
-    body.day-mode .glass-card {
-      background: rgba(255, 255, 255, 0.78) !important;
-      border-color: rgba(231, 223, 213, 0.8) !important;
-      color: #1C1917;
+
+    #festivalAtmosphereOverlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -15;
+      opacity: 0;
+      transition: opacity 1.2s ease, background 1.2s ease;
+      background: var(--festival-overlay);
     }
-    body.day-mode .sub-text {
-      color: #57534E !important;
+
+    #festivalParticles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -10;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 1.2s ease;
     }
-    body.day-mode .accent-heading {
-      color: #881337 !important;
+
+    #festivalParticles span {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255,214,102,0.72);
+      box-shadow: 0 0 12px rgba(255,190,70,0.55);
+      animation: festivalFloat 7s ease-in-out infinite;
+    }
+
+    #festivalParticles span:nth-child(1) { left: 12%; top: 70%; animation-delay: -1s; }
+    #festivalParticles span:nth-child(2) { left: 24%; top: 35%; animation-delay: -4s; }
+    #festivalParticles span:nth-child(3) { left: 38%; top: 78%; animation-delay: -2s; }
+    #festivalParticles span:nth-child(4) { left: 51%; top: 28%; animation-delay: -5s; }
+    #festivalParticles span:nth-child(5) { left: 63%; top: 68%; animation-delay: -3s; }
+    #festivalParticles span:nth-child(6) { left: 76%; top: 42%; animation-delay: -6s; }
+    #festivalParticles span:nth-child(7) { left: 88%; top: 72%; animation-delay: -2.5s; }
+    #festivalParticles span:nth-child(8) { left: 92%; top: 25%; animation-delay: -4.5s; }
+
+    @keyframes festivalFloat {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(.75); opacity: .35; }
+      50% { transform: translate3d(0, -28px, 0) scale(1.15); opacity: .9; }
+    }
+
+    body.pujo-day {
+      --festival-overlay: linear-gradient(180deg, rgba(255,214,130,0.10), rgba(255,247,224,0.04));
+      --festival-glass: rgba(255,255,255,0.18);
+      --festival-border: rgba(255,220,150,0.28);
+      --festival-accent: #f8d36a;
+    }
+
+    body.sandhya-mode {
+      --festival-overlay: linear-gradient(180deg, rgba(241,145,55,0.20), rgba(112,42,32,0.18));
+      --festival-glass: rgba(44,24,18,0.42);
+      --festival-border: rgba(255,194,104,0.30);
+      --festival-accent: #ffc86b;
+    }
+
+    body.pujo-night {
+      --festival-overlay: linear-gradient(180deg, rgba(6,5,12,0.18), rgba(12,5,2,0.24));
+      --festival-glass: rgba(7,5,8,0.52);
+      --festival-border: rgba(212,175,55,0.25);
+      --festival-accent: #f6cf68;
+    }
+
+    body.pujo-day #festivalAtmosphereOverlay,
+    body.sandhya-mode #festivalAtmosphereOverlay,
+    body.pujo-night #festivalAtmosphereOverlay {
+      opacity: 1;
+    }
+
+    body.sandhya-mode #festivalParticles {
+      opacity: .20;
+    }
+
+    body.pujo-night #festivalParticles {
+      opacity: .72;
+    }
+
+    body.pujo-day .glass-card {
+      background: rgba(255,255,255,0.20) !important;
+      border-color: rgba(255,225,165,0.30) !important;
+    }
+
+    body.sandhya-mode .glass-card {
+      background: rgba(38,20,14,0.42) !important;
+      border-color: rgba(255,194,104,0.26) !important;
+    }
+
+    body.pujo-night .glass-card {
+      background: rgba(7,5,8,0.52) !important;
+      border-color: rgba(212,175,55,0.24) !important;
+    }
+
+    body.pujo-day .sub-text { color: #f5ead3 !important; }
+    body.sandhya-mode .sub-text { color: #f2d6ae !important; }
+    body.pujo-night .sub-text { color: #e7e0d6 !important; }
+
+    body.pujo-day .accent-heading,
+    body.sandhya-mode .accent-heading,
+    body.pujo-night .accent-heading {
+      transition: color 1.2s ease, text-shadow 1.2s ease;
+    }
+
+    body.pujo-night .accent-heading {
+      text-shadow: 0 0 18px rgba(212,175,55,0.22);
+    }
+
+    .festival-mode-button {
+      min-width: 118px;
+      justify-content: center;
     }
   </style>
 </head>
@@ -143,6 +247,11 @@
     <div id="photoBackdropA" class="backdrop-image absolute inset-0 bg-cover bg-center"></div>
     <div id="photoBackdropB" class="backdrop-image absolute inset-0 bg-cover bg-center"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-[#09080F] via-transparent to-black/60 opacity-80"></div>
+  </div>
+  <div id="festivalAtmosphereOverlay" aria-hidden="true"></div>
+  <div id="festivalParticles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
   </div>
 
   <!-- Header with Custom Logo -->
@@ -161,8 +270,8 @@
     
     <div class="flex items-center space-x-2">
       <!-- Day/Night Toggle Switch -->
-      <button onclick="toggleDayNight()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
-        <span id="themeIcon">☀️</span> <span id="themeText">Day</span>
+      <button id="festivalModeButton" onclick="cycleFestivalMode()" class="festival-mode-button px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
+        <span id="themeIcon">☀️</span> <span id="themeText">Pujo Day</span>
       </button>
     </div>
   </header>
@@ -408,7 +517,8 @@
     let isPlaying = false;
     let audio = new Audio();
     let currentFilter = 'og';
-    let isDay = false;
+    let festivalMode = 'day';
+    const FESTIVAL_MODES = ['day', 'sandhya', 'night'];
     let ambienceAudio = new Audio();
     let ambiencePlaying = false;
     let currentAmbienceIndex = 0;
@@ -475,6 +585,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      applyFestivalMode('day');
       renderPlaylist();
       preloadBackgroundImages();
       loadTrack(0, false);
@@ -517,7 +628,7 @@
       const incomingIndex = activeBackdropLayer === 0 ? 1 : 0;
       const incoming = layers[incomingIndex];
       const outgoing = layers[activeBackdropLayer];
-      const opacity = isDay ? '0.4' : '0.7';
+      const opacity = festivalMode === 'day' ? '0.48' : festivalMode === 'sandhya' ? '0.60' : '0.70';
 
       incoming.style.setProperty('--backdrop-opacity', opacity);
       incoming.style.backgroundImage = `url("${imgSrc}")`;
@@ -822,17 +933,43 @@
       modal.classList.toggle('hidden');
     }
 
-    function toggleDayNight() {
-      isDay = !isDay;
-      document.body.classList.toggle('day-mode', isDay);
-      document.getElementById('themeIcon').innerText = isDay ? '🌙' : '☀️';
-      document.getElementById('themeText').innerText = isDay ? 'Night' : 'Day';
-      // Refresh backdrop opacity without resetting the synchronized image.
-      const opacity = isDay ? '0.4' : '0.7';
+    function applyFestivalMode(mode) {
+      festivalMode = mode;
+
+      document.body.classList.remove('pujo-day', 'sandhya-mode', 'pujo-night');
+      document.body.classList.add(
+        mode === 'day' ? 'pujo-day' :
+        mode === 'sandhya' ? 'sandhya-mode' :
+        'pujo-night'
+      );
+
+      const labels = {
+        day: ['☀️', 'Pujo Day'],
+        sandhya: ['🌆', 'Sandhya'],
+        night: ['🌙', 'Pujo Night']
+      };
+
+      const [icon, label] = labels[mode];
+      document.getElementById('themeIcon').innerText = icon;
+      document.getElementById('themeText').innerText = label;
+
+      // Change only atmosphere styling. The synchronized 5-minute image slot
+      // and current Tithi image remain unchanged.
+      const opacity = mode === 'day' ? '0.48' : mode === 'sandhya' ? '0.60' : '0.70';
       document.querySelectorAll('.backdrop-image').forEach(el => {
         el.style.setProperty('--backdrop-opacity', opacity);
       });
-      syncBackdropToGlobalCycle(true);
+    }
+
+    function cycleFestivalMode() {
+      const current = FESTIVAL_MODES.indexOf(festivalMode);
+      const next = FESTIVAL_MODES[(current + 1) % FESTIVAL_MODES.length];
+      applyFestivalMode(next);
+    }
+
+    // Backward-compatible alias in case another part of the page calls the old name.
+    function toggleDayNight() {
+      cycleFestivalMode();
     }
   </script>
 </body>
