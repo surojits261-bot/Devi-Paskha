@@ -406,7 +406,7 @@
       { id: 28, title: "Ya Chandi", artist: "Chorus", category: "devotional", url: "Music/Devotional/Ya Chandi — Chorus.mp3" },
       { id: 29, title: "Ya Devi Sarbabhutesu", artist: "Birendrakrishna Bhadra", category: "devotional", url: "Music/Devotional/Ya Devi Sarbabhutesu  Audio  Birendrakrishna Bhadra  Durga Vandana.mp3" },
 
-      { id: 18, title: "Durga Puja Dhak Main", artist: "Traditional Dhak", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" },
+      { id: 30, title: "Durga Puja Dhak Main", artist: "Traditional Dhak", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" },
       { id: 31, title: "Divine Puja Atmosphere", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-2.mp3" },
       { id: 32, title: "Shank Baja", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-4 Shank baja.mp3" },
       { id: 33, title: "Durga Puja Ambient", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-4.mp3" },
@@ -804,8 +804,33 @@
       renderPlaylist();
     }
 
-    function nextTrack() { loadTrack((currentTrackIndex + 1) % tracks.length, true); }
-    function prevTrack() { loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); }
+    function getCurrentPlaybackList() {
+      const filtered = tracks.filter(t => {
+        if (currentFilter === 'og') return t.category === 'og' || t.category === 'classic';
+        return t.category === currentFilter;
+      });
+      return filtered;
+    }
+
+    function nextTrack() {
+      const list = getCurrentPlaybackList();
+      if (!list.length) return;
+      const currentId = tracks[currentTrackIndex]?.id;
+      const currentPosition = list.findIndex(t => t.id === currentId);
+      const nextPosition = currentPosition >= 0 ? (currentPosition + 1) % list.length : 0;
+      const nextId = list[nextPosition].id;
+      loadTrack(tracks.findIndex(t => t.id === nextId), true);
+    }
+
+    function prevTrack() {
+      const list = getCurrentPlaybackList();
+      if (!list.length) return;
+      const currentId = tracks[currentTrackIndex]?.id;
+      const currentPosition = list.findIndex(t => t.id === currentId);
+      const prevPosition = currentPosition >= 0 ? (currentPosition - 1 + list.length) % list.length : list.length - 1;
+      const prevId = list[prevPosition].id;
+      loadTrack(tracks.findIndex(t => t.id === prevId), true);
+    }
     function seekAudio(val) { if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; }
 
     function setVolume(val) {
