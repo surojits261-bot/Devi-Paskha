@@ -15,7 +15,7 @@
   <!-- Bengali & Serif Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Cinzel:wght@500;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -190,11 +190,12 @@
     .site-signature {
       text-align: center;
       padding: 0 16px 10px;
-      font-family: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
-      font-size: 18px;
-      line-height: 1.05;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.1;
+      font-style: italic;
       font-weight: 500;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.02em;
       color: rgba(245, 241, 232, 0.82);
       text-transform: none;
       position: relative;
@@ -310,21 +311,20 @@
       border-top-color: rgba(212,175,55,0.22);
     }
 
-    /* Day Mode UI Styling */
-    body.day-mode {
-      background-color: #FAF7F2;
-      color: #26221F;
-    }
+    /* Final day-mode warm card treatment */
     body.day-mode .glass-card {
-      background: rgba(255, 255, 255, 0.78) !important;
-      border-color: rgba(231, 223, 213, 0.8) !important;
-      color: #1C1917;
+      background:
+        linear-gradient(135deg, rgba(255, 238, 204, 0.64), rgba(226, 157, 63, 0.28)) !important;
+      border-color: rgba(145, 83, 22, 0.34) !important;
+      color: #3F291A;
+      box-shadow: 0 12px 34px rgba(104, 59, 20, 0.14);
     }
-    body.day-mode .sub-text {
-      color: #57534E !important;
-    }
-    body.day-mode .accent-heading {
-      color: #881337 !important;
+
+    body.day-mode #inlinePlaylistToggleBtn,
+    body.day-mode #floatingDhakBtn {
+      background: rgba(196, 117, 29, 0.28) !important;
+      border-color: rgba(131, 75, 17, 0.36) !important;
+      color: #4A2D17 !important;
     }
   </style>
 </head>
