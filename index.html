@@ -104,6 +104,94 @@
       transition: opacity 280ms ease, transform 280ms ease;
     }
 
+    /* Day / Night visual system */
+    .glass-player {
+      background: rgba(8, 6, 10, 0.58) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(22px) saturate(135%);
+      -webkit-backdrop-filter: blur(22px) saturate(135%);
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.28);
+      border-radius: 20px 20px 0 0;
+    }
+
+    .glass-player #seekBar,
+    .glass-player #volumeBar {
+      background: rgba(255, 255, 255, 0.16) !important;
+    }
+
+    .glass-player .player-nav-btn {
+      background: rgba(0, 0, 0, 0.20);
+      border-color: rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .site-signature {
+      text-align: center;
+      padding: 0 16px 7px;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(231, 229, 228, 0.55);
+      position: relative;
+      z-index: 45;
+    }
+
+    .site-signature span {
+      color: rgba(212, 175, 55, 0.82);
+    }
+
+    body.day-mode {
+      --theme-panel: rgba(255, 250, 242, 0.58);
+      --theme-panel-strong: rgba(255, 250, 242, 0.72);
+      --theme-border: rgba(120, 83, 45, 0.24);
+      --theme-text: #29231f;
+      --theme-muted: #655b53;
+    }
+
+    body.day-mode .glass-player {
+      background: rgba(255, 249, 239, 0.56) !important;
+      border-top-color: rgba(120, 83, 45, 0.28);
+      box-shadow: 0 -12px 36px rgba(72, 48, 25, 0.18);
+    }
+
+    body.day-mode .glass-player .text-white {
+      color: #2a211b !important;
+    }
+
+    body.day-mode .glass-player .text-stone-300,
+    body.day-mode .glass-player .text-stone-400 {
+      color: #5f554d !important;
+    }
+
+    body.day-mode .glass-player .player-nav-btn {
+      background: rgba(255, 255, 255, 0.30);
+      border-color: rgba(120, 83, 45, 0.20);
+      color: #493a2d !important;
+    }
+
+    body.day-mode .glass-player #seekBar,
+    body.day-mode .glass-player #volumeBar {
+      background: rgba(92, 66, 43, 0.20) !important;
+    }
+
+    body.day-mode .site-signature {
+      color: rgba(72, 58, 47, 0.62);
+    }
+
+    body.day-mode .site-signature span {
+      color: #8a5b10;
+    }
+
+    body.day-mode .backdrop-image.active {
+      filter: brightness(1.08) saturate(0.94);
+    }
+
+    body:not(.day-mode) .backdrop-image.active {
+      filter: brightness(0.94) saturate(1.06);
+    }
+
     /* Day Mode UI Styling */
     body.day-mode {
       background-color: #FAF7F2;
@@ -260,7 +348,11 @@
   </button>
 
   <!-- Sticky Bottom Audio Player Bar -->
-  <footer class="bottom-bar w-full bg-stone-950/90 border-t border-white/10 backdrop-blur-xl px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
+  <div class="site-signature">
+    Built by <span>Surajit Sarkar</span> · with AI assistance
+  </div>
+
+  <footer class="bottom-bar glass-player w-full border-t px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
       
       <!-- Track Info -->
@@ -277,9 +369,9 @@
       <!-- Player Controls & Seekbar -->
       <div class="flex-1 max-w-lg w-full flex flex-col items-center gap-1.5">
         <div class="flex items-center gap-6">
-          <button type="button" onclick="prevTrack()" aria-label="Previous track" title="Previous track" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/10 bg-black/25 text-stone-300 hover:text-amber-400 hover:border-amber-400/50 hover:bg-amber-500/10 transition-all duration-200 active:scale-90 flex items-center justify-center text-lg sm:text-xl touch-manipulation select-none">⏮</button>
+          <button type="button" onclick="prevTrack()" aria-label="Previous track" title="Previous track" class="player-nav-btn w-10 h-10 sm:w-11 sm:h-11 rounded-full border text-stone-300 hover:text-amber-400 hover:border-amber-400/50 hover:bg-amber-500/10 transition-all duration-200 active:scale-90 flex items-center justify-center text-lg sm:text-xl touch-manipulation select-none">⏮</button>
           <button id="masterPlayBtn" onclick="toggleMasterPlay()" class="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold flex items-center justify-center transition shadow-lg active:scale-95 text-base">▶</button>
-          <button type="button" onclick="nextTrack()" aria-label="Next track" title="Next track" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/10 bg-black/25 text-stone-300 hover:text-amber-400 hover:border-amber-400/50 hover:bg-amber-500/10 transition-all duration-200 active:scale-90 flex items-center justify-center text-lg sm:text-xl touch-manipulation select-none">⏭</button>
+          <button type="button" onclick="nextTrack()" aria-label="Next track" title="Next track" class="player-nav-btn w-10 h-10 sm:w-11 sm:h-11 rounded-full border text-stone-300 hover:text-amber-400 hover:border-amber-400/50 hover:bg-amber-500/10 transition-all duration-200 active:scale-90 flex items-center justify-center text-lg sm:text-xl touch-manipulation select-none">⏭</button>
         </div>
 
         <div class="w-full flex items-center gap-2.5 text-[11px] text-stone-400 sub-text font-mono">
