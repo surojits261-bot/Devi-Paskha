@@ -56,7 +56,6 @@
       --backdrop-opacity: 0.7;
       opacity: 0;
       transform: scale(1.02);
-      filter: blur(3px);
       transition:
         opacity 1800ms cubic-bezier(0.22, 1, 0.36, 1),
         transform 5000ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -67,13 +66,11 @@
     .backdrop-image.active {
       opacity: var(--backdrop-opacity);
       transform: scale(1.05);
-      filter: blur(0);
     }
 
     .backdrop-image.leaving {
       opacity: 0;
       transform: scale(1.02);
-      filter: blur(3px);
     }
 
     .backdrop-image.fast-transition {
