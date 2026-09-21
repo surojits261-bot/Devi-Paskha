@@ -15,7 +15,7 @@
   <!-- Bengali & Serif Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Cinzel:wght@500;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -105,91 +105,178 @@
     }
 
     /* Day / Night visual system */
+    :root {
+      --theme-overlay-top: rgba(12, 9, 14, 0.30);
+      --theme-overlay-bottom: rgba(9, 8, 15, 0.86);
+      --theme-surface: rgba(10, 8, 14, 0.50);
+      --theme-surface-strong: rgba(10, 8, 14, 0.64);
+      --theme-border: rgba(255, 255, 255, 0.18);
+      --theme-text: #F5F1E8;
+      --theme-heading: #F6C94C;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -15;
+      pointer-events: none;
+      background: linear-gradient(180deg, var(--theme-overlay-top) 0%, rgba(0,0,0,0.06) 40%, var(--theme-overlay-bottom) 100%);
+      transition: background 700ms ease;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -14;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 16%, rgba(212,175,55,0.10), transparent 42%);
+      transition: background 700ms ease;
+    }
+
+    .glass-card {
+      background: var(--theme-surface) !important;
+      border-color: var(--theme-border) !important;
+      color: var(--theme-text);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.18);
+      transition: background 500ms ease, border-color 500ms ease, box-shadow 500ms ease, color 500ms ease;
+    }
+
+    .cat-filter,
+    .tab-btn,
+    #heroBadgeContainer,
+    #inlinePlaylistToggleBtn,
+    #floatingDhakBtn {
+      transition: background 450ms ease, border-color 450ms ease, color 450ms ease, box-shadow 450ms ease, transform 200ms ease;
+    }
+
+    .cat-filter:not([data-category="og"]),
+    .tab-btn:not(.nav-tab-active) {
+      background: var(--theme-surface) !important;
+      border-color: var(--theme-border) !important;
+      color: var(--theme-text) !important;
+    }
+
+    #heroBadgeContainer {
+      background: var(--theme-surface-strong) !important;
+      border-color: var(--theme-border) !important;
+      color: var(--theme-heading);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
+
     .glass-player {
-      background: rgba(8, 6, 10, 0.58) !important;
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
-      backdrop-filter: blur(22px) saturate(135%);
-      -webkit-backdrop-filter: blur(22px) saturate(135%);
-      box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.28);
-      border-radius: 20px 20px 0 0;
+      background: var(--theme-surface-strong) !important;
+      border-top: 1px solid var(--theme-border);
+      backdrop-filter: blur(24px) saturate(145%);
+      -webkit-backdrop-filter: blur(24px) saturate(145%);
+      box-shadow: 0 -14px 42px rgba(0,0,0,0.30);
+      transition: background 550ms ease, border-color 550ms ease, box-shadow 550ms ease;
     }
 
     .glass-player #seekBar,
     .glass-player #volumeBar {
-      background: rgba(255, 255, 255, 0.16) !important;
+      background: rgba(255,255,255,0.14) !important;
     }
 
     .glass-player .player-nav-btn {
-      background: rgba(0, 0, 0, 0.20);
-      border-color: rgba(255, 255, 255, 0.16);
+      background: rgba(0,0,0,0.18);
+      border-color: var(--theme-border);
+      color: var(--theme-text) !important;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
 
     .site-signature {
       text-align: center;
-      padding: 0 16px 7px;
-      font-family: 'Cinzel', serif;
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(231, 229, 228, 0.55);
+      padding: 0 16px 9px;
+      font-family: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+      font-size: 16px;
+      line-height: 1.1;
+      font-weight: 500;
+      letter-spacing: 0.015em;
+      color: rgba(245,241,232,0.78);
+      text-transform: none;
       position: relative;
       z-index: 45;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.25);
     }
 
     .site-signature span {
-      color: rgba(212, 175, 55, 0.82);
+      color: var(--theme-heading);
+      font-weight: 600;
     }
 
     body.day-mode {
-      --theme-panel: rgba(255, 250, 242, 0.58);
-      --theme-panel-strong: rgba(255, 250, 242, 0.72);
-      --theme-border: rgba(120, 83, 45, 0.24);
-      --theme-text: #29231f;
-      --theme-muted: #655b53;
+      --theme-overlay-top: rgba(255,248,238,0.08);
+      --theme-overlay-bottom: rgba(255,246,232,0.42);
+      --theme-surface: rgba(255,250,243,0.56);
+      --theme-surface-strong: rgba(255,249,240,0.72);
+      --theme-border: rgba(114,78,38,0.26);
+      --theme-text: #2F241B;
+      --theme-heading: #8D5F10;
     }
 
-    body.day-mode .glass-player {
-      background: rgba(255, 249, 239, 0.56) !important;
-      border-top-color: rgba(120, 83, 45, 0.28);
-      box-shadow: 0 -12px 36px rgba(72, 48, 25, 0.18);
+    body.day-mode::after {
+      background:
+        radial-gradient(circle at 50% 12%, rgba(255,246,214,0.50), transparent 38%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,240,218,0.14));
     }
 
-    body.day-mode .glass-player .text-white {
-      color: #2a211b !important;
+    body.day-mode .accent-heading {
+      color: #8B0F34 !important;
+      text-shadow: 0 2px 14px rgba(255,255,255,0.28);
     }
 
+    body.day-mode .sub-text { color: #5F5349 !important; }
+    body.day-mode .text-stone-300 { color: #43372E !important; }
+    body.day-mode .text-stone-400 { color: #6A5B50 !important; }
+    body.day-mode .text-amber-200,
+    body.day-mode .text-amber-300 { color: #8D5F10 !important; }
+
+    body.day-mode .tab-btn.nav-tab-active {
+      background: rgba(255,248,226,0.80) !important;
+      border-color: rgba(164,112,16,0.62) !important;
+      color: #7B4D00 !important;
+      box-shadow: 0 8px 22px rgba(125,84,16,0.16);
+    }
+
+    body.day-mode .cat-filter[data-category="og"],
+    body.day-mode .cat-filter[data-category="devotional"] {
+      background: rgba(255,248,226,0.74) !important;
+      border-color: rgba(164,112,16,0.42) !important;
+      color: #7B4D00 !important;
+    }
+
+    body.day-mode .glass-player .text-white { color: #2F241B !important; }
     body.day-mode .glass-player .text-stone-300,
-    body.day-mode .glass-player .text-stone-400 {
-      color: #5f554d !important;
-    }
+    body.day-mode .glass-player .text-stone-400 { color: #5F5349 !important; }
 
     body.day-mode .glass-player .player-nav-btn {
-      background: rgba(255, 255, 255, 0.30);
-      border-color: rgba(120, 83, 45, 0.20);
-      color: #493a2d !important;
+      background: rgba(255,255,255,0.34);
+      border-color: rgba(114,78,38,0.22);
+      color: #4C3A2B !important;
+      box-shadow: 0 4px 15px rgba(99,67,32,0.08);
     }
 
     body.day-mode .glass-player #seekBar,
     body.day-mode .glass-player #volumeBar {
-      background: rgba(92, 66, 43, 0.20) !important;
+      background: rgba(91,65,39,0.18) !important;
     }
 
     body.day-mode .site-signature {
-      color: rgba(72, 58, 47, 0.62);
+      color: rgba(74,58,45,0.76);
+      text-shadow: 0 1px 6px rgba(255,255,255,0.55);
     }
 
-    body.day-mode .site-signature span {
-      color: #8a5b10;
-    }
+    body.day-mode .site-signature span { color: #7D5205; }
 
     body.day-mode .backdrop-image.active {
-      filter: brightness(1.08) saturate(0.94);
+      filter: brightness(1.14) saturate(0.90) contrast(0.96);
     }
 
     body:not(.day-mode) .backdrop-image.active {
-      filter: brightness(0.94) saturate(1.06);
+      filter: brightness(0.80) saturate(1.13) contrast(1.05);
     }
 
     /* Day Mode UI Styling */
@@ -349,7 +436,7 @@
 
   <!-- Sticky Bottom Audio Player Bar -->
   <div class="site-signature">
-    Built by <span>Surajit Sarkar</span> · with AI assistance
+    Crafted by <span>Surajit Sarkar</span> · with AI assistance
   </div>
 
   <footer class="bottom-bar glass-player w-full border-t px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
