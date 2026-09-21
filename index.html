@@ -104,24 +104,26 @@
       transition: opacity 280ms ease, transform 280ms ease;
     }
 
-    /* Day / Night visual system */
+    /* Day / Night visual system — warm day, cinematic night */
     :root {
-      --theme-overlay-top: rgba(12, 9, 14, 0.30);
-      --theme-overlay-bottom: rgba(9, 8, 15, 0.86);
-      --theme-surface: rgba(10, 8, 14, 0.50);
-      --theme-surface-strong: rgba(10, 8, 14, 0.64);
+      --theme-overlay-top: rgba(18, 10, 8, 0.20);
+      --theme-overlay-bottom: rgba(9, 8, 15, 0.78);
+      --theme-surface: rgba(12, 10, 16, 0.44);
+      --theme-surface-strong: rgba(12, 10, 16, 0.58);
       --theme-border: rgba(255, 255, 255, 0.18);
-      --theme-text: #F5F1E8;
-      --theme-heading: #F6C94C;
+      --theme-text: #F6EFE2;
+      --theme-heading: #F7C84A;
     }
 
+    /* Theme atmosphere: tint/overlay only. No image color filters. */
     body::before {
       content: "";
       position: fixed;
       inset: 0;
       z-index: -15;
       pointer-events: none;
-      background: linear-gradient(180deg, var(--theme-overlay-top) 0%, rgba(0,0,0,0.06) 40%, var(--theme-overlay-bottom) 100%);
+      background:
+        linear-gradient(180deg, var(--theme-overlay-top) 0%, rgba(0,0,0,0.03) 42%, var(--theme-overlay-bottom) 100%);
       transition: background 700ms ease;
     }
 
@@ -131,7 +133,8 @@
       inset: 0;
       z-index: -14;
       pointer-events: none;
-      background: radial-gradient(circle at 50% 16%, rgba(212,175,55,0.10), transparent 42%);
+      background:
+        radial-gradient(circle at 50% 14%, rgba(212,175,55,0.10), transparent 44%);
       transition: background 700ms ease;
     }
 
@@ -168,9 +171,9 @@
     .glass-player {
       background: var(--theme-surface-strong) !important;
       border-top: 1px solid var(--theme-border);
-      backdrop-filter: blur(24px) saturate(145%);
-      -webkit-backdrop-filter: blur(24px) saturate(145%);
-      box-shadow: 0 -14px 42px rgba(0,0,0,0.30);
+      backdrop-filter: blur(22px) saturate(125%);
+      -webkit-backdrop-filter: blur(22px) saturate(125%);
+      box-shadow: 0 -14px 42px rgba(0,0,0,0.24);
       transition: background 550ms ease, border-color 550ms ease, box-shadow 550ms ease;
     }
 
@@ -183,23 +186,23 @@
       background: rgba(0,0,0,0.18);
       border-color: var(--theme-border);
       color: var(--theme-text) !important;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .site-signature {
       text-align: center;
-      padding: 0 16px 9px;
+      padding: 0 16px 10px;
       font-family: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
-      font-size: 16px;
-      line-height: 1.1;
+      font-size: 18px;
+      line-height: 1.05;
       font-weight: 500;
-      letter-spacing: 0.015em;
-      color: rgba(245,241,232,0.78);
+      letter-spacing: 0.01em;
+      color: rgba(245, 241, 232, 0.82);
       text-transform: none;
       position: relative;
       z-index: 45;
-      text-shadow: 0 1px 10px rgba(0,0,0,0.25);
+      text-shadow: 0 1px 9px rgba(0,0,0,0.26);
     }
 
     .site-signature span {
@@ -207,76 +210,107 @@
       font-weight: 600;
     }
 
+    /* ☀️ DAY — saffron, marigold, terracotta, warm cream */
     body.day-mode {
-      --theme-overlay-top: rgba(255,248,238,0.08);
-      --theme-overlay-bottom: rgba(255,246,232,0.42);
-      --theme-surface: rgba(255,250,243,0.56);
-      --theme-surface-strong: rgba(255,249,240,0.72);
-      --theme-border: rgba(114,78,38,0.26);
-      --theme-text: #2F241B;
-      --theme-heading: #8D5F10;
+      --theme-overlay-top: rgba(247, 184, 82, 0.08);
+      --theme-overlay-bottom: rgba(120, 58, 25, 0.30);
+      --theme-surface: rgba(166, 94, 34, 0.20);
+      --theme-surface-strong: rgba(132, 67, 25, 0.30);
+      --theme-border: rgba(129, 73, 28, 0.34);
+      --theme-text: #3E2A1D;
+      --theme-heading: #8A4E0A;
     }
 
     body.day-mode::after {
       background:
-        radial-gradient(circle at 50% 12%, rgba(255,246,214,0.50), transparent 38%),
-        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,240,218,0.14));
+        radial-gradient(circle at 50% 10%, rgba(255, 211, 120, 0.26), transparent 36%),
+        linear-gradient(180deg, rgba(255, 235, 190, 0.08), rgba(159, 75, 21, 0.12));
     }
 
     body.day-mode .accent-heading {
-      color: #8B0F34 !important;
-      text-shadow: 0 2px 14px rgba(255,255,255,0.28);
+      color: #8F173D !important;
+      text-shadow: 0 2px 12px rgba(255, 235, 185, 0.30);
     }
 
-    body.day-mode .sub-text { color: #5F5349 !important; }
-    body.day-mode .text-stone-300 { color: #43372E !important; }
-    body.day-mode .text-stone-400 { color: #6A5B50 !important; }
+    body.day-mode .sub-text { color: #5C4333 !important; }
+    body.day-mode .text-stone-300 { color: #473426 !important; }
+    body.day-mode .text-stone-400 { color: #6A5140 !important; }
     body.day-mode .text-amber-200,
-    body.day-mode .text-amber-300 { color: #8D5F10 !important; }
+    body.day-mode .text-amber-300 { color: #8A520B !important; }
+
+    body.day-mode #heroBadgeContainer .text-white,
+    body.day-mode #heroBadgeText strong {
+      color: #432C1A !important;
+    }
 
     body.day-mode .tab-btn.nav-tab-active {
-      background: rgba(255,248,226,0.80) !important;
-      border-color: rgba(164,112,16,0.62) !important;
-      color: #7B4D00 !important;
-      box-shadow: 0 8px 22px rgba(125,84,16,0.16);
+      background: rgba(224, 151, 43, 0.76) !important;
+      border-color: rgba(123, 66, 13, 0.60) !important;
+      color: #4A2B0F !important;
+      box-shadow: 0 8px 22px rgba(113, 60, 13, 0.22);
     }
 
     body.day-mode .cat-filter[data-category="og"],
     body.day-mode .cat-filter[data-category="devotional"] {
-      background: rgba(255,248,226,0.74) !important;
-      border-color: rgba(164,112,16,0.42) !important;
-      color: #7B4D00 !important;
+      background: rgba(211, 137, 35, 0.52) !important;
+      border-color: rgba(126, 68, 15, 0.44) !important;
+      color: #4B2B10 !important;
     }
 
-    body.day-mode .glass-player .text-white { color: #2F241B !important; }
+    body.day-mode .glass-player {
+      background:
+        linear-gradient(90deg, rgba(125, 65, 22, 0.48), rgba(196, 118, 35, 0.34), rgba(125, 65, 22, 0.48)) !important;
+      border-top-color: rgba(120, 67, 22, 0.42);
+      box-shadow: 0 -14px 42px rgba(99, 52, 20, 0.18);
+    }
+
+    body.day-mode .glass-player .text-white { color: #332217 !important; }
     body.day-mode .glass-player .text-stone-300,
-    body.day-mode .glass-player .text-stone-400 { color: #5F5349 !important; }
+    body.day-mode .glass-player .text-stone-400 { color: #5A4434 !important; }
 
     body.day-mode .glass-player .player-nav-btn {
-      background: rgba(255,255,255,0.34);
-      border-color: rgba(114,78,38,0.22);
-      color: #4C3A2B !important;
-      box-shadow: 0 4px 15px rgba(99,67,32,0.08);
+      background: rgba(255, 227, 178, 0.30);
+      border-color: rgba(113, 63, 20, 0.28);
+      color: #4D321F !important;
+      box-shadow: 0 4px 15px rgba(87, 48, 19, 0.12);
     }
 
     body.day-mode .glass-player #seekBar,
     body.day-mode .glass-player #volumeBar {
-      background: rgba(91,65,39,0.18) !important;
+      background: rgba(88, 52, 23, 0.22) !important;
     }
 
     body.day-mode .site-signature {
-      color: rgba(74,58,45,0.76);
-      text-shadow: 0 1px 6px rgba(255,255,255,0.55);
+      color: rgba(77, 57, 42, 0.86);
+      text-shadow: 0 1px 6px rgba(255, 225, 170, 0.48);
     }
 
-    body.day-mode .site-signature span { color: #7D5205; }
+    body.day-mode .site-signature span { color: #7E4A06; }
 
-    body.day-mode .backdrop-image.active {
-      filter: brightness(1.14) saturate(0.90) contrast(0.96);
+    /* 🌙 NIGHT — deep indigo, burgundy and gold */
+    body:not(.day-mode) .accent-heading {
+      color: #F4C94C !important;
+      text-shadow: 0 3px 16px rgba(0,0,0,0.48);
     }
 
-    body:not(.day-mode) .backdrop-image.active {
-      filter: brightness(0.80) saturate(1.13) contrast(1.05);
+    body:not(.day-mode) .tab-btn.nav-tab-active {
+      background: rgba(100, 52, 23, 0.56) !important;
+      border-color: rgba(245, 194, 61, 0.70) !important;
+      color: #FFD76A !important;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.34), 0 0 18px rgba(212,175,55,0.08);
+    }
+
+    body:not(.day-mode) .cat-filter[data-category="og"],
+    body:not(.day-mode) .cat-filter[data-category="devotional"] {
+      background: rgba(96, 48, 24, 0.42) !important;
+      border-color: rgba(212,175,55,0.40) !important;
+      color: #F7CF68 !important;
+    }
+
+    body:not(.day-mode) .glass-player {
+      background:
+        linear-gradient(90deg, rgba(9, 15, 28, 0.66), rgba(43, 20, 30, 0.56), rgba(9, 15, 28, 0.66)) !important;
+      border-top-color: rgba(212,175,55,0.22);
     }
 
     /* Day Mode UI Styling */
