@@ -147,7 +147,8 @@
     
     <div class="flex items-center space-x-2">
       <button onclick="toggleDayNight()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
-        <span id="themeIcon">☀️</span> <span id="themeText">Day</span>      </button>
+        <span id="themeIcon">☀️</span> <span id="themeText">Day</span>
+      </button>
     </div>
   </header>
 
@@ -296,7 +297,8 @@
         <!-- Triggers the inline playlist dropdown smoothly -->
         <button onclick="toggleInlinePlaylist(true)" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5 ml-2">
           <span>🎵</span> Tracks (<span id="playlistCount">0</span>)
-        </button>      </div>
+        </button>
+      </div>
 
     </div>
   </footer>
@@ -404,7 +406,7 @@
       { id: 28, title: "Ya Chandi", artist: "Chorus", category: "devotional", url: "Music/Devotional/Ya Chandi — Chorus.mp3" },
       { id: 29, title: "Ya Devi Sarbabhutesu", artist: "Birendrakrishna Bhadra", category: "devotional", url: "Music/Devotional/Ya Devi Sarbabhutesu  Audio  Birendrakrishna Bhadra  Durga Vandana.mp3" },
 
-      { id: 30, title: "Durga Puja Dhak Main", artist: "Traditional Dhak", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" },
+      { id: 18, title: "Durga Puja Dhak Main", artist: "Traditional Dhak", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" },
       { id: 31, title: "Divine Puja Atmosphere", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-2.mp3" },
       { id: 32, title: "Shank Baja", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-4 Shank baja.mp3" },
       { id: 33, title: "Durga Puja Ambient", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-4.mp3" },
@@ -457,7 +459,8 @@
         img.src = url;
       };
       urls.forEach(preload);
-      const warmRemaining = () => { tithiData.forEach(d => (d.bgImages || []).forEach(preload)); };      if ('requestIdleCallback' in window) requestIdleCallback(warmRemaining, { timeout: 2500 });
+      const warmRemaining = () => { tithiData.forEach(d => (d.bgImages || []).forEach(preload)); };
+      if ('requestIdleCallback' in window) requestIdleCallback(warmRemaining, { timeout: 2500 });
       else setTimeout(warmRemaining, 1200);
     }
 
@@ -657,3 +660,257 @@
     function startFactRotation() {
       if (factRotationTimer) clearInterval(factRotationTimer);
       currentFactIndex = 0;
+      showFact(0, false);
+      factRotationTimer = setInterval(() => {
+        showFact(currentFactIndex + 1, true);
+      }, 6500);
+    }
+
+    function openFactModal() {
+      const d = tithiData[currentTabIndex];
+      const facts = getCurrentTithiFacts();
+      const modal = document.getElementById('factModal');
+      const title = document.getElementById('factModalTitle');
+      const subtitle = document.getElementById('factModalSubtitle');
+      const body = document.getElementById('factModalBody');
+      if (!modal || !body) return;
+
+      title.innerText = `${d.name} • Did You Know?`;
+      subtitle.innerText = `${d.en} • ${d.dateStr}`;
+      body.innerHTML = facts.map((fact, index) => `
+        <div class="rounded-xl border border-white/10 bg-black/25 p-3">
+          <div class="flex items-start gap-2.5">
+            <span class="text-amber-400 font-mono text-[11px] mt-0.5">${String(index + 1).padStart(2, '0')}</span>
+            <p class="text-xs sm:text-sm text-stone-200 leading-relaxed">${fact}</p>
+          </div>
+        </div>
+      `).join('');
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeFactModal() {
+      const modal = document.getElementById('factModal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeFactModal();
+    });
+
+    document.addEventListener('click', event => {
+      const modal = document.getElementById('factModal');
+      if (modal && event.target === modal) closeFactModal();
+    });
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+      return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    // --- NEW: INLINE PLAYLIST TOGGLE ---
+    function toggleInlinePlaylist(forceOpen = false) {
+      const wrapper = document.getElementById('inlinePlaylistWrapper');
+      const icon = document.getElementById('toggleIcon');
+      const text = document.getElementById('toggleText');
+
+      if (forceOpen || wrapper.classList.contains('hidden')) {
+        wrapper.classList.remove('hidden');
+        icon.innerText = '−';
+        text.innerText = 'Hide list';
+        
+        // Ensure user can see it when forced open via bottom bar
+        if (forceOpen) {
+          document.getElementById('inlinePlaylistToggleBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else {
+        wrapper.classList.add('hidden');
+        icon.innerText = '+';
+        text.innerText = 'Show list';
+      }
+    }
+
+    function renderPlaylist() {
+      const container = document.getElementById('playlistContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      
+      const filtered = tracks.filter(t => {
+        if (currentFilter === 'og') return t.category === 'og' || t.category === 'classic';
+        return t.category === currentFilter;
+      });
+
+      if (!filtered.length) {
+        const labels = {
+          devotional: 'Devotional songs will appear here.',
+          mahalaya: 'Mahalaya tracks will appear here.'
+        };
+        const item = document.createElement('div');
+        item.className = 'p-4 rounded-xl border border-white/10 bg-black/20 text-center text-xs text-stone-400 glassmorphism';
+        item.innerHTML = `<div class="text-amber-300 text-base mb-1">${currentFilter === 'mahalaya' ? '🌅' : '🪔'}</div><div>${labels[currentFilter] || 'No tracks in this category yet.'}</div>`;
+        container.appendChild(item);
+        return;
+      }
+
+      filtered.forEach(track => {
+        const isCurrent = track.id === tracks[currentTrackIndex]?.id;
+        const item = document.createElement('div');
+        item.className = `flex items-center justify-between p-3 rounded-xl cursor-pointer border transition text-sm ${
+          isCurrent ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-semibold shadow-md' : 'bg-black/30 border-white/10 hover:bg-black/50 text-stone-300 glassmorphism'
+        }`;
+        item.onclick = () => {
+          const idx = tracks.findIndex(t => t.id === track.id);
+          loadTrack(idx, true);
+        };
+        item.innerHTML = `
+          <div class="flex items-center space-x-3 truncate">
+            <span class="text-xs font-mono opacity-60 w-5 text-right">${track.id}</span>
+            <div class="truncate">
+              <span class="block truncate">${track.title}</span>
+              <span class="text-xs opacity-75 block truncate">${track.artist}</span>
+            </div>
+          </div>
+          <button class="text-amber-400 hover:text-amber-300 text-xs px-2.5 py-1 font-bold">${isCurrent && isPlaying ? '❚❚' : '▶'}</button>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function loadTrack(index, autoPlay = true) {
+      currentTrackIndex = index;
+      const track = tracks[currentTrackIndex];
+      audio.src = track.url;
+      document.getElementById('playerTitle').innerText = track.title;
+      document.getElementById('playerArtist').innerText = track.artist;
+      if (autoPlay) {
+        audio.play().then(() => { isPlaying = true; updatePlayButtons(); }).catch(() => { isPlaying = false; updatePlayButtons(); });
+      } else {
+        isPlaying = false;
+        updatePlayButtons();
+      }
+    }
+
+    function toggleMasterPlay() {
+      if (isPlaying) { audio.pause(); isPlaying = false; }
+      else { audio.play().catch(e => console.log(e)); isPlaying = true; }
+      updatePlayButtons();
+    }
+
+    function updatePlayButtons() {
+      document.getElementById('masterPlayBtn').innerText = isPlaying ? '❚❚' : '▶';
+      renderPlaylist();
+    }
+
+    function nextTrack() { loadTrack((currentTrackIndex + 1) % tracks.length, true); }
+    function prevTrack() { loadTrack((currentTrackIndex - 1 + tracks.length) % tracks.length, true); }
+    function seekAudio(val) { if (!isNaN(audio.duration)) audio.currentTime = (val / 100) * audio.duration; }
+
+    function setVolume(val) {
+      currentVolume = val / 100;
+      if (!isMuted) {
+        audio.volume = currentVolume;
+        dhakAudio.volume = currentVolume * 0.6;
+      }
+      updateVolumeIcon();
+    }
+
+    function toggleMute() {
+      isMuted = !isMuted;
+      audio.volume = isMuted ? 0 : currentVolume;
+      dhakAudio.volume = isMuted ? 0 : (currentVolume * 0.6);
+      document.getElementById('volumeBar').value = isMuted ? 0 : currentVolume * 100;
+      updateVolumeIcon();
+    }
+
+    function updateVolumeIcon() {
+      const btn = document.getElementById('muteBtn');
+      if (isMuted || audio.volume === 0) btn.innerText = '🔇';
+      else if (audio.volume < 0.5) btn.innerText = '🔉';
+      else btn.innerText = '🔊';
+    }
+
+    function updateCategoryButtonStyles(cat) {
+      document.querySelectorAll('.cat-filter').forEach(btn => {
+        const isActive = btn.dataset.category === cat;
+        btn.className = isActive
+          ? 'cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition shadow flex items-center gap-1.5'
+          : 'cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5';
+      });
+    }
+
+    // --- UPDATED CATEGORY FILTER ---
+    function filterCategory(cat) {
+      const isNewCategory = currentFilter !== cat;
+      currentFilter = cat;
+      
+      updateCategoryButtonStyles(cat);
+      renderPlaylist();
+
+      if (isNewCategory) {
+        // Automatically start playing the first song in this newly selected category
+        const first = tracks.findIndex(t => {
+          if (cat === 'og') return t.category === 'og' || t.category === 'classic';
+          return t.category === cat;
+        });
+        if (first >= 0) loadTrack(first, true);
+        
+        // Auto-expand the inline playlist so the user sees the new songs
+        toggleInlinePlaylist(true);
+      }
+    }
+
+    function switchTab(index) {
+      currentTabIndex = index;
+      const d = tithiData[index];
+      
+      const globalSlot = getGlobalImageSlot();
+      const imageCount = d.bgImages.length;
+      currentImageIndex = imageCount ? globalSlot % imageCount : 0;
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isActive = parseInt(btn.dataset.index) === index;
+        btn.className = isActive
+          ? 'tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-amber-400 border border-amber-400/80 bg-amber-950/40 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px] shadow-lg shadow-amber-900/20 nav-tab-active'
+          : 'tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]';
+      });
+
+      document.getElementById('heroTitle').innerText = d.name;
+      document.getElementById('heroSubtitle').innerText = d.subtitle;
+      document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
+      document.getElementById('tithiFact').innerText = d.fact;
+      currentFactIndex = 0;
+      showFact(0, false);
+
+      setBackdropImage(d.bgImages[currentImageIndex], false, true);
+      updateCountdown();
+    }
+
+    function updateCountdown() {
+      let diff = tithiData[currentTabIndex].targetDate - new Date();
+      if (diff < 0) diff = 0;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / 1000 / 60) % 60);
+
+      const d = tithiData[currentTabIndex];
+      document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white ml-1">${days}d ${hours}h ${mins}m</strong>`;
+    }
+
+    function toggleDayNight() {
+      isDay = !isDay;
+      document.body.classList.toggle('day-mode', isDay);
+      document.getElementById('themeIcon').innerText = isDay ? '🌙' : '☀️';
+      document.getElementById('themeText').innerText = isDay ? 'Night' : 'Day';
+      
+      const opacity = isDay ? '0.4' : '0.7';
+      document.querySelectorAll('.backdrop-image').forEach(el => {
+        el.style.setProperty('--backdrop-opacity', opacity);
+      });
+      syncBackdropToGlobalCycle(true);
+    }
+  </script>
+</body>
+</html>
