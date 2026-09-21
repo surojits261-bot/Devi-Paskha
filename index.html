@@ -877,9 +877,21 @@
     }
 
     function toggleMasterPlay() {
-      if (isPlaying) { audio.pause(); isPlaying = false; }
-      else { audio.play().catch(e => console.log(e)); isPlaying = true; }
-      updatePlayButtons();
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        updatePlayButtons();
+      } else {
+        audio.play()
+          .then(() => {
+            isPlaying = true;
+            updatePlayButtons();
+          })
+          .catch(() => {
+            isPlaying = false;
+            updatePlayButtons();
+          });
+      }
     }
 
     function updatePlayButtons() {
