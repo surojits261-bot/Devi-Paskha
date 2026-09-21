@@ -573,6 +573,10 @@
       renderPlaylist();
       preloadBackgroundImages();
       const openingTithiIndex = getCalendarTithiIndex();
+      if (openingTithiIndex === 0) {
+        currentFilter = 'mahalaya';
+        updateCategoryButtonStyles('mahalaya');
+      }
       loadTrack(0, false);
       switchTab(openingTithiIndex);
       updateCountdown();
@@ -984,6 +988,13 @@
     function switchTab(index) {
       currentTabIndex = index;
       const d = tithiData[index];
+
+      // Mahalaya Tithi shows the dedicated Mahalaya recording automatically.
+      if (index === 0 && currentFilter !== 'mahalaya') {
+        currentFilter = 'mahalaya';
+        updateCategoryButtonStyles('mahalaya');
+        renderPlaylist();
+      }
       
       const globalSlot = getGlobalImageSlot();
       const imageCount = d.bgImages.length;
