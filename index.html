@@ -657,7 +657,7 @@
       const incomingIndex = activeBackdropLayer === 0 ? 1 : 0;
       const incoming = layers[incomingIndex];
       const outgoing = layers[activeBackdropLayer];
-      const opacity = isDay ? '0.4' : '0.7';
+      const opacity = '0.7';
 
       incoming.style.setProperty('--backdrop-opacity', opacity);
       incoming.style.backgroundImage = `url("${imgSrc}")`;
