@@ -101,77 +101,66 @@
       transition: opacity 280ms ease, transform 280ms ease;
     }
 
-    /* Day / Night visual system — warm day, cinematic night */
+    /* Night-only visual system — Devi Paksha is optimized for the cinematic festival experience */
     :root {
-      --theme-overlay-top: rgba(18, 10, 8, 0.20);
-      --theme-overlay-bottom: rgba(9, 8, 15, 0.78);
-      --theme-surface: rgba(12, 10, 16, 0.44);
-      --theme-surface-strong: rgba(12, 10, 16, 0.58);
-      --theme-border: rgba(255, 255, 255, 0.18);
-      --theme-text: #F6EFE2;
-      --theme-heading: #F7C84A;
+      --night-surface: rgba(9, 7, 13, 0.46);
+      --night-surface-strong: rgba(10, 8, 14, 0.62);
+      --night-border: rgba(255, 255, 255, 0.16);
+      --night-text: #F5F1E8;
+      --night-muted: #B7B0A7;
+      --night-gold: #F4C94C;
     }
 
-    /* Theme atmosphere: tint/overlay only. No image color filters. */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -15;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, var(--theme-overlay-top) 0%, rgba(0,0,0,0.03) 42%, var(--theme-overlay-bottom) 100%);
-      transition: background 700ms ease;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -14;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 50% 14%, rgba(212,175,55,0.10), transparent 44%);
-      transition: background 700ms ease;
+    body {
+      background-color: #09080F;
+      color: var(--night-text);
     }
 
     .glass-card {
-      background: var(--theme-surface) !important;
-      border-color: var(--theme-border) !important;
-      color: var(--theme-text);
-      box-shadow: 0 14px 40px rgba(0,0,0,0.18);
-      transition: background 500ms ease, border-color 500ms ease, box-shadow 500ms ease, color 500ms ease;
-    }
-
-    .cat-filter,
-    .tab-btn,
-    #heroBadgeContainer,
-    #inlinePlaylistToggleBtn,
-    #floatingDhakBtn {
-      transition: background 450ms ease, border-color 450ms ease, color 450ms ease, box-shadow 450ms ease, transform 200ms ease;
+      background: rgba(8, 7, 12, 0.44) !important;
+      border-color: var(--night-border) !important;
+      color: var(--night-text);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.22);
     }
 
     .cat-filter:not([data-category="og"]),
     .tab-btn:not(.nav-tab-active) {
-      background: var(--theme-surface) !important;
-      border-color: var(--theme-border) !important;
-      color: var(--theme-text) !important;
+      background: rgba(8, 7, 12, 0.42) !important;
+      border-color: rgba(255,255,255,0.14) !important;
+      color: #E8E1D7 !important;
+    }
+
+    .cat-filter[data-category="og"],
+    .cat-filter[data-category="devotional"] {
+      background: rgba(104, 50, 23, 0.38) !important;
+      border-color: rgba(212,175,55,0.42) !important;
+      color: #F6CC65 !important;
+    }
+
+    .tab-btn.nav-tab-active {
+      background: rgba(95, 47, 23, 0.50) !important;
+      border-color: rgba(245,194,61,0.72) !important;
+      color: #FFD76A !important;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.34), 0 0 18px rgba(212,175,55,0.08);
     }
 
     #heroBadgeContainer {
-      background: var(--theme-surface-strong) !important;
-      border-color: var(--theme-border) !important;
-      color: var(--theme-heading);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      background: rgba(8, 7, 12, 0.54) !important;
+      border-color: rgba(255,255,255,0.15) !important;
+      color: #F4C94C;
     }
 
     .glass-player {
-      background: var(--theme-surface-strong) !important;
-      border-top: 1px solid var(--theme-border);
+      background: linear-gradient(
+        90deg,
+        rgba(7, 11, 21, 0.64),
+        rgba(42, 19, 30, 0.56),
+        rgba(7, 11, 21, 0.64)
+      ) !important;
+      border-top: 1px solid rgba(212,175,55,0.22);
       backdrop-filter: blur(22px) saturate(125%);
       -webkit-backdrop-filter: blur(22px) saturate(125%);
-      box-shadow: 0 -14px 42px rgba(0,0,0,0.24);
-      transition: background 550ms ease, border-color 550ms ease, box-shadow 550ms ease;
+      box-shadow: 0 -14px 42px rgba(0,0,0,0.30);
     }
 
     .glass-player #seekBar,
@@ -180,151 +169,51 @@
     }
 
     .glass-player .player-nav-btn {
-      background: rgba(0,0,0,0.18);
-      border-color: var(--theme-border);
-      color: var(--theme-text) !important;
+      background: rgba(0,0,0,0.20);
+      border-color: rgba(255,255,255,0.16);
+      color: #F4EFE5 !important;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
 
     .site-signature {
       text-align: center;
-      padding: 0 16px 10px;
+      padding: 0 16px 9px;
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 17px;
       line-height: 1.1;
       font-style: italic;
       font-weight: 500;
       letter-spacing: 0.02em;
-      color: rgba(245, 241, 232, 0.82);
+      color: rgba(245,241,232,0.78);
       text-transform: none;
       position: relative;
       z-index: 45;
-      text-shadow: 0 1px 9px rgba(0,0,0,0.26);
+      text-shadow: 0 1px 9px rgba(0,0,0,0.28);
     }
 
     .site-signature span {
-      color: var(--theme-heading);
+      color: #E9B944;
       font-weight: 600;
     }
 
-    /* ☀️ DAY — saffron, marigold, terracotta, warm cream */
-    body.day-mode {
-      --theme-overlay-top: rgba(247, 184, 82, 0.08);
-      --theme-overlay-bottom: rgba(120, 58, 25, 0.30);
-      --theme-surface: rgba(166, 94, 34, 0.20);
-      --theme-surface-strong: rgba(132, 67, 25, 0.30);
-      --theme-border: rgba(129, 73, 28, 0.34);
-      --theme-text: #3E2A1D;
-      --theme-heading: #8A4E0A;
-    }
-
-    body.day-mode::after {
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -15;
+      pointer-events: none;
       background:
-        radial-gradient(circle at 50% 10%, rgba(255, 211, 120, 0.26), transparent 36%),
-        linear-gradient(180deg, rgba(255, 235, 190, 0.08), rgba(159, 75, 21, 0.12));
+        linear-gradient(180deg, rgba(11, 8, 16, 0.18) 0%, rgba(0,0,0,0.04) 42%, rgba(9,8,15,0.78) 100%);
     }
 
-    body.day-mode .accent-heading {
-      color: #8F173D !important;
-      text-shadow: 0 2px 12px rgba(255, 235, 185, 0.30);
-    }
-
-    body.day-mode .sub-text { color: #5C4333 !important; }
-    body.day-mode .text-stone-300 { color: #473426 !important; }
-    body.day-mode .text-stone-400 { color: #6A5140 !important; }
-    body.day-mode .text-amber-200,
-    body.day-mode .text-amber-300 { color: #8A520B !important; }
-
-    body.day-mode #heroBadgeContainer .text-white,
-    body.day-mode #heroBadgeText strong {
-      color: #432C1A !important;
-    }
-
-    body.day-mode .tab-btn.nav-tab-active {
-      background: rgba(224, 151, 43, 0.76) !important;
-      border-color: rgba(123, 66, 13, 0.60) !important;
-      color: #4A2B0F !important;
-      box-shadow: 0 8px 22px rgba(113, 60, 13, 0.22);
-    }
-
-    body.day-mode .cat-filter[data-category="og"],
-    body.day-mode .cat-filter[data-category="devotional"] {
-      background: rgba(211, 137, 35, 0.52) !important;
-      border-color: rgba(126, 68, 15, 0.44) !important;
-      color: #4B2B10 !important;
-    }
-
-    body.day-mode .glass-player {
-      background:
-        linear-gradient(90deg, rgba(125, 65, 22, 0.48), rgba(196, 118, 35, 0.34), rgba(125, 65, 22, 0.48)) !important;
-      border-top-color: rgba(120, 67, 22, 0.42);
-      box-shadow: 0 -14px 42px rgba(99, 52, 20, 0.18);
-    }
-
-    body.day-mode .glass-player .text-white { color: #332217 !important; }
-    body.day-mode .glass-player .text-stone-300,
-    body.day-mode .glass-player .text-stone-400 { color: #5A4434 !important; }
-
-    body.day-mode .glass-player .player-nav-btn {
-      background: rgba(255, 227, 178, 0.30);
-      border-color: rgba(113, 63, 20, 0.28);
-      color: #4D321F !important;
-      box-shadow: 0 4px 15px rgba(87, 48, 19, 0.12);
-    }
-
-    body.day-mode .glass-player #seekBar,
-    body.day-mode .glass-player #volumeBar {
-      background: rgba(88, 52, 23, 0.22) !important;
-    }
-
-    body.day-mode .site-signature {
-      color: rgba(77, 57, 42, 0.86);
-      text-shadow: 0 1px 6px rgba(255, 225, 170, 0.48);
-    }
-
-    body.day-mode .site-signature span { color: #7E4A06; }
-
-    /* 🌙 NIGHT — deep indigo, burgundy and gold */
-    body:not(.day-mode) .accent-heading {
-      color: #F4C94C !important;
-      text-shadow: 0 3px 16px rgba(0,0,0,0.48);
-    }
-
-    body:not(.day-mode) .tab-btn.nav-tab-active {
-      background: rgba(100, 52, 23, 0.56) !important;
-      border-color: rgba(245, 194, 61, 0.70) !important;
-      color: #FFD76A !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.34), 0 0 18px rgba(212,175,55,0.08);
-    }
-
-    body:not(.day-mode) .cat-filter[data-category="og"],
-    body:not(.day-mode) .cat-filter[data-category="devotional"] {
-      background: rgba(96, 48, 24, 0.42) !important;
-      border-color: rgba(212,175,55,0.40) !important;
-      color: #F7CF68 !important;
-    }
-
-    body:not(.day-mode) .glass-player {
-      background:
-        linear-gradient(90deg, rgba(9, 15, 28, 0.66), rgba(43, 20, 30, 0.56), rgba(9, 15, 28, 0.66)) !important;
-      border-top-color: rgba(212,175,55,0.22);
-    }
-
-    /* Final day-mode warm card treatment */
-    body.day-mode .glass-card {
-      background:
-        linear-gradient(135deg, rgba(255, 238, 204, 0.64), rgba(226, 157, 63, 0.28)) !important;
-      border-color: rgba(145, 83, 22, 0.34) !important;
-      color: #3F291A;
-      box-shadow: 0 12px 34px rgba(104, 59, 20, 0.14);
-    }
-
-    body.day-mode #inlinePlaylistToggleBtn,
-    body.day-mode #floatingDhakBtn {
-      background: rgba(196, 117, 29, 0.28) !important;
-      border-color: rgba(131, 75, 17, 0.36) !important;
-      color: #4A2D17 !important;
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -14;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 15%, rgba(212,175,55,0.09), transparent 44%);
     }
   </style>
 </head>
@@ -352,9 +241,9 @@
     </div>
     
     <div class="flex items-center space-x-2">
-      <button onclick="toggleDayNight()" class="px-3.5 py-1.5 rounded-full border border-white/20 bg-black/40 glassmorphism text-xs font-medium flex items-center gap-1.5 transition hover:border-amber-400 shadow text-amber-200">
-        <span id="themeIcon">☀️</span> <span id="themeText">Day</span>
-      </button>
+      <div class="px-3.5 py-1.5 rounded-full border border-amber-400/35 bg-black/30 glassmorphism text-xs font-medium flex items-center gap-1.5 text-amber-200" aria-label="Night mode">
+        <span aria-hidden="true">🌙</span> <span>Night</span>
+      </div>
     </div>
   </header>
 
@@ -614,7 +503,6 @@
     let isPlaying = false;
     let audio = new Audio();
     let currentFilter = 'og';
-    let isDay = false;
     let currentVolume = 1.0;
     let isMuted = false;
 
@@ -1119,18 +1007,7 @@
       document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white ml-1">${days}d ${hours}h ${mins}m</strong>`;
     }
 
-    function toggleDayNight() {
-      isDay = !isDay;
-      document.body.classList.toggle('day-mode', isDay);
-      document.getElementById('themeIcon').innerText = isDay ? '🌙' : '☀️';
-      document.getElementById('themeText').innerText = isDay ? 'Night' : 'Day';
-      
-      const opacity = isDay ? '0.4' : '0.7';
-      document.querySelectorAll('.backdrop-image').forEach(el => {
-        el.style.setProperty('--backdrop-opacity', opacity);
-      });
-      syncBackdropToGlobalCycle(true);
-    }
+
   </script>
 </body>
 </html>
