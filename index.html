@@ -277,9 +277,9 @@
       <!-- Player Controls & Seekbar -->
       <div class="flex-1 max-w-lg w-full flex flex-col items-center gap-1.5">
         <div class="flex items-center gap-6">
-          <button onclick="prevTrack()" class="text-stone-400 hover:text-amber-400 transition active:scale-90 text-sm">⏮</button>
+          <button type="button" onclick="prevTrack()" aria-label="Previous track" title="Previous track" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/10 bg-black/25 text-stone-300 hover:text-amber-400 hover:border-amber-400/50 hover:bg-amber-500/10 transition-all duration-200 active:scale-90 flex items-center justify-center text-lg sm:text-xl touch-manipulation select-none">⏮</button>
           <button id="masterPlayBtn" onclick="toggleMasterPlay()" class="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold flex items-center justify-center transition shadow-lg active:scale-95 text-base">▶</button>
-          <button onclick="nextTrack()" class="text-stone-400 hover:text-amber-400 transition active:scale-90 text-sm">⏭</button>
+          <button type="button" onclick="nextTrack()" aria-label="Next track" title="Next track" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/10 bg-black/25 text-stone-300 hover:text-amber-400 hover:border-amber-400/50 hover:bg-amber-500/10 transition-all duration-200 active:scale-90 flex items-center justify-center text-lg sm:text-xl touch-manipulation select-none">⏭</button>
         </div>
 
         <div class="w-full flex items-center gap-2.5 text-[11px] text-stone-400 sub-text font-mono">
