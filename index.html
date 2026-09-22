@@ -101,6 +101,86 @@
       transition: opacity 280ms ease, transform 280ms ease;
     }
 
+
+    /* --- Subtle motion system: quick, calm, non-blocking --- */
+    @keyframes appRevealDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes appRevealUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes selectionGlow {
+      0% {
+        box-shadow:
+          0 8px 20px rgba(0,0,0,0.22),
+          0 0 0 rgba(244,201,76,0);
+      }
+      55% {
+        box-shadow:
+          0 8px 24px rgba(0,0,0,0.30),
+          0 0 28px rgba(244,201,76,0.34);
+      }
+      100% {
+        box-shadow:
+          0 8px 24px rgba(0,0,0,0.30),
+          0 0 18px rgba(212,175,55,0.14);
+      }
+    }
+
+    header {
+      animation: appRevealDown 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    main {
+      animation: appRevealUp 720ms cubic-bezier(0.22, 1, 0.36, 1) 70ms both;
+    }
+
+    footer,
+    .site-signature {
+      animation: appRevealUp 620ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
+    }
+
+    .cat-filter,
+    .tab-btn {
+      transition:
+        background-color 220ms ease,
+        border-color 220ms ease,
+        color 220ms ease,
+        box-shadow 220ms ease,
+        transform 220ms ease;
+    }
+
+    .cat-filter.is-selected,
+    .tab-btn.nav-tab-active {
+      animation: selectionGlow 420ms ease-out 1;
+    }
+
+    .cat-filter:not(.is-selected):hover,
+    .tab-btn:not(.nav-tab-active):hover {
+      transform: translateY(-1px);
+      border-color: rgba(245,194,61,0.36) !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      header,
+      main,
+      footer,
+      .site-signature,
+      .cat-filter.is-selected,
+      .tab-btn.nav-tab-active {
+        animation: none !important;
+      }
+
+      .cat-filter,
+      .tab-btn {
+        transition: none !important;
+      }
+    }
+
     /* Night-only visual system — Devi Paksha is optimized for the cinematic festival experience */
     :root {
       --night-surface: rgba(9, 7, 13, 0.46);
@@ -123,25 +203,30 @@
       box-shadow: 0 14px 40px rgba(0,0,0,0.22);
     }
 
-    .cat-filter:not([data-category="og"]),
+    .cat-filter {
+      background: rgba(8, 7, 12, 0.42) !important;
+      border-color: rgba(255,255,255,0.14) !important;
+      color: #E8E1D7 !important;
+    }
+
     .tab-btn:not(.nav-tab-active) {
       background: rgba(8, 7, 12, 0.42) !important;
       border-color: rgba(255,255,255,0.14) !important;
       color: #E8E1D7 !important;
     }
 
-    .cat-filter[data-category="og"],
-    .cat-filter[data-category="devotional"] {
-      background: rgba(104, 50, 23, 0.38) !important;
-      border-color: rgba(212,175,55,0.42) !important;
-      color: #F6CC65 !important;
-    }
-
     .tab-btn.nav-tab-active {
       background: rgba(95, 47, 23, 0.50) !important;
-      border-color: rgba(245,194,61,0.72) !important;
+      border-color: rgba(245,194,61,0.78) !important;
       color: #FFD76A !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.34), 0 0 18px rgba(212,175,55,0.08);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.34), 0 0 18px rgba(212,175,55,0.14);
+    }
+
+    .cat-filter.is-selected {
+      background: rgba(95, 47, 23, 0.50) !important;
+      border-color: rgba(245,194,61,0.78) !important;
+      color: #FFD76A !important;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.30), 0 0 18px rgba(212,175,55,0.14);
     }
 
     #heroBadgeContainer {
@@ -290,7 +375,7 @@
       <!-- Music Category Pills -->
       <div class="flex items-center justify-center gap-2 flex-wrap mb-8">
         <button onclick="filterCategory('mahalaya')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="mahalaya">🌅 Mahalaya</button>
-        <button onclick="filterCategory('devotional')" class="cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition hover:bg-amber-500/30 shadow flex items-center gap-1.5" data-category="devotional">🪔 Devotional Songs</button>
+        <button onclick="filterCategory('devotional')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition shadow flex items-center gap-1.5" data-category="devotional" aria-pressed="false">🪔 Devotional Songs</button>
         <button onclick="filterCategory('og')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="og">🎵 Pandal OG Classic Hits</button>
         <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="adhunik">🎶 Adhunik Pujo Mix</button>
         <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambience">🪷 Ambience</button>
@@ -569,6 +654,9 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.cat-filter').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.setAttribute('aria-selected', 'false'));
+
       document.getElementById('playlistCount').innerText = tracks.length;
       renderPlaylist();
       preloadBackgroundImages();
@@ -958,9 +1046,14 @@
     function updateCategoryButtonStyles(cat) {
       document.querySelectorAll('.cat-filter').forEach(btn => {
         const isActive = btn.dataset.category === cat;
-        btn.className = isActive
-          ? 'cat-filter px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 text-xs sm:text-sm font-medium glassmorphism transition shadow flex items-center gap-1.5'
-          : 'cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5';
+        btn.classList.toggle('is-selected', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+
+        if (isActive) {
+          btn.classList.add('text-amber-300');
+        } else {
+          btn.classList.remove('text-amber-300');
+        }
       });
     }
 
@@ -1002,9 +1095,9 @@
 
       document.querySelectorAll('.tab-btn').forEach(btn => {
         const isActive = parseInt(btn.dataset.index) === index;
-        btn.className = isActive
-          ? 'tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-amber-400 border border-amber-400/80 bg-amber-950/40 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px] shadow-lg shadow-amber-900/20 nav-tab-active'
-          : 'tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]';
+        btn.classList.toggle('nav-tab-active', isActive);
+        btn.setAttribute('aria-selected', String(isActive));
+        btn.tabIndex = isActive ? 0 : -1;
       });
 
       document.getElementById('heroTitle').innerText = d.name;
