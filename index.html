@@ -135,7 +135,7 @@
     }
 
     #welcomeOverlay {
-      --welcome-bg: url("mahalaya-1.png");
+      --welcome-bg: url("devi-durga-welcome.webp");
       position: fixed;
       inset: 0;
       z-index: 100;
@@ -271,25 +271,6 @@
       text-transform: uppercase;
     }
 
-    #welcomeSkip {
-      flex-shrink: 0;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: 1px solid rgba(244,201,76,0.62);
-      background: rgba(15, 10, 10, 0.30);
-      color: #FFE7A1;
-      font-family: 'Hind Siliguri', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
-    }
-
-    #welcomeSkip:hover {
-      transform: translateY(-1px);
-      background: rgba(86, 43, 20, 0.46);
-      box-shadow: 0 0 20px rgba(244,201,76,0.16);
-    }
-
     #welcomeOverlay.welcome-exit {
       animation: welcomeFadeOut 600ms ease-in forwards;
     }
@@ -313,8 +294,8 @@
       }
 
       #welcomeOverlay .welcome-bottom {
-        align-items: stretch;
-        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         text-align: center;
       }
 
@@ -322,9 +303,6 @@
         text-align: center;
       }
 
-      #welcomeSkip {
-        width: 100%;
-      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -540,12 +518,11 @@
       <div class="welcome-divider"></div>
       <div class="welcome-meta">Music&nbsp;&nbsp;•&nbsp;&nbsp;Tradition&nbsp;&nbsp;•&nbsp;&nbsp;Devotion</div>
 
-      <div class="welcome-bottom">
-        <div class="welcome-count">
+      <div class="welcome-bottom justify-center">
+        <div class="welcome-count text-center">
           <strong>স্বাগতম</strong>
-          <span id="welcomeCountdown">৫ সেকেন্ড পর প্রবেশ</span>
+          <span id="welcomeCountdown">১০ সেকেন্ড পর প্রবেশ</span>
         </div>
-        <button id="welcomeSkip" type="button" aria-label="Skip welcome screen">এড়িয়ে যান&nbsp;›</button>
       </div>
     </div>
   </section>
@@ -922,14 +899,11 @@
     function startWelcome() {
       const overlay = document.getElementById('welcomeOverlay');
       const countdown = document.getElementById('welcomeCountdown');
-      const skip = document.getElementById('welcomeSkip');
       if (!overlay) return;
 
       const startedAt = performance.now();
-      const duration = 5000;
+      const duration = 10000;
       const fadeLead = 600;
-
-      skip?.addEventListener('click', closeWelcome, { once: true });
 
       welcomeCountdownTimer = setInterval(() => {
         const remaining = Math.max(0, duration - (performance.now() - startedAt));
