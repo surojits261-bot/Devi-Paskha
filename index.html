@@ -78,22 +78,7 @@
     }
 
 
-    .dhak-icon-minimal {
-      display: inline-block;
-      transform-origin: 50% 55%;
-      animation: dhakBeat 1.8s ease-in-out infinite;
-      will-change: transform;
-    }
-
-    @keyframes dhakBeat {
-      0%, 100% { transform: rotate(0deg) scale(1); }
-      40% { transform: rotate(-3deg) scale(1.045); }
-      55% { transform: rotate(2deg) scale(1.06); }
-      70% { transform: rotate(-1deg) scale(1.02); }
-    }
-
     @media (prefers-reduced-motion: reduce) {
-      .dhak-icon-minimal { animation: none; }
       #tithiFact { transition: none !important; }
     }
 
@@ -410,12 +395,6 @@
     </div>
   </div>
 
-  <!-- Floating Dhak Baja Ambient Button (Bottom Left) -->
-  <button id="floatingDhakBtn" onclick="toggleDhak()" class="fixed bottom-[88px] sm:bottom-[80px] left-4 z-40 px-3.5 py-2 rounded-full bg-amber-950/80 border border-amber-500/50 glassmorphism text-amber-300 text-[11px] sm:text-xs font-bold shadow-[0_5px_20px_rgba(0,0,0,0.5)] flex items-center gap-1.5 transition-all hover:scale-105 hover:bg-amber-900/80">
-    <span id="dhakIcon" class="dhak-icon-minimal text-sm" aria-hidden="true">🪘</span> 
-    <span id="dhakStatus">Dhak Baja: ON</span>
-  </button>
-
   <!-- Sticky Bottom Audio Player Bar -->
   <div class="site-signature">
     Crafted by <span>Surajit Sarkar</span> · with AI assistance
@@ -577,21 +556,7 @@
     let activeBackdropLayer = 0;
     let lastRenderedBackdrop = '';
     
-    let dhakAudio = null;
-    let isDhakOn = true; 
-    let dhakPhase = 'playing';
-    let dhakTimer = null;
-    let userInteracted = false;
 
-    function ensureDhakAudio() {
-      if (!dhakAudio) {
-        dhakAudio = new Audio("Music/Ambience/durga-puja-dhak-main.mp3");
-        dhakAudio.loop = true;
-        dhakAudio.preload = 'none';
-        dhakAudio.volume = isMuted ? 0 : currentVolume * 0.6;
-      }
-      return dhakAudio;
-    }
 
     function setPlayerStatus(text, muted = false) {
       const status = document.getElementById('playerStatus');
@@ -698,62 +663,7 @@
       scheduleNextBackgroundChange();
       setupAudioListeners();
       startFactRotation();
-      initDhak();
     });
-
-    function initDhak() {
-      document.body.addEventListener('click', () => {
-        if (!userInteracted) {
-          userInteracted = true;
-          if (isDhakOn) {
-            dhakPhase = 'playing';
-            ensureDhakAudio().play().catch(e => console.log(e));
-          }
-        }
-      }, { once: true });
-      startDhakCycle();
-    }
-
-    function toggleDhak() {
-      isDhakOn = !isDhakOn;
-      const btn = document.getElementById('floatingDhakBtn');
-      const icon = document.getElementById('dhakIcon');
-      const status = document.getElementById('dhakStatus');
-
-      if (isDhakOn) {
-        btn.classList.add('border-amber-500/50', 'text-amber-300');
-        btn.classList.remove('border-stone-500/50', 'text-stone-400');
-        icon.classList.add('animate-pulse');
-        status.innerText = 'Dhak Baja: ON';
-        startDhakCycle();
-      } else {
-        btn.classList.remove('border-amber-500/50', 'text-amber-300');
-        btn.classList.add('border-stone-500/50', 'text-stone-400');
-        icon.classList.remove('animate-pulse');
-        status.innerText = 'Dhak Baja: OFF';
-        stopDhakCycle();
-      }
-    }
-
-    function startDhakCycle() {
-      dhakPhase = 'playing';
-      if (userInteracted) ensureDhakAudio().play().catch(e => console.log(e));
-      if (dhakTimer) clearInterval(dhakTimer);
-      dhakTimer = setInterval(() => {
-        if (dhakPhase === 'playing') {
-          if (dhakAudio) dhakAudio.pause();
-          dhakPhase = 'waiting';
-        } else if (isDhakOn && userInteracted) {
-          ensureDhakAudio().play().catch(e => console.log(e));
-          dhakPhase = 'playing';
-        }
-      }, 5 * 60 * 1000);
-    }
-
-    function stopDhakCycle() {
-      if (dhakAudio) dhakAudio.pause();
-      if (dhakTimer) clearInterval(dhakTimer);
-    }
 
     function rotateBackgroundImage() { syncBackdropToGlobalCycle(); }
 
@@ -1078,7 +988,6 @@
       currentVolume = val / 100;
       if (!isMuted) {
         audio.volume = currentVolume;
-        if (dhakAudio) dhakAudio.volume = currentVolume * 0.6;
       }
       updateVolumeIcon();
     }
@@ -1086,7 +995,6 @@
     function toggleMute() {
       isMuted = !isMuted;
       audio.volume = isMuted ? 0 : currentVolume;
-      if (dhakAudio) dhakAudio.volume = isMuted ? 0 : (currentVolume * 0.6);
       document.getElementById('volumeBar').value = isMuted ? 0 : currentVolume * 100;
       updateVolumeIcon();
     }
