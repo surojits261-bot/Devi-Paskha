@@ -695,7 +695,6 @@
         }
       }, 60000);
       syncBackdropToGlobalCycle(true);
-      preloadBackgroundImages();
       scheduleNextBackgroundChange();
       setupAudioListeners();
       startFactRotation();
@@ -706,7 +705,8 @@
       document.body.addEventListener('click', () => {
         if (!userInteracted) {
           userInteracted = true;
-          if (isDhakOn && dhakPhase === 'playing') {
+          if (isDhakOn) {
+            dhakPhase = 'playing';
             ensureDhakAudio().play().catch(e => console.log(e));
           }
         }
@@ -740,12 +740,11 @@
       if (userInteracted) ensureDhakAudio().play().catch(e => console.log(e));
       if (dhakTimer) clearInterval(dhakTimer);
       dhakTimer = setInterval(() => {
-        const dhak = ensureDhakAudio();
         if (dhakPhase === 'playing') {
-          dhak.pause();
+          if (dhakAudio) dhakAudio.pause();
           dhakPhase = 'waiting';
-        } else if (isDhakOn) {
-          dhak.play().catch(e => console.log(e));
+        } else if (isDhakOn && userInteracted) {
+          ensureDhakAudio().play().catch(e => console.log(e));
           dhakPhase = 'playing';
         }
       }, 5 * 60 * 1000);
