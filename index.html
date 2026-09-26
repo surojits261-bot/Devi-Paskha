@@ -950,6 +950,7 @@
       if (index < 0 || index >= tracks.length) return;
 
       currentTrackIndex = index;
+      isPlaying = false;
       audio.pause();
       audio.src = '';
       audio.preload = 'none';
@@ -1173,7 +1174,10 @@
       else clearSelectedTrack();
 
       renderPlaylist();
-      toggleInlinePlaylist(false);
+      const playlistWrapper = document.getElementById('inlinePlaylistWrapper');
+      if (playlistWrapper && !playlistWrapper.classList.contains('hidden')) {
+        toggleInlinePlaylist();
+      }
       triggerContentRefresh();
     }
 
