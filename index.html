@@ -267,8 +267,9 @@
       background: radial-gradient(circle at 50% 15%, rgba(212,175,55,0.09), transparent 44%);
     }
   
-    /* --- Welcome experience v2: Maa's arrival countdown --- */
+    /* --- Seasonal welcome experience: Arrival → Aradhona → Bijoya --- */
     #welcomeOverlay {
+      --welcome-bg: url("welcome/welcome-mahalaya.png");
       position: fixed;
       inset: 0;
       z-index: 9999;
@@ -282,16 +283,17 @@
     #welcomeOverlay::before {
       content: "";
       position: absolute;
-      inset: -2%;
-      background:
-        linear-gradient(90deg, rgba(7,4,7,0.12) 0%, rgba(7,4,7,0.02) 42%, rgba(7,4,7,0.58) 100%),
-        linear-gradient(180deg, rgba(0,0,0,0.10) 0%, transparent 42%, rgba(0,0,0,0.60) 100%),
-        url("mahalaya-1.png");
+      inset: 0;
+      background-image:
+        linear-gradient(90deg, rgba(5,3,7,0.16) 0%, rgba(5,3,7,0.03) 44%, rgba(5,3,7,0.70) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.10) 0%, transparent 46%, rgba(0,0,0,0.50) 100%),
+        var(--welcome-bg);
       background-size: cover;
       background-position: center;
-      transform: scale(1.03);
+      background-repeat: no-repeat;
+      transform: scale(1.02);
       animation: welcomeKenBurns 14s ease-out forwards;
-      filter: saturate(1.05) contrast(1.04);
+      filter: saturate(1.03) contrast(1.03);
     }
 
     #welcomeOverlay::after {
@@ -299,9 +301,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 28% 44%, rgba(255,184,58,0.10), transparent 26%),
-        radial-gradient(circle at 78% 50%, rgba(214,133,27,0.12), transparent 30%),
-        linear-gradient(90deg, transparent 0 48%, rgba(8,4,8,0.16) 70%, rgba(8,4,8,0.46) 100%);
+        radial-gradient(circle at 73% 44%, rgba(248,205,92,0.08), transparent 30%),
+        linear-gradient(90deg, transparent 0 44%, rgba(8,4,8,0.06) 64%, rgba(8,4,8,0.26) 100%);
       pointer-events: none;
     }
 
@@ -317,99 +318,100 @@
       min-height: 100%;
       width: 100%;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: clamp(26px, 4vw, 52px) clamp(18px, 4vw, 64px) clamp(20px, 3vw, 38px);
+      align-items: center;
+      justify-content: flex-end;
+      padding: clamp(28px, 5vw, 72px);
       box-sizing: border-box;
     }
 
     .welcome-copy {
-      width: min(560px, 48vw);
-      margin-left: auto;
-      margin-right: clamp(0px, 2vw, 30px);
+      width: min(660px, 46vw);
+      margin-right: clamp(0px, 3vw, 42px);
       text-align: center;
-      animation: welcomeContentIn 1300ms 120ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation: welcomeContentIn 1250ms 120ms cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
     .welcome-brand {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       color: #f6d67c;
       font-family: 'Cinzel', serif;
       font-size: clamp(10px, 1vw, 13px);
-      letter-spacing: 0.28em;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
-      margin-bottom: 18px;
-      text-shadow: 0 3px 18px rgba(0,0,0,0.7);
+      margin-bottom: 16px;
+      text-shadow: 0 3px 18px rgba(0,0,0,0.72);
     }
 
     .welcome-brand-mark {
-      font-size: 24px;
-      line-height: 1;
+      font-size: 20px;
       color: #f8d66e;
-      text-shadow: 0 0 18px rgba(248,214,110,0.45);
+      text-shadow: 0 0 18px rgba(248,214,110,0.42);
     }
 
     .welcome-title-bn {
       margin: 0;
       color: #fff1c5;
       font-family: 'Hind Siliguri', sans-serif;
-      font-size: clamp(2rem, 4vw, 4rem);
-      line-height: 1.08;
+      font-size: clamp(2rem, 3.7vw, 3.8rem);
+      line-height: 1.12;
       font-weight: 600;
-      text-shadow: 0 5px 28px rgba(0,0,0,0.72);
+      text-shadow: 0 5px 28px rgba(0,0,0,0.78);
     }
 
     .welcome-title-en {
-      margin: 7px 0 0;
-      color: rgba(255,247,226,0.96);
+      margin: 8px 0 0;
+      color: rgba(255,247,226,0.94);
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(1.15rem, 2vw, 1.55rem);
-      letter-spacing: 0.06em;
-      text-shadow: 0 3px 18px rgba(0,0,0,0.72);
+      font-size: clamp(1.05rem, 1.65vw, 1.4rem);
+      letter-spacing: 0.04em;
+      text-shadow: 0 3px 18px rgba(0,0,0,0.75);
     }
 
     .welcome-subcopy {
-      margin: 12px auto 0;
-      max-width: 500px;
-      color: rgba(255,245,225,0.82);
+      margin: 16px auto 0;
+      max-width: 610px;
+      color: rgba(255,245,225,0.90);
       font-family: 'Hind Siliguri', sans-serif;
-      font-size: clamp(0.88rem, 1.35vw, 1.08rem);
-      line-height: 1.55;
-      text-shadow: 0 2px 15px rgba(0,0,0,0.75);
+      font-size: clamp(0.92rem, 1.22vw, 1.08rem);
+      line-height: 1.65;
+      text-shadow: 0 2px 15px rgba(0,0,0,0.78);
     }
 
     .welcome-ornament {
-      width: 130px;
+      width: 136px;
       height: 1px;
-      margin: 19px auto 17px;
-      background: linear-gradient(90deg, transparent, rgba(244,201,76,0.9), transparent);
-      box-shadow: 0 0 15px rgba(244,201,76,0.24);
+      margin: 20px auto 18px;
+      background: linear-gradient(90deg, transparent, rgba(244,201,76,0.92), transparent);
+      box-shadow: 0 0 15px rgba(244,201,76,0.22);
     }
 
-    .welcome-countdown {
-      width: min(540px, 100%);
+    .welcome-countdown,
+    .welcome-state-card {
+      width: min(560px, 100%);
       margin: 0 auto;
-      padding: 16px 17px 17px;
-      border: 1px solid rgba(246,204,98,0.40);
+      padding: 17px 18px 18px;
+      border: 1px solid rgba(246,204,98,0.34);
       border-radius: 20px;
-      background: linear-gradient(135deg, rgba(20,10,12,0.54), rgba(45,19,12,0.34));
+      background: linear-gradient(135deg, rgba(22,10,12,0.48), rgba(45,19,12,0.26));
       box-shadow: inset 0 1px rgba(255,255,255,0.08), 0 18px 55px rgba(0,0,0,0.28);
-      backdrop-filter: blur(7px);
-      -webkit-backdrop-filter: blur(7px);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
 
-    .welcome-countdown-kicker {
+    .welcome-countdown-kicker,
+    .welcome-state-line {
       color: #f8d875;
       font-family: 'Hind Siliguri', sans-serif;
-      font-size: clamp(1.15rem, 2vw, 1.55rem);
+      font-size: clamp(1.15rem, 2vw, 1.5rem);
       font-weight: 600;
     }
 
-    .welcome-countdown-label {
-      margin-top: 1px;
-      color: rgba(255,247,226,0.9);
+    .welcome-countdown-label,
+    .welcome-state-note {
+      margin-top: 2px;
+      color: rgba(255,247,226,0.90);
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 1.08rem;
     }
@@ -432,7 +434,7 @@
       display: block;
       color: #ffe38b;
       font-family: 'Cinzel', serif;
-      font-size: clamp(1.45rem, 3vw, 2.15rem);
+      font-size: clamp(1.45rem, 2.8vw, 2.1rem);
       line-height: 1;
       text-shadow: 0 0 16px rgba(244,201,76,0.25);
     }
@@ -447,154 +449,107 @@
       text-transform: uppercase;
     }
 
-    .welcome-tithi-row {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(112px, 1fr));
-      gap: 10px;
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      animation: welcomeTithiIn 1100ms 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    .welcome-tithi {
-      min-height: 76px;
-      padding: 10px 8px 8px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.20);
-      background: rgba(20,12,12,0.54);
-      color: rgba(255,246,227,0.82);
-      text-align: center;
-      box-shadow: inset 0 1px rgba(255,255,255,0.06);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-    }
-
-    .welcome-tithi.active {
-      border-color: rgba(247,196,62,0.98);
-      background: linear-gradient(180deg, rgba(85,43,11,0.62), rgba(26,13,10,0.62));
-      box-shadow: 0 0 24px rgba(247,196,62,0.22), inset 0 1px rgba(255,237,165,0.20);
-      color: #fff0bc;
-    }
-
-    .welcome-tithi .bn {
-      display: block;
+    .welcome-special-line {
+      margin-top: 11px;
+      color: #f8d875;
       font-family: 'Hind Siliguri', sans-serif;
-      font-size: 17px;
+      font-size: 1rem;
       font-weight: 600;
-      line-height: 1.1;
-    }
-
-    .welcome-tithi .en {
-      display: block;
-      margin-top: 2px;
-      font-family: 'Cinzel', serif;
-      font-size: 8px;
-      letter-spacing: 0.11em;
-    }
-
-    .welcome-tithi .date {
-      display: block;
-      margin-top: 6px;
-      color: #f4d47b;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 13px;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.74);
     }
 
     .welcome-footer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: clamp(18px, 3vw, 34px);
       text-align: center;
-      color: rgba(255,241,205,0.54);
+      color: rgba(255,241,205,0.58);
       font-family: 'Cinzel', serif;
       font-size: 8px;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.20em;
       text-transform: uppercase;
-      margin-top: 13px;
-      animation: welcomeTextIn 1000ms 900ms ease both;
+      animation: welcomeTextIn 950ms 850ms ease both;
     }
 
     @keyframes welcomeKenBurns {
-      from { transform: scale(1.03); }
-      to { transform: scale(1.08); }
+      from { transform: scale(1.02); }
+      to { transform: scale(1.075); }
     }
 
     @keyframes welcomeContentIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes welcomeTithiIn {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes welcomeTextIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 900px) {
+      #welcomeOverlay::before {
+        background-position: center;
+      }
+
       .welcome-shell {
-        padding: 24px 16px 18px;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 28px 20px 82px;
       }
+
       .welcome-copy {
-        width: min(650px, 94vw);
-        margin: 0 auto;
-      }
-      .welcome-tithi-row {
-        overflow-x: auto;
-        grid-template-columns: repeat(6, minmax(126px, 1fr));
-        padding-bottom: 4px;
+        width: min(720px, 100%);
+        margin-right: 0;
       }
     }
 
     @media (max-width: 560px) {
-      #welcomeOverlay::before {
-        background-position: 42% center;
-      }
-      .welcome-shell {
-        padding: 18px 12px 14px;
-      }
-      .welcome-copy {
-        margin-top: 2vh;
-      }
-      .welcome-brand {
-        margin-bottom: 10px;
-      }
       .welcome-title-bn {
-        font-size: 2rem;
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
       }
+
+      .welcome-title-en {
+        font-size: 1.05rem;
+      }
+
       .welcome-subcopy {
-        font-size: 0.84rem;
-        line-height: 1.45;
+        font-size: 0.92rem;
+        line-height: 1.52;
       }
-      .welcome-countdown {
-        padding: 12px 10px 13px;
-        border-radius: 16px;
-      }
+
       .welcome-units {
-        gap: 5px;
+        gap: 6px;
       }
+
       .welcome-unit {
         padding: 8px 2px 7px;
       }
+
       .welcome-unit strong {
-        font-size: 1.25rem;
+        font-size: 1.35rem;
       }
-      .welcome-tithi {
-        min-height: 70px;
+
+      .welcome-unit span {
+        font-size: 7px;
+        letter-spacing: 0.08em;
+      }
+
+      .welcome-footer {
+        font-size: 7px;
+        letter-spacing: 0.13em;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
       #welcomeOverlay::before,
       .welcome-copy,
-      .welcome-tithi-row,
       .welcome-footer {
         animation: none !important;
       }
     }
-    }
 
-  </style>
+</style>
 </head>
 
 
@@ -607,14 +562,14 @@
     <div class="welcome-shell">
       <div class="welcome-copy">
         <div class="welcome-brand"><span class="welcome-brand-mark">✦</span> DEVI PAKSHA • 2026</div>
-        <h2 class="welcome-title-bn">দেবীপক্ষের শুভ সূচনা</h2>
-        <div class="welcome-title-en">Devi Pokher Shubho Suchona</div>
-        <p class="welcome-subcopy">মঙ্গলময়ী মায়ের আগমনের পবিত্র অপেক্ষায়…</p>
+        <h2 id="welcomeTitleBn" class="welcome-title-bn"></h2>
+        <div id="welcomeTitleEn" class="welcome-title-en"></div>
+        <p id="welcomeSubcopy" class="welcome-subcopy"></p>
         <div class="welcome-ornament" aria-hidden="true"></div>
 
-        <div class="welcome-countdown" aria-live="polite">
-          <div class="welcome-countdown-kicker">মা আসছেন…</div>
-          <div class="welcome-countdown-label">Maa Durga arrives on Maha Shashti</div>
+        <div id="welcomeCountdown" class="welcome-countdown" aria-live="polite">
+          <div id="welcomeCountdownKicker" class="welcome-countdown-kicker">মা আসছেন…</div>
+          <div id="welcomeCountdownLabel" class="welcome-countdown-label">মহালয়া আসতে বাকি</div>
           <div class="welcome-units">
             <div class="welcome-unit"><strong id="welcomeDays">00</strong><span>Days</span></div>
             <div class="welcome-unit"><strong id="welcomeHours">00</strong><span>Hours</span></div>
@@ -622,10 +577,15 @@
             <div class="welcome-unit"><strong id="welcomeSeconds">00</strong><span>Seconds</span></div>
           </div>
         </div>
+
+        <div id="welcomeStateCard" class="welcome-state-card" hidden>
+          <div id="welcomeStateLine" class="welcome-state-line"></div>
+          <div id="welcomeStateNote" class="welcome-state-note"></div>
+          <div id="welcomeSpecialLine" class="welcome-special-line"></div>
+        </div>
       </div>
 
-      <div class="welcome-footer">শুভ দেবীপক্ষ • Maa is coming…</div>
-      </div>
+      <div id="welcomeFooter" class="welcome-footer">শুভ দেবীপক্ষ • জয় মা দুর্গা</div>
     </div>
   </section>
 
@@ -1472,40 +1432,116 @@
   </script>
 
   <script>
-    // Welcome page: live countdown to Maha Shashti, then reveal the app.
+    // Seasonal welcome page: automatically switch between Mahalaya, Puja, and Bijoya states.
     window.addEventListener('DOMContentLoaded', () => {
       const welcome = document.getElementById('welcomeOverlay');
       if (!welcome) return;
 
-      const target = new Date('2026-10-17T08:00:00+05:30').getTime();
-      const days = document.getElementById('welcomeDays');
-      const hours = document.getElementById('welcomeHours');
-      const minutes = document.getElementById('welcomeMinutes');
-      const seconds = document.getElementById('welcomeSeconds');
-
-      const updateCountdown = () => {
-        const remaining = Math.max(0, target - Date.now());
-        const totalSeconds = Math.floor(remaining / 1000);
-        const d = Math.floor(totalSeconds / 86400);
-        const h = Math.floor((totalSeconds % 86400) / 3600);
-        const m = Math.floor((totalSeconds % 3600) / 60);
-        const s = totalSeconds % 60;
-        days.textContent = String(d).padStart(2, '0');
-        hours.textContent = String(h).padStart(2, '0');
-        minutes.textContent = String(m).padStart(2, '0');
-        seconds.textContent = String(s).padStart(2, '0');
+      const dates = {
+        mahalaya: new Date('2026-10-10T04:00:00+05:30').getTime(),
+        dashamiEnd: new Date('2026-10-21T16:00:00+05:30').getTime()
       };
 
-      updateCountdown();
-      const countdownTimer = window.setInterval(updateCountdown, 1000);
+      const states = {
+        preMahalaya: {
+          image: 'welcome/welcome-mahalaya.png',
+          titleBn: 'দেবীপক্ষের শুভ সূচনা, মায়ের আগমন',
+          titleEn: 'The Auspicious Beginning of Devipaksha, Maa’s Arrival',
+          subcopy: 'শরৎকালের স্নিগ্ধতায় বেজে উঠেছে মায়ের আগমনী সুর। আসুন, ভক্তি ও শ্রদ্ধায় বরণ করে নিই দুর্গতিনাশিনী মাকে।',
+          footer: 'শুভ দেবীপক্ষ • জয় মা দুর্গা',
+          countdown: true,
+          kicker: 'মা আসছেন…',
+          label: 'মহালয়া আসতে বাকি'
+        },
+        puja: {
+          image: 'welcome/welcome-durga-puja.png',
+          titleBn: 'মহামায়ার শুভাগমনে দেবীর আরাধনা',
+          titleEn: 'In the Auspicious Arrival of Mahamaya, Worship of the Goddess',
+          subcopy: 'মায়ের আগমনে শুরু হয়েছে দেবীর আরাধনা। ভক্তি, শ্রদ্ধা ও মায়ের আশীর্বাদে মঙ্গলময় হোক সকলের জীবন।',
+          footer: 'শুভ শারদীয়া • জয় মা দুর্গা',
+          countdown: false,
+          stateLine: 'দেবীর আরাধনা',
+          stateNote: 'মায়ের চরণে নিবেদিত হোক ভক্তি ও শ্রদ্ধা।',
+          specialLine: 'জয় মা দুর্গা'
+        },
+        bijoya: {
+          image: 'welcome/welcome-bijoya.png',
+          titleBn: 'বিজয়ার প্রণাম, মা আবার এসো',
+          titleEn: 'Bijoya Pranam • Maa, Abar Esho',
+          subcopy: 'বিদায়ের এই ক্ষণে মায়ের চরণে রইল প্রণাম। মায়ের আশীর্বাদে মঙ্গলময় হোক সকলের জীবন—আবার এসো মা, আগামী শারদে।',
+          footer: 'বিজয়ার প্রণাম • জয় মা দুর্গা',
+          countdown: false,
+          stateLine: 'মা, আবার এসো',
+          stateNote: 'মায়ের আশীর্বাদে মঙ্গলময় হোক সকলের জীবন।',
+          specialLine: 'মা, আবার এসো'
+        }
+      };
+
+      const now = Date.now();
+      const stateKey = now < dates.mahalaya ? 'preMahalaya'
+        : (now <= dates.dashamiEnd ? 'puja' : 'bijoya');
+      const state = states[stateKey];
+
+      welcome.style.setProperty('--welcome-bg', `url("${state.image}")`);
+      document.getElementById('welcomeTitleBn').textContent = state.titleBn;
+      document.getElementById('welcomeTitleEn').textContent = state.titleEn;
+      document.getElementById('welcomeSubcopy').textContent = state.subcopy;
+      document.getElementById('welcomeFooter').textContent = state.footer;
+
+      const countdown = document.getElementById('welcomeCountdown');
+      const stateCard = document.getElementById('welcomeStateCard');
+      const stateLine = document.getElementById('welcomeStateLine');
+      const stateNote = document.getElementById('welcomeStateNote');
+      const specialLine = document.getElementById('welcomeSpecialLine');
+
+      let countdownTimer = null;
+
+      if (state.countdown) {
+        countdown.hidden = false;
+        stateCard.hidden = true;
+
+        const days = document.getElementById('welcomeDays');
+        const hours = document.getElementById('welcomeHours');
+        const minutes = document.getElementById('welcomeMinutes');
+        const seconds = document.getElementById('welcomeSeconds');
+        const kicker = document.getElementById('welcomeCountdownKicker');
+        const label = document.getElementById('welcomeCountdownLabel');
+
+        kicker.textContent = state.kicker;
+        label.textContent = state.label;
+
+        const updateCountdown = () => {
+          const remaining = Math.max(0, dates.mahalaya - Date.now());
+          const totalSeconds = Math.floor(remaining / 1000);
+          const d = Math.floor(totalSeconds / 86400);
+          const h = Math.floor((totalSeconds % 86400) / 3600);
+          const m = Math.floor((totalSeconds % 3600) / 60);
+          const s = totalSeconds % 60;
+
+          days.textContent = String(d).padStart(2, '0');
+          hours.textContent = String(h).padStart(2, '0');
+          minutes.textContent = String(m).padStart(2, '0');
+          seconds.textContent = String(s).padStart(2, '0');
+        };
+
+        updateCountdown();
+        countdownTimer = window.setInterval(updateCountdown, 1000);
+      } else {
+        countdown.hidden = true;
+        stateCard.hidden = false;
+        stateLine.textContent = state.stateLine;
+        stateNote.textContent = state.stateNote;
+        specialLine.textContent = state.specialLine;
+      }
 
       const dismissWelcome = () => {
         if (welcome.classList.contains('welcome-hidden')) return;
-        window.clearInterval(countdownTimer);
+        if (countdownTimer) window.clearInterval(countdownTimer);
         welcome.classList.add('welcome-hidden');
         window.setTimeout(() => welcome.remove(), 1200);
       };
 
+      // No skip control: transition automatically after 10 seconds.
       window.setTimeout(dismissWelcome, 10000);
     });
   </script>
