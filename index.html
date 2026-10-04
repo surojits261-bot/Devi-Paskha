@@ -78,22 +78,7 @@
     }
 
 
-    .dhak-icon-minimal {
-      display: inline-block;
-      transform-origin: 50% 55%;
-      animation: dhakBeat 1.8s ease-in-out infinite;
-      will-change: transform;
-    }
-
-    @keyframes dhakBeat {
-      0%, 100% { transform: rotate(0deg) scale(1); }
-      40% { transform: rotate(-3deg) scale(1.045); }
-      55% { transform: rotate(2deg) scale(1.06); }
-      70% { transform: rotate(-1deg) scale(1.02); }
-    }
-
     @media (prefers-reduced-motion: reduce) {
-      .dhak-icon-minimal { animation: none; }
       #tithiFact { transition: none !important; }
     }
 
@@ -410,12 +395,6 @@
     </div>
   </div>
 
-  <!-- Floating Dhak Baja Ambient Button (Bottom Left) -->
-  <button id="floatingDhakBtn" onclick="toggleDhak()" class="fixed bottom-[88px] sm:bottom-[80px] left-4 z-40 px-3.5 py-2 rounded-full bg-amber-950/80 border border-amber-500/50 glassmorphism text-amber-300 text-[11px] sm:text-xs font-bold shadow-[0_5px_20px_rgba(0,0,0,0.5)] flex items-center gap-1.5 transition-all hover:scale-105 hover:bg-amber-900/80">
-    <span id="dhakIcon" class="dhak-icon-minimal text-sm" aria-hidden="true">🪘</span> 
-    <span id="dhakStatus">Dhak Baja: ON</span>
-  </button>
-
   <!-- Sticky Bottom Audio Player Bar -->
   <div class="site-signature">
     Crafted by <span>Surajit Sarkar</span> · with AI assistance
@@ -432,6 +411,7 @@
         <div class="overflow-hidden">
           <div id="playerTitle" class="text-sm font-semibold text-white accent-heading truncate">Mahishasura Mardini</div>
           <div id="playerArtist" class="text-xs text-stone-400 sub-text truncate">Birendra Krishna Bhadra</div>
+          <div id="playerStatus" class="text-[10px] text-stone-500 sub-text truncate">Ready</div>
         </div>
       </div>
 
@@ -567,6 +547,7 @@
     let currentTrackIndex = 0;
     let isPlaying = false;
     let audio = new Audio();
+    audio.preload = 'none';
     let currentFilter = 'devotional';
     let currentVolume = 1.0;
     let isMuted = false;
@@ -575,12 +556,16 @@
     let activeBackdropLayer = 0;
     let lastRenderedBackdrop = '';
     
-    const dhakAudio = new Audio("Music/Ambience/durga-puja-dhak-main.mp3");
-    dhakAudio.loop = true;
-    let isDhakOn = true; 
-    let dhakPhase = 'playing';
-    let dhakTimer = null;
-    let userInteracted = false;
+
+
+    function setPlayerStatus(text, muted = false) {
+      const status = document.getElementById('playerStatus');
+      if (!status) return;
+      status.innerText = text;
+      status.className = muted
+        ? 'text-[10px] text-stone-500 sub-text truncate'
+        : 'text-[10px] text-amber-300/75 sub-text truncate';
+    }
 
     function getGlobalImageSlot() { return Math.floor(Date.now() / IMAGE_ROTATION_MS); }
 
@@ -593,23 +578,21 @@
     }
 
     function preloadBackgroundImages() {
+      const images = tithiData[currentTabIndex]?.bgImages || [];
+      if (!images.length) return;
+
       const slot = getGlobalImageSlot();
-      const urls = new Set();
-      tithiData.forEach(d => {
-        const images = d.bgImages || [];
-        if (!images.length) return;
-        urls.add(images[slot % images.length]);
-      });
-      const preload = url => {
+      const currentIndex = slot % images.length;
+      const nextIndex = (currentIndex + 1) % images.length;
+      const urls = [images[currentIndex], images[nextIndex]];
+
+      urls.forEach((url, index) => {
         if (!url) return;
         const img = new Image();
         img.decoding = 'async';
+        if ('fetchPriority' in img) img.fetchPriority = index === 0 ? 'high' : 'low';
         img.src = url;
-      };
-      urls.forEach(preload);
-      const warmRemaining = () => { tithiData.forEach(d => (d.bgImages || []).forEach(preload)); };
-      if ('requestIdleCallback' in window) requestIdleCallback(warmRemaining, { timeout: 2500 });
-      else setTimeout(warmRemaining, 1200);
+      });
     }
 
     // Select the opening Tithi from the calendar date.
@@ -647,15 +630,22 @@
       document.querySelectorAll('.tab-btn').forEach(btn => btn.setAttribute('aria-selected', 'false'));
 
       document.getElementById('playlistCount').innerText = tracks.length;
+
+      const openingTithiIndex = getCalendarTithiIndex();
+      currentFilter = openingTithiIndex === 0 ? 'mahalaya' : 'devotional';
+      updateCategoryButtonStyles(currentFilter);
+
+      switchTab(openingTithiIndex);
       renderPlaylist();
       preloadBackgroundImages();
-      const openingTithiIndex = getCalendarTithiIndex();
-      if (openingTithiIndex === 0) {
-        currentFilter = 'mahalaya';
-        updateCategoryButtonStyles('mahalaya');
+
+      const initialTrack = tracks[currentTrackIndex];
+      if (initialTrack) {
+        document.getElementById('playerTitle').innerText = initialTrack.title;
+        document.getElementById('playerArtist').innerText = initialTrack.artist;
       }
-      loadTrack(0, false);
-      switchTab(openingTithiIndex);
+      setPlayerStatus('Ready', true);
+
       updateCountdown();
       setInterval(updateCountdown, 1000);
 
@@ -673,59 +663,7 @@
       scheduleNextBackgroundChange();
       setupAudioListeners();
       startFactRotation();
-      initDhak();
     });
-
-    function initDhak() {
-      document.body.addEventListener('click', () => {
-        if (!userInteracted) {
-          userInteracted = true;
-          if (isDhakOn && dhakPhase === 'playing') dhakAudio.play().catch(e => console.log(e));
-        }
-      }, { once: true });
-      startDhakCycle();
-    }
-
-    function toggleDhak() {
-      isDhakOn = !isDhakOn;
-      const btn = document.getElementById('floatingDhakBtn');
-      const icon = document.getElementById('dhakIcon');
-      const status = document.getElementById('dhakStatus');
-
-      if (isDhakOn) {
-        btn.classList.add('border-amber-500/50', 'text-amber-300');
-        btn.classList.remove('border-stone-500/50', 'text-stone-400');
-        icon.classList.add('animate-pulse');
-        status.innerText = 'Dhak Baja: ON';
-        startDhakCycle();
-      } else {
-        btn.classList.remove('border-amber-500/50', 'text-amber-300');
-        btn.classList.add('border-stone-500/50', 'text-stone-400');
-        icon.classList.remove('animate-pulse');
-        status.innerText = 'Dhak Baja: OFF';
-        stopDhakCycle();
-      }
-    }
-
-    function startDhakCycle() {
-      dhakPhase = 'playing';
-      if (userInteracted) dhakAudio.play().catch(e => console.log(e));
-      if (dhakTimer) clearInterval(dhakTimer);
-      dhakTimer = setInterval(() => {
-        if (dhakPhase === 'playing') {
-          dhakAudio.pause();
-          dhakPhase = 'waiting';
-        } else {
-          dhakAudio.play().catch(e => console.log(e));
-          dhakPhase = 'playing';
-        }
-      }, 5 * 60 * 1000);
-    }
-
-    function stopDhakCycle() {
-      dhakAudio.pause();
-      if (dhakTimer) clearInterval(dhakTimer);
-    }
 
     function rotateBackgroundImage() { syncBackdropToGlobalCycle(); }
 
@@ -767,11 +705,21 @@
       const delay = IMAGE_ROTATION_MS - (now % IMAGE_ROTATION_MS) + 50;
       setTimeout(() => {
         syncBackdropToGlobalCycle();
+        preloadBackgroundImages();
         scheduleNextBackgroundChange();
       }, delay);
     }
 
     function setupAudioListeners() {
+      audio.addEventListener('loadstart', () => setPlayerStatus('Loading…'));
+      audio.addEventListener('loadedmetadata', () => setPlayerStatus('Ready', true));
+      audio.addEventListener('canplay', () => setPlayerStatus('Ready to play', true));
+      audio.addEventListener('playing', () => setPlayerStatus('Playing'));
+      audio.addEventListener('pause', () => {
+        if (!audio.ended) setPlayerStatus('Paused', true);
+      });
+      audio.addEventListener('waiting', () => setPlayerStatus('Buffering…'));
+      audio.addEventListener('stalled', () => setPlayerStatus('Reconnecting…'));
       audio.addEventListener('timeupdate', () => {
         if (!isNaN(audio.duration)) {
           document.getElementById('seekBar').value = (audio.currentTime / audio.duration) * 100 || 0;
@@ -782,6 +730,7 @@
       audio.addEventListener('ended', () => nextTrack());
       audio.addEventListener('error', () => {
         isPlaying = false;
+        setPlayerStatus('Unable to load audio');
         updatePlayButtons();
       });
     }
@@ -945,13 +894,31 @@
     function loadTrack(index, autoPlay = true) {
       currentTrackIndex = index;
       const track = tracks[currentTrackIndex];
+      if (!track) return;
+
+      audio.pause();
+      audio.preload = 'auto';
       audio.src = track.url;
       document.getElementById('playerTitle').innerText = track.title;
       document.getElementById('playerArtist').innerText = track.artist;
+      document.getElementById('currentTime').innerText = '0:00';
+      document.getElementById('durationTime').innerText = '0:00';
+      document.getElementById('seekBar').value = 0;
+      setPlayerStatus('Loading…');
+      audio.load();
+
       if (autoPlay) {
-        audio.play().then(() => { isPlaying = true; updatePlayButtons(); }).catch(() => { isPlaying = false; updatePlayButtons(); });
+        audio.play().then(() => {
+          isPlaying = true;
+          updatePlayButtons();
+        }).catch(() => {
+          isPlaying = false;
+          setPlayerStatus('Press play to retry', true);
+          updatePlayButtons();
+        });
       } else {
         isPlaying = false;
+        setPlayerStatus('Ready', true);
         updatePlayButtons();
       }
     }
@@ -962,6 +929,14 @@
         isPlaying = false;
         updatePlayButtons();
       } else {
+        if (!audio.src) {
+          loadTrack(currentTrackIndex, true);
+          return;
+        }
+
+        if (audio.error) audio.load();
+
+        setPlayerStatus('Loading…');
         audio.play()
           .then(() => {
             isPlaying = true;
@@ -969,6 +944,7 @@
           })
           .catch(() => {
             isPlaying = false;
+            setPlayerStatus('Press play to retry', true);
             updatePlayButtons();
           });
       }
@@ -1012,7 +988,6 @@
       currentVolume = val / 100;
       if (!isMuted) {
         audio.volume = currentVolume;
-        dhakAudio.volume = currentVolume * 0.6;
       }
       updateVolumeIcon();
     }
@@ -1020,7 +995,6 @@
     function toggleMute() {
       isMuted = !isMuted;
       audio.volume = isMuted ? 0 : currentVolume;
-      dhakAudio.volume = isMuted ? 0 : (currentVolume * 0.6);
       document.getElementById('volumeBar').value = isMuted ? 0 : currentVolume * 100;
       updateVolumeIcon();
     }
