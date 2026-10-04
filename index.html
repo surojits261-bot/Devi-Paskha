@@ -266,6 +266,54 @@
       pointer-events: none;
       background: radial-gradient(circle at 50% 15%, rgba(212,175,55,0.09), transparent 44%);
     }
+
+    /* === POLISHED DEVOTIONAL EXPERIENCE — experimental layer === */
+    .demo-timeline, .demo-insight { display: none; }
+    .header-tools { display:flex; align-items:center; gap:8px; }
+    .header-tool { width:38px; height:38px; border-radius:999px; border:1px solid rgba(255,255,255,0.14); background:rgba(7,7,12,0.42); color:#e9e2d7; display:inline-flex; align-items:center; justify-content:center; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); transition:220ms ease; }
+    .header-tool:hover { color:#ffd76a; border-color:rgba(245,194,61,0.58); transform:translateY(-1px); box-shadow:0 0 22px rgba(212,175,55,0.12); }
+    .demo-side-card { background:linear-gradient(145deg,rgba(10,8,14,0.68),rgba(38,17,27,0.48)); border:1px solid rgba(255,255,255,0.13); box-shadow:0 18px 55px rgba(0,0,0,0.28); backdrop-filter:blur(20px) saturate(120%); -webkit-backdrop-filter:blur(20px) saturate(120%); }
+    .demo-timeline { position:absolute; left:0; top:12px; width:225px; z-index:12; padding:14px; border-radius:22px; }
+    .demo-insight { position:absolute; right:0; top:12px; width:285px; z-index:12; padding:16px; border-radius:22px; }
+    .demo-timeline-line { position:absolute; left:27px; top:58px; bottom:20px; width:1px; background:linear-gradient(to bottom,rgba(212,175,55,0.45),rgba(255,255,255,0.05)); pointer-events:none; }
+    .demo-timeline-item { position:relative; width:100%; display:grid; grid-template-columns:22px 1fr; gap:10px; text-align:left; padding:9px 7px; margin:2px 0; border-radius:14px; color:#bdb5aa; transition:220ms ease; }
+    .demo-timeline-item:hover { background:rgba(255,255,255,0.055); color:#f6efe3; }
+    .demo-timeline-item.active { background:linear-gradient(90deg,rgba(113,61,23,0.55),rgba(113,61,23,0.12)); color:#ffd76a; box-shadow:inset 0 0 0 1px rgba(245,194,61,0.22),0 8px 24px rgba(0,0,0,0.18); }
+    .demo-timeline-dot { width:12px; height:12px; margin:5px auto 0; border-radius:50%; background:rgba(255,255,255,0.20); border:1px solid rgba(255,255,255,0.20); box-shadow:0 0 0 4px rgba(255,255,255,0.025); position:relative; z-index:2; }
+    .demo-timeline-item.active .demo-timeline-dot { background:#f4c94c; border-color:#ffe18b; box-shadow:0 0 0 4px rgba(244,201,76,0.10),0 0 18px rgba(244,201,76,0.65); }
+    .demo-timeline-item.completed .demo-timeline-dot { background:#a88635; border-color:#e2c76c; }
+    .demo-timeline-name { font-size:13px; font-weight:600; line-height:1.1; }
+    .demo-timeline-meta { margin-top:3px; font-family:'Cinzel',serif; font-size:8px; letter-spacing:0.11em; opacity:0.62; }
+    .demo-timeline-state { margin-top:4px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:8px; letter-spacing:0.08em; color:rgba(245,241,232,0.44); }
+    .demo-timeline-item.active .demo-timeline-state { color:rgba(255,215,106,0.72); }
+    .demo-insight-kicker { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(244,201,76,0.78); }
+    .demo-insight-title { font-size:22px; font-weight:700; color:#ffd76a; margin-top:4px; }
+    .demo-insight-en { font-family:'Cinzel',serif; font-size:9px; letter-spacing:0.13em; color:rgba(245,241,232,0.52); text-transform:uppercase; }
+    .demo-countdown { margin-top:12px; padding:11px 12px; border-radius:15px; background:rgba(0,0,0,0.22); border:1px solid rgba(255,255,255,0.09); }
+    .demo-countdown-label { font-size:8px; letter-spacing:0.12em; color:rgba(245,241,232,0.48); text-transform:uppercase; }
+    .demo-countdown-value { margin-top:3px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; color:#f7f1e7; }
+    .demo-divider { height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.12),transparent); margin:14px 0; }
+    .demo-fact-label,.demo-ritual-label { font-size:9px; font-weight:700; letter-spacing:0.11em; color:rgba(244,201,76,0.78); text-transform:uppercase; }
+    .demo-fact { margin-top:6px; font-size:11px; line-height:1.55; color:rgba(245,241,232,0.78); }
+    .demo-ritual { margin-top:8px; padding:8px 9px; border-left:2px solid rgba(244,201,76,0.52); background:rgba(255,255,255,0.025); border-radius:0 10px 10px 0; font-size:10px; line-height:1.45; color:rgba(245,241,232,0.70); }
+    .demo-ritual strong { display:block; color:#f5df9a; font-size:9px; margin-bottom:2px; }
+    .hero-ambient-line { width:min(420px,72vw); height:1px; margin:5px auto 18px; background:linear-gradient(90deg,transparent,rgba(244,201,76,0.55),transparent); box-shadow:0 0 18px rgba(244,201,76,0.16); }
+    .mini-visualizer { display:flex; align-items:center; gap:2px; height:20px; margin-top:4px; }
+    .mini-visualizer span { width:3px; height:5px; border-radius:999px; background:rgba(244,201,76,0.72); transform-origin:bottom; }
+    .mini-visualizer.is-playing span { animation:playerBars 780ms ease-in-out infinite alternate; animation-delay:calc(var(--bar) * -90ms); }
+    @keyframes playerBars { from{transform:scaleY(0.35);opacity:0.45;} to{transform:scaleY(1);opacity:1;} }
+    .search-modal { position:fixed; inset:0; z-index:90; display:none; align-items:flex-start; justify-content:center; padding:10vh 18px 24px; background:rgba(0,0,0,0.66); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+    .search-modal.open { display:flex; }
+    .search-panel { width:min(680px,100%); max-height:72vh; overflow:hidden; border-radius:24px; border:1px solid rgba(245,194,61,0.24); background:linear-gradient(145deg,rgba(12,9,16,0.92),rgba(43,20,31,0.90)); box-shadow:0 30px 100px rgba(0,0,0,0.50); }
+    .search-input { width:100%; border:0; outline:0; background:transparent; color:#fff7e9; font-size:16px; }
+    .search-input::placeholder { color:rgba(245,241,232,0.38); }
+    .search-result { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; text-align:left; padding:11px 12px; border-radius:13px; color:#e9e2d7; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.07); transition:180ms ease; }
+    .search-result:hover { background:rgba(244,201,76,0.08); border-color:rgba(244,201,76,0.26); }
+    @media (min-width:1100px) { .demo-timeline,.demo-insight { display:block; } .top-tithi-nav { display:none; } #heroContent { width:min(100%,700px); margin-left:auto; margin-right:auto; padding-top:2px; } main { padding-top:0.25rem; } }
+    @media (max-width:1279px) and (min-width:1100px) { .demo-timeline { width:205px; } .demo-insight { width:245px; } #heroContent { width:min(100%,640px); } }
+    @media (max-width:1099px) { .header-tools { gap:5px; } .header-tool { width:34px; height:34px; } }
+    @media (max-width:640px) { .header-tool.fullscreen-tool { display:none; } .site-signature { font-size:15px; } .hero-ambient-line { margin-bottom:12px; } }
+
   </style>
 </head>
 <body class="bg-[#09080F] text-stone-100 min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white relative">
@@ -290,15 +338,44 @@
         </h1>
       </div>
     </div>
-    
+
+    <div class="header-tools">
+      <button type="button" class="header-tool" onclick="openSearch()" aria-label="Search songs and Tithi" title="Search">⌕</button>
+      <button type="button" class="header-tool fullscreen-tool" onclick="toggleFullscreen()" aria-label="Toggle fullscreen" title="Fullscreen">⛶</button>
+    </div>
 
   </header>
 
   <!-- Main View -->
   <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 flex-1 flex flex-col justify-center py-4 relative z-10">
 
+
+    <aside class="demo-timeline demo-side-card" aria-label="Devi Paksha Tithi timeline">
+      <div class="flex items-center justify-between mb-3 px-1">
+        <div><div class="demo-insight-kicker">Maa's Journey</div><div class="text-sm font-semibold text-stone-100 mt-0.5">দেবীপক্ষ</div></div>
+        <span class="text-[9px] font-mono text-stone-500">2026</span>
+      </div>
+      <div class="demo-timeline-line"></div>
+      <div id="demoTimelineItems"></div>
+    </aside>
+    <aside class="demo-insight demo-side-card" aria-label="Today's Tithi information">
+      <div class="demo-insight-kicker">Today's Tithi</div>
+      <div id="demoTithiName" class="demo-insight-title">মহাদশমী</div>
+      <div id="demoTithiEn" class="demo-insight-en">DASHAMI</div>
+      <div id="demoTithiDate" class="text-[10px] text-stone-400 mt-2">Oct 21, 2026</div>
+      <div class="demo-countdown"><div class="demo-countdown-label">Time to Tithi</div><div id="demoCountdown" class="demo-countdown-value">—</div></div>
+      <div class="demo-divider"></div>
+      <div class="demo-fact-label">The Significance</div>
+      <div id="demoFact" class="demo-fact">—</div>
+      <div class="demo-divider"></div>
+      <div class="demo-ritual-label">Rituals &amp; Significance</div>
+      <div class="demo-ritual"><strong>01 · Tradition</strong><span id="demoRitual1">—</span></div>
+      <div class="demo-ritual"><strong>02 · Puja</strong><span id="demoRitual2">—</span></div>
+      <div class="demo-ritual"><strong>03 · Culture</strong><span id="demoRitual3">—</span></div>
+    </aside>
+
     <!-- Top Tithi Selector Pills -->
-    <nav class="flex items-center justify-start sm:justify-center overflow-x-auto pb-4 gap-2.5 custom-scrollbar mb-6">
+    <nav class="top-tithi-nav flex items-center justify-start sm:justify-center overflow-x-auto pb-4 gap-2.5 custom-scrollbar mb-6">
       <button onclick="switchTab(0)" class="tab-btn px-4 py-2.5 rounded-full transition whitespace-nowrap text-stone-300 border border-white/10 bg-black/30 glassmorphism text-xs sm:text-sm flex flex-col items-center min-w-[90px]" data-index="0">
         <span class="font-semibold">মহালয়া</span>
         <span class="text-[10px] opacity-70 font-cinzel tracking-wider">MAHALAYA</span>
@@ -334,6 +411,7 @@
       </div>
 
       <h2 id="heroTitle" class="text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
+      <div class="hero-ambient-line" aria-hidden="true"></div>
       
       <p id="heroSubtitle" class="text-lg sm:text-xl font-medium text-stone-200 sub-text drop-shadow tracking-wide mb-1">Abar Esho Maa</p>
       <p id="heroDateSub" class="text-xs sm:text-sm text-amber-200/80 font-mono tracking-widest uppercase mb-6">Oct 21, 2026 • sindoor khela, family, final darshan</p>
@@ -395,6 +473,21 @@
     </div>
   </div>
 
+
+  <div id="searchModal" class="search-modal" role="dialog" aria-modal="true" aria-labelledby="searchTitle" onclick="if(event.target===this) closeSearch()">
+    <div class="search-panel">
+      <div class="flex items-center gap-3 px-4 py-4 border-b border-white/10">
+        <span class="text-amber-300 text-xl">⌕</span>
+        <div class="flex-1">
+          <div id="searchTitle" class="text-[9px] uppercase tracking-[0.14em] text-amber-300/70 font-mono">Search Devi Paksha</div>
+          <input id="searchInput" class="search-input mt-1" type="search" autocomplete="off" placeholder="Search a song, artist or Tithi…" oninput="runSearch(this.value)" />
+        </div>
+        <button type="button" onclick="closeSearch()" class="text-stone-400 hover:text-white text-lg" aria-label="Close search">✕</button>
+      </div>
+      <div id="searchResults" class="max-h-[55vh] overflow-y-auto custom-scrollbar p-4 space-y-2"><div class="text-xs text-stone-500 text-center py-8">Start typing to search.</div></div>
+    </div>
+  </div>
+
   <!-- Sticky Bottom Audio Player Bar -->
   <div class="site-signature">
     Crafted by <span>Surajit Sarkar</span> · with AI assistance
@@ -408,8 +501,12 @@
         <div class="w-10 h-10 rounded-lg bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-xl text-amber-400 shadow-md overflow-hidden">
           <img src="logo.png" alt="Mini Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23d4af37\'/><text x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23000\' font-family=\'sans-serif\'>মা</text></svg>';" />
         </div>
-        <div class="overflow-hidden">
-          <div id="playerTitle" class="text-sm font-semibold text-white accent-heading truncate">Mahishasura Mardini</div>
+        <div class="overflow-hidden min-w-0">
+          <div class="text-[8px] uppercase tracking-[0.14em] text-amber-300/65 font-mono">Now Playing</div>
+          <div class="flex items-center gap-2 min-w-0">
+            <div id="playerTitle" class="text-sm font-semibold text-white accent-heading truncate">Mahishasura Mardini</div>
+            <div id="playerVisualizer" class="mini-visualizer flex-shrink-0" aria-hidden="true"><span style="--bar:0"></span><span style="--bar:1"></span><span style="--bar:2"></span><span style="--bar:3"></span><span style="--bar:4"></span><span style="--bar:5"></span><span style="--bar:6"></span><span style="--bar:7"></span></div>
+          </div>
           <div id="playerArtist" class="text-xs text-stone-400 sub-text truncate">Birendra Krishna Bhadra</div>
           <div id="playerStatus" class="text-[10px] text-stone-500 sub-text truncate">Ready</div>
         </div>
@@ -558,6 +655,119 @@
     
 
 
+
+    function updateDemoPanels() {
+      const d = tithiData[currentTabIndex];
+      const name = document.getElementById('demoTithiName');
+      const en = document.getElementById('demoTithiEn');
+      const date = document.getElementById('demoTithiDate');
+      const fact = document.getElementById('demoFact');
+      const ritual1 = document.getElementById('demoRitual1');
+      const ritual2 = document.getElementById('demoRitual2');
+      const ritual3 = document.getElementById('demoRitual3');
+      if (name) name.innerText = d.name;
+      if (en) en.innerText = d.en.toUpperCase();
+      if (date) date.innerText = d.dateStr;
+      if (fact) fact.innerText = d.fact;
+      if (ritual1) ritual1.innerText = d.facts?.[0] || d.fact;
+      if (ritual2) ritual2.innerText = d.facts?.[1] || d.fact;
+      if (ritual3) ritual3.innerText = d.facts?.[2] || d.fact;
+      renderDemoTimeline();
+    }
+
+    function renderDemoTimeline() {
+      const container = document.getElementById('demoTimelineItems');
+      if (!container) return;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      container.innerHTML = tithiData.map((d, index) => {
+        const date = new Date(d.targetDate);
+        date.setHours(0,0,0,0);
+        const state = index === currentTabIndex ? 'NOW' : (date < today ? 'COMPLETED' : 'UPCOMING');
+        const active = index === currentTabIndex ? ' active' : '';
+        const completed = date < today && index !== currentTabIndex ? ' completed' : '';
+        return `
+          <button type="button" class="demo-timeline-item${active}${completed}" onclick="switchTab(${index})" aria-label="Open ${d.en}">
+            <span class="demo-timeline-dot"></span>
+            <span>
+              <span class="demo-timeline-name">${d.name}</span>
+              <span class="demo-timeline-meta">${d.en} · ${d.dateStr.replace(', 2026','')}</span>
+              <span class="demo-timeline-state">${state}</span>
+            </span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function updateDemoCountdown() {
+      const el = document.getElementById('demoCountdown');
+      if (!el) return;
+      const diff = Math.max(0, tithiData[currentTabIndex].targetDate - new Date());
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff / 3600000) % 24);
+      const mins = Math.floor((diff / 60000) % 60);
+      el.innerText = `${days}d ${hours}h ${mins}m`;
+    }
+
+    function openSearch() {
+      const modal = document.getElementById('searchModal');
+      const input = document.getElementById('searchInput');
+      if (!modal) return;
+      modal.classList.add('open');
+      setTimeout(() => input?.focus(), 50);
+    }
+
+    function closeSearch() {
+      const modal = document.getElementById('searchModal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function runSearch(query = '') {
+      const results = document.getElementById('searchResults');
+      if (!results) return;
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        results.innerHTML = '<div class="text-xs text-stone-500 text-center py-8">Start typing to search.</div>';
+        return;
+      }
+      const tithiResults = tithiData.map((d, index) => ({ d, index })).filter(({d}) => [d.name, d.en, d.dateStr, d.mood, d.subtitle].join(' ').toLowerCase().includes(q)).slice(0, 4);
+      const trackResults = tracks.filter(t => [t.title, t.artist, t.category].join(' ').toLowerCase().includes(q)).slice(0, 8);
+      const blocks = [];
+      tithiResults.forEach(({d,index}) => {
+        blocks.push(`
+          <button type="button" class="search-result" onclick="switchTab(${index}); closeSearch()">
+            <span><span class="block text-sm text-amber-200">${d.name}</span><span class="block text-[10px] text-stone-500">${d.en} · ${d.dateStr}</span></span>
+            <span class="text-amber-400">→</span>
+          </button>`);
+      });
+      trackResults.forEach(t => {
+        blocks.push(`
+          <button type="button" class="search-result" onclick="selectSearchTrack(${t.id})">
+            <span><span class="block text-sm text-stone-200 truncate">${t.title}</span><span class="block text-[10px] text-stone-500">${t.artist}</span></span>
+            <span class="text-amber-400">▶</span>
+          </button>`);
+      });
+      results.innerHTML = blocks.length ? blocks.join('') : '<div class="text-xs text-stone-500 text-center py-8">No matches found.</div>';
+    }
+
+    function selectSearchTrack(id) {
+      const index = tracks.findIndex(t => t.id === id);
+      if (index < 0) return;
+      const track = tracks[index];
+      currentFilter = track.category === 'classic' ? 'og' : track.category;
+      updateCategoryButtonStyles(currentFilter);
+      loadTrack(index, true);
+      toggleInlinePlaylist(true);
+      closeSearch();
+    }
+
+    async function toggleFullscreen() {
+      try {
+        if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+        else await document.exitFullscreen();
+      } catch (_) {}
+    }
+
     function setPlayerStatus(text, muted = false) {
       const status = document.getElementById('playerStatus');
       if (!status) return;
@@ -630,6 +840,8 @@
       document.querySelectorAll('.tab-btn').forEach(btn => btn.setAttribute('aria-selected', 'false'));
 
       document.getElementById('playlistCount').innerText = tracks.length;
+      updateDemoPanels();
+      updateDemoCountdown();
 
       const openingTithiIndex = getCalendarTithiIndex();
       currentFilter = openingTithiIndex === 0 ? 'mahalaya' : 'devotional';
@@ -648,6 +860,7 @@
 
       updateCountdown();
       setInterval(updateCountdown, 1000);
+      setInterval(updateDemoCountdown, 1000);
 
       let lastAutomaticTithiIndex = openingTithiIndex;
       setInterval(() => {
@@ -810,7 +1023,16 @@
     }
 
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeFactModal();
+      if (event.key === 'Escape') { closeFactModal(); closeSearch(); }
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault(); openSearch();
+      }
+      if (event.key === ' ') {
+        const tag = document.activeElement?.tagName;
+        if (!['INPUT','TEXTAREA','BUTTON'].includes(tag)) { event.preventDefault(); toggleMasterPlay(); }
+      }
+      if (event.key === 'ArrowRight' && !document.getElementById('searchModal')?.classList.contains('open')) nextTrack();
+      if (event.key === 'ArrowLeft' && !document.getElementById('searchModal')?.classList.contains('open')) prevTrack();
     });
 
     document.addEventListener('click', event => {
@@ -952,6 +1174,8 @@
 
     function updatePlayButtons() {
       document.getElementById('masterPlayBtn').innerText = isPlaying ? '❚❚' : '▶';
+      const visualizer = document.getElementById('playerVisualizer');
+      if (visualizer) visualizer.classList.toggle('is-playing', isPlaying);
       renderPlaylist();
     }
 
@@ -1089,6 +1313,7 @@
       document.getElementById('heroTitle').innerText = d.name;
       document.getElementById('heroSubtitle').innerText = d.subtitle;
       document.getElementById('heroDateSub').innerText = `${d.dateLabel} • ${d.mood}`;
+      updateDemoPanels();
       document.getElementById('tithiFact').innerText = d.fact;
       currentFactIndex = 0;
       showFact(0, false);
