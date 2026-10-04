@@ -267,34 +267,31 @@
       background: radial-gradient(circle at 50% 15%, rgba(212,175,55,0.09), transparent 44%);
     }
   
-    /* --- Welcome experience --- */
+    /* --- Welcome experience v2: Maa's arrival countdown --- */
     #welcomeOverlay {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
-      background: #08060a;
+      background: #08040a;
       opacity: 1;
       visibility: visible;
-      transition: opacity 1200ms cubic-bezier(0.22, 1, 0.36, 1), visibility 1200ms ease;
+      transition: opacity 1100ms cubic-bezier(0.22, 1, 0.36, 1), visibility 1100ms ease;
     }
 
     #welcomeOverlay::before {
       content: "";
       position: absolute;
-      inset: -3%;
-      background-image:
-        linear-gradient(180deg, rgba(8,5,10,0.30) 0%, rgba(8,5,10,0.12) 34%, rgba(8,5,10,0.78) 100%),
-        linear-gradient(90deg, rgba(8,5,10,0.36) 0%, transparent 48%, rgba(8,5,10,0.30) 100%),
+      inset: -2%;
+      background:
+        linear-gradient(90deg, rgba(7,4,7,0.12) 0%, rgba(7,4,7,0.02) 42%, rgba(7,4,7,0.58) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.10) 0%, transparent 42%, rgba(0,0,0,0.60) 100%),
         url("mahalaya-1.png");
       background-size: cover;
       background-position: center;
       transform: scale(1.03);
-      animation: welcomeKenBurns 11s ease-out forwards;
-      filter: saturate(0.94) contrast(1.03);
+      animation: welcomeKenBurns 14s ease-out forwards;
+      filter: saturate(1.05) contrast(1.04);
     }
 
     #welcomeOverlay::after {
@@ -302,8 +299,9 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 50% 43%, rgba(244,201,76,0.12), transparent 27%),
-        linear-gradient(180deg, transparent 48%, rgba(0,0,0,0.30) 100%);
+        radial-gradient(circle at 28% 44%, rgba(255,184,58,0.10), transparent 26%),
+        radial-gradient(circle at 78% 50%, rgba(214,133,27,0.12), transparent 30%),
+        linear-gradient(90deg, transparent 0 48%, rgba(8,4,8,0.16) 70%, rgba(8,4,8,0.46) 100%);
       pointer-events: none;
     }
 
@@ -313,118 +311,204 @@
       pointer-events: none;
     }
 
-    .welcome-content {
+    .welcome-shell {
       position: relative;
       z-index: 2;
-      width: min(92vw, 760px);
-      padding: 32px 24px;
-      text-align: center;
+      min-height: 100%;
+      width: 100%;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(26px, 4vw, 52px) clamp(18px, 4vw, 64px) clamp(20px, 3vw, 38px);
+      box-sizing: border-box;
+    }
+
+    .welcome-copy {
+      width: min(560px, 48vw);
+      margin-left: auto;
+      margin-right: clamp(0px, 2vw, 30px);
+      text-align: center;
+      animation: welcomeContentIn 1300ms 120ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .welcome-brand {
+      display: inline-flex;
       align-items: center;
-      animation: welcomeContentIn 1500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    .welcome-mark {
-      width: 78px;
-      height: 78px;
-      border-radius: 999px;
-      padding: 3px;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, #f7d774, #b88720, #f9e6a0);
-      box-shadow: 0 0 34px rgba(244,201,76,0.24), 0 12px 32px rgba(0,0,0,0.38);
-      animation: welcomeMarkIn 1100ms 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    .welcome-mark img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      border-radius: inherit;
-      background: #120d12;
-    }
-
-    .welcome-kicker {
-      color: #f5d77a;
+      gap: 10px;
+      color: #f6d67c;
       font-family: 'Cinzel', serif;
-      font-size: 11px;
-      letter-spacing: 0.34em;
+      font-size: clamp(10px, 1vw, 13px);
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      margin-bottom: 14px;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.55);
-      animation: welcomeTextIn 1000ms 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      margin-bottom: 18px;
+      text-shadow: 0 3px 18px rgba(0,0,0,0.7);
     }
 
-    .welcome-title {
+    .welcome-brand-mark {
+      font-size: 24px;
+      line-height: 1;
+      color: #f8d66e;
+      text-shadow: 0 0 18px rgba(248,214,110,0.45);
+    }
+
+    .welcome-title-bn {
       margin: 0;
-      color: #fff5d2;
+      color: #fff1c5;
       font-family: 'Hind Siliguri', sans-serif;
-      font-size: clamp(2.25rem, 6vw, 4.8rem);
+      font-size: clamp(2rem, 4vw, 4rem);
       line-height: 1.08;
       font-weight: 600;
-      letter-spacing: 0.01em;
-      text-shadow: 0 5px 26px rgba(0,0,0,0.60);
-      animation: welcomeTextIn 1100ms 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      text-shadow: 0 5px 28px rgba(0,0,0,0.72);
     }
 
-    .welcome-subtitle {
-      margin-top: 8px;
-      color: rgba(255,247,225,0.92);
+    .welcome-title-en {
+      margin: 7px 0 0;
+      color: rgba(255,247,226,0.96);
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(1.15rem, 2.6vw, 1.65rem);
-      font-style: italic;
-      letter-spacing: 0.04em;
-      text-shadow: 0 3px 16px rgba(0,0,0,0.60);
-      animation: welcomeTextIn 1100ms 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      font-size: clamp(1.15rem, 2vw, 1.55rem);
+      letter-spacing: 0.06em;
+      text-shadow: 0 3px 18px rgba(0,0,0,0.72);
     }
 
-    .welcome-divider {
-      width: 110px;
-      height: 1px;
-      margin: 22px 0 17px;
-      background: linear-gradient(90deg, transparent, rgba(244,201,76,0.85), transparent);
-      box-shadow: 0 0 14px rgba(244,201,76,0.28);
-      animation: welcomeDividerIn 900ms 700ms ease both;
-    }
-
-    .welcome-message {
-      max-width: 560px;
-      color: rgba(255,248,232,0.88);
+    .welcome-subcopy {
+      margin: 12px auto 0;
+      max-width: 500px;
+      color: rgba(255,245,225,0.82);
       font-family: 'Hind Siliguri', sans-serif;
-      font-size: clamp(0.9rem, 1.8vw, 1.08rem);
-      line-height: 1.8;
-      text-shadow: 0 2px 14px rgba(0,0,0,0.68);
-      animation: welcomeTextIn 1100ms 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      font-size: clamp(0.88rem, 1.35vw, 1.08rem);
+      line-height: 1.55;
+      text-shadow: 0 2px 15px rgba(0,0,0,0.75);
     }
 
-    .welcome-progress {
-      width: min(240px, 58vw);
-      height: 2px;
-      margin-top: 30px;
-      overflow: hidden;
-      border-radius: 99px;
-      background: rgba(255,255,255,0.20);
-      animation: welcomeTextIn 900ms 900ms ease both;
+    .welcome-ornament {
+      width: 130px;
+      height: 1px;
+      margin: 19px auto 17px;
+      background: linear-gradient(90deg, transparent, rgba(244,201,76,0.9), transparent);
+      box-shadow: 0 0 15px rgba(244,201,76,0.24);
     }
 
-    .welcome-progress span {
+    .welcome-countdown {
+      width: min(540px, 100%);
+      margin: 0 auto;
+      padding: 16px 17px 17px;
+      border: 1px solid rgba(246,204,98,0.40);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(20,10,12,0.54), rgba(45,19,12,0.34));
+      box-shadow: inset 0 1px rgba(255,255,255,0.08), 0 18px 55px rgba(0,0,0,0.28);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+
+    .welcome-countdown-kicker {
+      color: #f8d875;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: clamp(1.15rem, 2vw, 1.55rem);
+      font-weight: 600;
+    }
+
+    .welcome-countdown-label {
+      margin-top: 1px;
+      color: rgba(255,247,226,0.9);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.08rem;
+    }
+
+    .welcome-units {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .welcome-unit {
+      padding: 9px 5px 8px;
+      border-radius: 13px;
+      background: rgba(12,7,9,0.34);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .welcome-unit strong {
       display: block;
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #c7972c, #f8df8a, #c7972c);
-      box-shadow: 0 0 12px rgba(244,201,76,0.45);
-      animation: welcomeProgress 10s linear forwards;
+      color: #ffe38b;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.45rem, 3vw, 2.15rem);
+      line-height: 1;
+      text-shadow: 0 0 16px rgba(244,201,76,0.25);
     }
 
-    .welcome-status {
-      margin-top: 10px;
-      color: rgba(255,248,232,0.64);
+    .welcome-unit span {
+      display: block;
+      margin-top: 5px;
+      color: rgba(255,245,226,0.72);
       font-family: 'Cinzel', serif;
-      font-size: 9px;
+      font-size: 8px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .welcome-tithi-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(112px, 1fr));
+      gap: 10px;
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      animation: welcomeTithiIn 1100ms 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .welcome-tithi {
+      min-height: 76px;
+      padding: 10px 8px 8px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.20);
+      background: rgba(20,12,12,0.54);
+      color: rgba(255,246,227,0.82);
+      text-align: center;
+      box-shadow: inset 0 1px rgba(255,255,255,0.06);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    .welcome-tithi.active {
+      border-color: rgba(247,196,62,0.98);
+      background: linear-gradient(180deg, rgba(85,43,11,0.62), rgba(26,13,10,0.62));
+      box-shadow: 0 0 24px rgba(247,196,62,0.22), inset 0 1px rgba(255,237,165,0.20);
+      color: #fff0bc;
+    }
+
+    .welcome-tithi .bn {
+      display: block;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .welcome-tithi .en {
+      display: block;
+      margin-top: 2px;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 0.11em;
+    }
+
+    .welcome-tithi .date {
+      display: block;
+      margin-top: 6px;
+      color: #f4d47b;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 13px;
+    }
+
+    .welcome-footer {
+      text-align: center;
+      color: rgba(255,241,205,0.54);
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      animation: welcomeTextIn 900ms 980ms ease both;
+      margin-top: 13px;
+      animation: welcomeTextIn 1000ms 900ms ease both;
     }
 
     @keyframes welcomeKenBurns {
@@ -433,52 +517,81 @@
     }
 
     @keyframes welcomeContentIn {
-      from { opacity: 0; transform: translateY(22px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes welcomeMarkIn {
-      from { opacity: 0; transform: scale(0.82); }
-      to { opacity: 1; transform: scale(1); }
+    @keyframes welcomeTithiIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes welcomeTextIn {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes welcomeDividerIn {
-      from { opacity: 0; transform: scaleX(0.35); }
-      to { opacity: 1; transform: scaleX(1); }
+    @media (max-width: 900px) {
+      .welcome-shell {
+        padding: 24px 16px 18px;
+      }
+      .welcome-copy {
+        width: min(650px, 94vw);
+        margin: 0 auto;
+      }
+      .welcome-tithi-row {
+        overflow-x: auto;
+        grid-template-columns: repeat(6, minmax(126px, 1fr));
+        padding-bottom: 4px;
+      }
     }
 
-    @keyframes welcomeProgress {
-      from { width: 0%; }
-      to { width: 100%; }
-    }
-
-    @media (max-width: 640px) {
-      .welcome-content { padding: 24px 18px; }
-      .welcome-mark { width: 64px; height: 64px; margin-bottom: 18px; }
-      .welcome-divider { margin: 18px 0 14px; }
-      .welcome-message { line-height: 1.65; }
-      .welcome-progress { margin-top: 24px; }
+    @media (max-width: 560px) {
+      #welcomeOverlay::before {
+        background-position: 42% center;
+      }
+      .welcome-shell {
+        padding: 18px 12px 14px;
+      }
+      .welcome-copy {
+        margin-top: 2vh;
+      }
+      .welcome-brand {
+        margin-bottom: 10px;
+      }
+      .welcome-title-bn {
+        font-size: 2rem;
+      }
+      .welcome-subcopy {
+        font-size: 0.84rem;
+        line-height: 1.45;
+      }
+      .welcome-countdown {
+        padding: 12px 10px 13px;
+        border-radius: 16px;
+      }
+      .welcome-units {
+        gap: 5px;
+      }
+      .welcome-unit {
+        padding: 8px 2px 7px;
+      }
+      .welcome-unit strong {
+        font-size: 1.25rem;
+      }
+      .welcome-tithi {
+        min-height: 70px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
       #welcomeOverlay::before,
-      .welcome-content,
-      .welcome-mark,
-      .welcome-kicker,
-      .welcome-title,
-      .welcome-subtitle,
-      .welcome-divider,
-      .welcome-message,
-      .welcome-progress,
-      .welcome-status,
-      .welcome-progress span {
+      .welcome-copy,
+      .welcome-tithi-row,
+      .welcome-footer {
         animation: none !important;
       }
+    }
       .welcome-progress span { width: 100%; }
     }
 
@@ -490,21 +603,39 @@
 
   <body class="bg-[#09080F] text-stone-100 min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white relative">
 
-  <!-- Welcome page: devotional opening sequence -->
+  <!-- Welcome page: Maa's arrival countdown -->
   <section id="welcomeOverlay" aria-label="Welcome to Devi Paksha">
-    <div class="welcome-content">
-      <div class="welcome-mark">
-        <img src="logo.png" alt="" />
+    <div class="welcome-shell">
+      <div class="welcome-copy">
+        <div class="welcome-brand"><span class="welcome-brand-mark">✦</span> DEVI PAKSHA • 2026</div>
+        <h2 class="welcome-title-bn">দেবীপক্ষের শুভ সূচনা</h2>
+        <div class="welcome-title-en">Devi Pokher Shubho Suchona</div>
+        <p class="welcome-subcopy">মঙ্গলময়ী মায়ের আগমনের পবিত্র অপেক্ষায়…</p>
+        <div class="welcome-ornament" aria-hidden="true"></div>
+
+        <div class="welcome-countdown" aria-live="polite">
+          <div class="welcome-countdown-kicker">মা আসছেন…</div>
+          <div class="welcome-countdown-label">Maa Durga arrives on Maha Shashti</div>
+          <div class="welcome-units">
+            <div class="welcome-unit"><strong id="welcomeDays">00</strong><span>Days</span></div>
+            <div class="welcome-unit"><strong id="welcomeHours">00</strong><span>Hours</span></div>
+            <div class="welcome-unit"><strong id="welcomeMinutes">00</strong><span>Minutes</span></div>
+            <div class="welcome-unit"><strong id="welcomeSeconds">00</strong><span>Seconds</span></div>
+          </div>
+        </div>
       </div>
-      <div class="welcome-kicker">DEVI PAKSHA • 2026</div>
-      <h2 class="welcome-title">দেবীপক্ষের শুভ সূচনা</h2>
-      <div class="welcome-subtitle">Devi Pokher Shubho Suchona</div>
-      <div class="welcome-divider" aria-hidden="true"></div>
-      <p class="welcome-message">
-        মা দুর্গার আগমনের পবিত্র সূচনায় — শক্তি, ভক্তি ও মঙ্গলময়তার এই যাত্রায় আপনাকে স্বাগত।
-      </p>
-      <div class="welcome-progress" aria-hidden="true"><span></span></div>
-      <div class="welcome-status">Entering the Puja experience</div>
+
+      <div>
+        <div class="welcome-tithi-row" aria-label="Durga Puja dates">
+          <div class="welcome-tithi active"><span class="bn">মহালয়া</span><span class="en">MAHALAYA</span><span class="date">10 Oct 2026</span></div>
+          <div class="welcome-tithi"><span class="bn">মহাষষ্ঠী</span><span class="en">SHASHTI</span><span class="date">17 Oct 2026</span></div>
+          <div class="welcome-tithi"><span class="bn">মহাসপ্তমী</span><span class="en">SAPTAMI</span><span class="date">18 Oct 2026</span></div>
+          <div class="welcome-tithi"><span class="bn">মহাষ্টমী</span><span class="en">ASHTAMI</span><span class="date">19 Oct 2026</span></div>
+          <div class="welcome-tithi"><span class="bn">মহানবমী</span><span class="en">NABAMI</span><span class="date">20 Oct 2026</span></div>
+          <div class="welcome-tithi"><span class="bn">মহাদশমী</span><span class="en">DASHAMI</span><span class="date">21 Oct 2026</span></div>
+        </div>
+        <div class="welcome-footer">শুভ দেবীপক্ষ • Maa is coming…</div>
+      </div>
     </div>
   </section>
 
@@ -1351,15 +1482,38 @@
   </script>
 
   <script>
-    // Welcome page: show on every app load, then reveal the app after 10 seconds.
+    // Welcome page: live countdown to Maha Shashti, then reveal the app.
     window.addEventListener('DOMContentLoaded', () => {
       const welcome = document.getElementById('welcomeOverlay');
       if (!welcome) return;
 
+      const target = new Date('2026-10-17T08:00:00+05:30').getTime();
+      const days = document.getElementById('welcomeDays');
+      const hours = document.getElementById('welcomeHours');
+      const minutes = document.getElementById('welcomeMinutes');
+      const seconds = document.getElementById('welcomeSeconds');
+
+      const updateCountdown = () => {
+        const remaining = Math.max(0, target - Date.now());
+        const totalSeconds = Math.floor(remaining / 1000);
+        const d = Math.floor(totalSeconds / 86400);
+        const h = Math.floor((totalSeconds % 86400) / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+        days.textContent = String(d).padStart(2, '0');
+        hours.textContent = String(h).padStart(2, '0');
+        minutes.textContent = String(m).padStart(2, '0');
+        seconds.textContent = String(s).padStart(2, '0');
+      };
+
+      updateCountdown();
+      const countdownTimer = window.setInterval(updateCountdown, 1000);
+
       const dismissWelcome = () => {
         if (welcome.classList.contains('welcome-hidden')) return;
+        window.clearInterval(countdownTimer);
         welcome.classList.add('welcome-hidden');
-        window.setTimeout(() => welcome.remove(), 1300);
+        window.setTimeout(() => welcome.remove(), 1200);
       };
 
       window.setTimeout(dismissWelcome, 10000);
