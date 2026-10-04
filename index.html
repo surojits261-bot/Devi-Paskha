@@ -462,14 +462,32 @@
       position: absolute;
       left: 0;
       right: 0;
-      bottom: clamp(18px, 3vw, 34px);
+      bottom: clamp(16px, 2.6vw, 30px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
       text-align: center;
-      color: rgba(255,241,205,0.58);
-      font-family: 'Cinzel', serif;
-      font-size: 8px;
-      letter-spacing: 0.20em;
-      text-transform: uppercase;
       animation: welcomeTextIn 950ms 850ms ease both;
+    }
+
+    .welcome-footer-main {
+      color: rgba(255,241,205,0.92);
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: clamp(1rem, 1.55vw, 1.3rem);
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.74), 0 0 18px rgba(248,214,110,0.18);
+    }
+
+    .welcome-footer-credit {
+      color: rgba(255,241,205,0.66);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(0.78rem, 1vw, 0.94rem);
+      line-height: 1.1;
+      letter-spacing: 0.05em;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.68);
     }
 
     @keyframes welcomeKenBurns {
@@ -585,7 +603,10 @@
         </div>
       </div>
 
-      <div id="welcomeFooter" class="welcome-footer">শুভ দেবীপক্ষ • জয় মা দুর্গা</div>
+      <div id="welcomeFooter" class="welcome-footer">
+        <div id="welcomeFooterMain" class="welcome-footer-main">শুভ দেবীপক্ষ • জয় মা দুর্গা</div>
+        <div id="welcomeFooterCredit" class="welcome-footer-credit">Crafted by Surajit Sarkar · with AI assistance</div>
+      </div>
     </div>
   </section>
 
@@ -1486,7 +1507,7 @@
       document.getElementById('welcomeTitleBn').textContent = state.titleBn;
       document.getElementById('welcomeTitleEn').textContent = state.titleEn;
       document.getElementById('welcomeSubcopy').textContent = state.subcopy;
-      document.getElementById('welcomeFooter').textContent = state.footer;
+      document.getElementById('welcomeFooterMain').textContent = state.footer;
 
       const countdown = document.getElementById('welcomeCountdown');
       const stateCard = document.getElementById('welcomeStateCard');
