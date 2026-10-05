@@ -568,6 +568,115 @@
       }
     }
 
+
+    /* --- Personalized greeting companion --- */
+    #greetingModal {
+      background: rgba(3,2,7,0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .greeting-preview {
+      aspect-ratio: 3 / 2;
+      min-height: 250px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(246,204,98,0.38);
+      border-radius: 22px;
+      background: #130b0d center / cover no-repeat;
+      box-shadow: inset 0 1px rgba(255,255,255,0.09), 0 18px 50px rgba(0,0,0,0.34);
+      isolation: isolate;
+    }
+
+    .greeting-preview::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(180deg, rgba(7,3,8,0.20) 0%, rgba(7,3,8,0.20) 38%, rgba(7,3,8,0.80) 100%);
+    }
+
+    .greeting-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(248,214,110,0.17), transparent 34%),
+        linear-gradient(90deg, rgba(7,3,8,0.16), transparent 40%, rgba(7,3,8,0.28));
+      pointer-events: none;
+    }
+
+    .greeting-preview-inner {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(22px, 5vw, 54px);
+      text-align: center;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.82);
+    }
+
+    .greeting-preview-kicker {
+      color: #f5d77c;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(9px, 1vw, 12px);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 13px;
+    }
+
+    .greeting-preview-title {
+      color: #fff1c5;
+      font-family: 'Noto Serif Bengali', 'Hind Siliguri', serif;
+      font-size: clamp(1.65rem, 4vw, 3.1rem);
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .greeting-preview-message {
+      max-width: 640px;
+      margin-top: 13px;
+      color: rgba(255,247,226,0.94);
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: clamp(0.92rem, 1.65vw, 1.22rem);
+      line-height: 1.55;
+    }
+
+    .greeting-preview-name {
+      margin-top: 15px;
+      color: #f5d77c;
+      font-family: 'Noto Serif Bengali', 'Hind Siliguri', serif;
+      font-size: clamp(1rem, 1.8vw, 1.3rem);
+      font-weight: 600;
+    }
+
+    .greeting-preview-footer {
+      margin-top: 13px;
+      color: rgba(255,242,211,0.72);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(0.8rem, 1.2vw, 1rem);
+      letter-spacing: 0.08em;
+    }
+
+    .greeting-status {
+      min-height: 19px;
+      transition: opacity 180ms ease;
+    }
+
+    @media (max-width: 560px) {
+      .greeting-preview {
+        min-height: 230px;
+        border-radius: 18px;
+      }
+
+      .greeting-preview-inner {
+        padding: 20px 16px 24px;
+      }
+    }
+
 </style>
 </head>
 
@@ -687,6 +796,12 @@
         <button onclick="filterCategory('adhunik')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="adhunik">🎶 Adhunik Pujo Mix</button>
         <button onclick="filterCategory('ambience')" class="cat-filter px-4 py-1.5 rounded-full bg-black/30 border border-white/15 text-stone-300 text-xs sm:text-sm font-medium glassmorphism transition hover:border-amber-400 shadow flex items-center gap-1.5" data-category="ambience">🪷 Ambience</button>
       </div>
+      <div class="flex flex-col items-center gap-2 mb-5">
+        <button type="button" onclick="openGreetingModal()" class="px-4 py-2 rounded-full border border-amber-300/30 bg-black/35 text-amber-200 hover:text-amber-100 hover:border-amber-300/60 hover:bg-amber-500/10 transition glassmorphism text-xs sm:text-sm font-medium shadow-lg">
+          ✨ Personalize a Puja Greeting
+        </button>
+        <span class="text-[10px] text-stone-500 font-cinzel tracking-wide">Create a festive greeting with your name</span>
+      </div>
 
       <!-- Did You Know / Fact Card -->
       <div class="w-full max-w-2xl glassmorphism glass-card bg-black/45 border border-white/15 rounded-2xl p-4 sm:p-5 text-left shadow-2xl relative">
@@ -733,6 +848,59 @@
         <button type="button" onclick="closeFactModal()" class="text-stone-400 hover:text-white text-lg leading-none" aria-label="Close facts">✕</button>
       </div>
       <div id="factModalBody" class="max-h-[60vh] overflow-y-auto custom-scrollbar p-4 space-y-3"></div>
+    </div>
+  </div>
+
+
+  <!-- Personalized Greetings Modal -->
+  <div id="greetingModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="greetingModalTitle" onclick="if(event.target===this) closeGreetingModal()">
+    <div class="w-full max-w-2xl max-h-[92vh] overflow-y-auto custom-scrollbar glassmorphism glass-card bg-black/75 border border-amber-400/30 rounded-3xl shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+        <div>
+          <div id="greetingModalTitle" class="text-base sm:text-lg font-bold text-amber-200">🎁 Personalized Puja Greeting</div>
+          <div id="greetingModalSubtitle" class="text-[11px] text-stone-400 mt-1">Your name • date-aware festival greeting</div>
+        </div>
+        <button type="button" onclick="closeGreetingModal()" class="text-stone-400 hover:text-white text-xl leading-none" aria-label="Close greeting">✕</button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <label class="block">
+          <span class="text-xs text-amber-200/90 font-medium">Your name</span>
+          <input id="greetingNameInput" type="text" maxlength="32" autocomplete="name" placeholder="আপনার নাম লিখুন"
+            class="mt-1.5 w-full rounded-xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-white outline-none placeholder:text-stone-500 focus:border-amber-400/60 focus:ring-1 focus:ring-amber-400/30"
+            oninput="updateGreetingPreview()" />
+        </label>
+
+        <div id="greetingPreview" class="greeting-preview">
+          <div class="greeting-preview-inner">
+            <div id="greetingPreviewKicker" class="greeting-preview-kicker">DEVI PAKSHA • 2026</div>
+            <div id="greetingPreviewTitle" class="greeting-preview-title">শুভ মহালয়া</div>
+            <div id="greetingPreviewMessage" class="greeting-preview-message">মায়ের আগমনী সুরে ভরে উঠুক আপনার জীবন।</div>
+            <div id="greetingPreviewName" class="greeting-preview-name">— আপনার নাম</div>
+            <div class="greeting-preview-footer">জয় মা দুর্গা</div>
+          </div>
+        </div>
+
+        <div id="greetingStatus" class="greeting-status text-center text-[11px] text-stone-400" aria-live="polite">
+          নাম লিখলে গ্রীটিংটি আপনার নামে তৈরি হবে।
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <button type="button" onclick="shareGreeting()" class="px-3 py-2.5 rounded-xl bg-amber-400 text-stone-950 font-semibold text-xs hover:bg-amber-300 transition shadow-lg">
+            ↗ Share Greeting
+          </button>
+          <button type="button" onclick="openGreetingWhatsApp()" class="px-3 py-2.5 rounded-xl border border-white/10 bg-black/35 text-stone-200 hover:text-white hover:border-amber-300/40 transition text-xs">
+            💬 WhatsApp Text
+          </button>
+          <button type="button" onclick="downloadGreeting()" class="px-3 py-2.5 rounded-xl border border-white/10 bg-black/35 text-stone-200 hover:text-white hover:border-amber-300/40 transition text-xs">
+            ↓ Download PNG
+          </button>
+        </div>
+
+        <div class="text-center text-[10px] text-stone-500 leading-relaxed">
+          Share Greeting uses your device's share sheet when available. Download the PNG to attach it manually in WhatsApp.
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1208,7 +1376,10 @@
     }
 
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeFactModal();
+      if (event.key === 'Escape') {
+        closeFactModal();
+        closeGreetingModal();
+      }
     });
 
     document.addEventListener('click', event => {
@@ -1507,6 +1678,271 @@
       document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white ml-1">${days}d ${hours}h ${mins}m</strong>`;
     }
 
+
+
+    // --- PERSONALIZED PUJA GREETINGS ---
+    const greetingStates = {
+      preMahalaya: {
+        image: 'welcome/welcome-mahalaya.png',
+        kicker: 'DEVI PAKSHA • 2026',
+        title: '🌅 শুভ মহালয়া',
+        message: 'মায়ের আগমনী সুরে ভরে উঠুক আপনার জীবন।',
+        whatsapp: '🌅 শুভ মহালয়া\\nমায়ের আগমনী সুরে ভরে উঠুক আপনার জীবন।'
+      },
+      puja: {
+        image: 'welcome/welcome-durga-puja.png',
+        kicker: 'DEVI PAKSHA • 2026',
+        title: '🔱 শুভ দেবীপক্ষ',
+        message: 'মায়ের আশীর্বাদে মঙ্গলময় হোক আপনার জীবন।',
+        whatsapp: '🔱 শুভ দেবীপক্ষ\\nমায়ের আশীর্বাদে মঙ্গলময় হোক আপনার জীবন।'
+      },
+      bijoya: {
+        image: 'welcome/welcome-bijoya.png',
+        kicker: 'DEVI PAKSHA • 2026',
+        title: '🌺 শুভ বিজয়া',
+        message: 'মা আবার এসো, আগামী শরতে।',
+        whatsapp: '🌺 শুভ বিজয়া\\nমা আবার এসো, আগামী শরতে।'
+      }
+    };
+
+    function getGreetingStateKey(now = new Date()) {
+      const mahalaya = new Date('2026-10-10T04:00:00+05:30');
+      const dashamiEnd = new Date('2026-10-21T16:00:00+05:30');
+      return now < mahalaya ? 'preMahalaya' : (now <= dashamiEnd ? 'puja' : 'bijoya');
+    }
+
+    function getGreetingData() {
+      const name = document.getElementById('greetingNameInput')?.value.trim() || '';
+      const state = greetingStates[getGreetingStateKey()] || greetingStates.preMahalaya;
+      return {
+        ...state,
+        name,
+        displayName: name || 'আপনার নাম',
+        footer: 'জয় মা দুর্গা'
+      };
+    }
+
+    function setGreetingStatus(message, tone = 'muted') {
+      const el = document.getElementById('greetingStatus');
+      if (!el) return;
+      el.textContent = message;
+      el.className = 'greeting-status text-center text-[11px] ' + (
+        tone === 'ok' ? 'text-amber-200' :
+        tone === 'error' ? 'text-rose-300' :
+        'text-stone-400'
+      );
+    }
+
+    function updateGreetingPreview() {
+      const preview = document.getElementById('greetingPreview');
+      const title = document.getElementById('greetingPreviewTitle');
+      const message = document.getElementById('greetingPreviewMessage');
+      const name = document.getElementById('greetingPreviewName');
+      const kicker = document.getElementById('greetingPreviewKicker');
+      if (!preview || !title || !message || !name || !kicker) return;
+
+      const state = getGreetingData();
+      preview.style.backgroundImage = `url("${state.image}")`;
+      kicker.textContent = state.kicker;
+      title.textContent = state.title;
+      message.textContent = state.message;
+      name.textContent = `— ${state.displayName}`;
+    }
+
+    function openGreetingModal() {
+      const modal = document.getElementById('greetingModal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      updateGreetingPreview();
+      window.setTimeout(() => document.getElementById('greetingNameInput')?.focus(), 80);
+    }
+
+    function closeGreetingModal() {
+      const modal = document.getElementById('greetingModal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function greetingHasName() {
+      const name = document.getElementById('greetingNameInput')?.value.trim() || '';
+      if (!name) {
+        setGreetingStatus('নামটি লিখে গ্রীটিং তৈরি করুন।', 'error');
+        document.getElementById('greetingNameInput')?.focus();
+        return false;
+      }
+      return true;
+    }
+
+    function drawGreetingWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(/\\s+/);
+      const lines = [];
+      let line = '';
+
+      for (const word of words) {
+        const testLine = line ? `${line} ${word}` : word;
+        if (ctx.measureText(testLine).width <= maxWidth) {
+          line = testLine;
+        } else if (line) {
+          lines.push(line);
+          line = word;
+        } else {
+          lines.push(word);
+          line = '';
+        }
+      }
+      if (line) lines.push(line);
+
+      lines.forEach((lineText, index) => {
+        ctx.fillText(lineText, x, y + index * lineHeight);
+      });
+
+      return y + Math.max(0, lines.length - 1) * lineHeight;
+    }
+
+    function loadGreetingImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    async function buildGreetingBlob() {
+      if (!greetingHasName()) return null;
+
+      const state = getGreetingData();
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200;
+      canvas.height = 800;
+      const ctx = canvas.getContext('2d');
+
+      if (document.fonts?.ready) {
+        try { await document.fonts.ready; } catch (_) {}
+      }
+
+      let image = null;
+      try { image = await loadGreetingImage(state.image); } catch (_) {}
+
+      if (image) {
+        const scale = Math.max(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
+        const dw = image.naturalWidth * scale;
+        const dh = image.naturalHeight * scale;
+        ctx.drawImage(image, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+      } else {
+        const fallback = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        fallback.addColorStop(0, '#241016');
+        fallback.addColorStop(1, '#0d0a13');
+        ctx.fillStyle = fallback;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      const overlay = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      overlay.addColorStop(0, 'rgba(8,3,9,0.24)');
+      overlay.addColorStop(0.45, 'rgba(8,3,9,0.28)');
+      overlay.addColorStop(1, 'rgba(8,3,9,0.82)');
+      ctx.fillStyle = overlay;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const glow = ctx.createRadialGradient(canvas.width / 2, 140, 20, canvas.width / 2, 140, 380);
+      glow.addColorStop(0, 'rgba(248,214,110,0.16)');
+      glow.addColorStop(1, 'rgba(248,214,110,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = 'rgba(246,204,98,0.65)';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(26, 26, canvas.width - 52, canvas.height - 52);
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+
+      ctx.fillStyle = '#f5d77c';
+      ctx.font = '600 24px "Cinzel", serif';
+      ctx.fillText(state.kicker, canvas.width / 2, 112);
+
+      ctx.fillStyle = '#fff1c5';
+      ctx.font = '600 58px "Noto Serif Bengali", "Hind Siliguri", sans-serif';
+      ctx.fillText(state.title, canvas.width / 2, 286);
+
+      ctx.fillStyle = 'rgba(255,247,226,0.96)';
+      ctx.font = '400 35px "Hind Siliguri", sans-serif';
+      drawGreetingWrappedText(ctx, state.message, canvas.width / 2, 374, 900, 52);
+
+      ctx.fillStyle = '#f5d77c';
+      ctx.font = '600 32px "Noto Serif Bengali", "Hind Siliguri", sans-serif';
+      ctx.fillText(`— ${state.name}`, canvas.width / 2, 540);
+
+      ctx.fillStyle = 'rgba(255,242,211,0.78)';
+      ctx.font = '500 25px "Cormorant Garamond", Georgia, serif';
+      ctx.fillText(state.footer, canvas.width / 2, 690);
+
+      return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    }
+
+    async function downloadGreeting() {
+      if (!greetingHasName()) return;
+      setGreetingStatus('গ্রীটিং তৈরি হচ্ছে…');
+      try {
+        const blob = await buildGreetingBlob();
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'devi-paksha-greeting.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1200);
+        setGreetingStatus('PNG তৈরি হয়েছে। শুভেচ্ছা ছড়িয়ে দিন।', 'ok');
+      } catch (error) {
+        console.error(error);
+        setGreetingStatus('গ্রীটিং তৈরি করা যায়নি। আবার চেষ্টা করুন।', 'error');
+      }
+    }
+
+    async function shareGreeting() {
+      if (!greetingHasName()) return;
+      setGreetingStatus('গ্রীটিং প্রস্তুত হচ্ছে…');
+      try {
+        const blob = await buildGreetingBlob();
+        if (!blob) return;
+        const file = new File([blob], 'devi-paksha-greeting.png', { type: 'image/png' });
+        const text = `${getGreetingData().title}\\n${getGreetingData().message}\\n— ${getGreetingData().name}\\n\\nদেবীপক্ষ • জয় মা দুর্গা`;
+
+        if (navigator.share) {
+          try {
+            if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+              await navigator.share({ title: 'Devi Paksha Greeting', text, files: [file] });
+              setGreetingStatus('গ্রীটিং শেয়ার করা হয়েছে।', 'ok');
+              return;
+            }
+          } catch (shareError) {
+            if (shareError?.name === 'AbortError') {
+              setGreetingStatus('শেয়ার বাতিল হয়েছে।');
+              return;
+            }
+          }
+        }
+
+        await downloadGreeting();
+        setGreetingStatus('এই ডিভাইসে সরাসরি শেয়ার নেই — PNG ডাউনলোড হয়েছে।', 'ok');
+      } catch (error) {
+        console.error(error);
+        setGreetingStatus('শেয়ার করা যায়নি। PNG ডাউনলোড করে পাঠাতে পারেন।', 'error');
+      }
+    }
+
+    function openGreetingWhatsApp() {
+      if (!greetingHasName()) return;
+      const state = getGreetingData();
+      const text = `${state.whatsapp}\\n— ${state.name}\\n\\nদেবীপক্ষ • জয় মা দুর্গা\\n\\nhttps://devi-paskha.vercel.app/`;
+      const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+      setGreetingStatus('WhatsApp বার্তা প্রস্তুত করা হয়েছে। চাইলে PNG-টিও সংযুক্ত করুন।', 'ok');
+    }
 
   </script>
 
