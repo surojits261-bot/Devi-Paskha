@@ -19,6 +19,49 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Early image warm-up: start fetching the first visible seasonal and hero images before DOMContentLoaded. -->
+  <script>
+    (() => {
+      const now = new Date();
+      const mahalaya = new Date('2026-10-10T04:00:00+05:30');
+      const dashamiEnd = new Date('2026-10-21T16:00:00+05:30');
+      const welcomeSrc = now < mahalaya
+        ? 'welcome/welcome-mahalaya.png'
+        : (now <= dashamiEnd ? 'welcome/welcome-durga-puja.png' : 'welcome/welcome-bijoya.png');
+
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const tithiStarts = [
+        new Date(2026, 9, 10),
+        new Date(2026, 9, 17),
+        new Date(2026, 9, 18),
+        new Date(2026, 9, 19),
+        new Date(2026, 9, 20),
+        new Date(2026, 9, 21)
+      ];
+      const firstImages = [
+        'mahalaya-1.png',
+        'shashti-1.png',
+        'saptami-1.png',
+        'ashtami-1.png',
+        'nabami-1.png',
+        'dashami-1.png'
+      ];
+      let tithiIndex = 0;
+      tithiStarts.forEach((d, index) => { if (d <= today) tithiIndex = index; });
+
+      const warm = (src, priority) => {
+        const img = new Image();
+        img.decoding = 'async';
+        if ('fetchPriority' in img) img.fetchPriority = priority;
+        img.src = src;
+        return img;
+      };
+
+      window.__welcomeImagePreload = warm(welcomeSrc, 'high');
+      window.__heroImagePreload = warm(firstImages[tithiIndex], 'high');
+    })();
+  </script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -280,20 +323,30 @@
       transition: opacity 1100ms cubic-bezier(0.22, 1, 0.36, 1), visibility 1100ms ease;
     }
 
+    .welcome-bg-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transform: scale(1.02);
+      animation: welcomeKenBurns 14s ease-out forwards;
+      filter: saturate(1.03) contrast(1.03);
+      z-index: 0;
+      display: block;
+      background: #08040a;
+    }
+
     #welcomeOverlay::before {
       content: "";
       position: absolute;
       inset: 0;
-      background-image:
+      z-index: 1;
+      background:
         linear-gradient(90deg, rgba(5,3,7,0.16) 0%, rgba(5,3,7,0.03) 44%, rgba(5,3,7,0.70) 100%),
-        linear-gradient(180deg, rgba(0,0,0,0.10) 0%, transparent 46%, rgba(0,0,0,0.50) 100%),
-        var(--welcome-bg);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      transform: scale(1.02);
-      animation: welcomeKenBurns 14s ease-out forwards;
-      filter: saturate(1.03) contrast(1.03);
+        linear-gradient(180deg, rgba(0,0,0,0.10) 0%, transparent 46%, rgba(0,0,0,0.50) 100%);
+      pointer-events: none;
     }
 
     #welcomeOverlay::after {
@@ -507,8 +560,8 @@
     }
 
     @media (max-width: 900px) {
-      #welcomeOverlay::before {
-        background-position: center;
+      .welcome-bg-image {
+        object-position: center;
       }
 
       .welcome-shell {
@@ -687,6 +740,7 @@
 
   <!-- Welcome page: Maa's arrival countdown -->
   <section id="welcomeOverlay" aria-label="Welcome to Devi Paksha">
+    <img id="welcomeBackgroundImage" class="welcome-bg-image" alt="" fetchpriority="high" decoding="async" />
     <div class="welcome-shell">
       <div class="welcome-copy">
         <div class="welcome-brand"><span class="welcome-brand-mark">✦</span> DEVI PAKSHA • 2026</div>
@@ -1121,6 +1175,37 @@
     const IMAGE_ROTATION_MS = 5 * 60 * 1000;
     let activeBackdropLayer = 0;
     let lastRenderedBackdrop = '';
+    let backdropRequestId = 0;
+    const imagePreloadCache = new Map();
+
+    function preloadImage(src, priority = 'low') {
+      if (!src) return Promise.resolve(null);
+      const cached = imagePreloadCache.get(src);
+      if (cached) return cached.promise;
+
+      const img = new Image();
+      img.decoding = 'async';
+      if ('fetchPriority' in img) img.fetchPriority = priority;
+
+      const promise = new Promise((resolve, reject) => {
+        const finish = () => {
+          if (typeof img.decode === 'function') {
+            img.decode().catch(() => {}).then(() => resolve(img));
+          } else {
+            resolve(img);
+          }
+        };
+
+        img.onload = finish;
+        img.onerror = () => reject(new Error('Unable to load image: ' + src));
+        img.src = src;
+
+        if (img.complete && img.naturalWidth > 0) finish();
+      });
+
+      imagePreloadCache.set(src, { img, promise });
+      return promise;
+    }
     
 
 
@@ -1150,15 +1235,9 @@
       const slot = getGlobalImageSlot();
       const currentIndex = slot % images.length;
       const nextIndex = (currentIndex + 1) % images.length;
-      const urls = [images[currentIndex], images[nextIndex]];
 
-      urls.forEach((url, index) => {
-        if (!url) return;
-        const img = new Image();
-        img.decoding = 'async';
-        if ('fetchPriority' in img) img.fetchPriority = index === 0 ? 'high' : 'low';
-        img.src = url;
-      });
+      preloadImage(images[currentIndex], 'high').catch(() => {});
+      preloadImage(images[nextIndex], 'low').catch(() => {});
     }
 
     // Select the opening Tithi from the calendar date.
@@ -1238,25 +1317,34 @@
       const layers = [document.getElementById('photoBackdropA'), document.getElementById('photoBackdropB')].filter(Boolean);
       if (layers.length !== 2) return;
 
-      const incomingIndex = activeBackdropLayer === 0 ? 1 : 0;
-      const incoming = layers[incomingIndex];
-      const outgoing = layers[activeBackdropLayer];
-      const opacity = '0.7';
+      const requestId = ++backdropRequestId;
 
-      incoming.style.setProperty('--backdrop-opacity', opacity);
-      incoming.style.backgroundImage = `url("${imgSrc}")`;
-      layers.forEach(layer => layer.classList.toggle('fast-transition', fast));
-      incoming.classList.remove('active', 'leaving');
-      outgoing.classList.remove('active');
+      const applyImage = () => {
+        if (requestId !== backdropRequestId) return;
 
-      if (immediate) incoming.classList.add('active');
-      else {
+        const incomingIndex = activeBackdropLayer === 0 ? 1 : 0;
+        const incoming = layers[incomingIndex];
+        const outgoing = layers[activeBackdropLayer];
+        const opacity = '0.7';
+
+        incoming.style.setProperty('--backdrop-opacity', opacity);
+        incoming.style.backgroundImage = `url("${imgSrc}")`;
+        layers.forEach(layer => layer.classList.toggle('fast-transition', fast));
+        incoming.classList.remove('active', 'leaving');
+        outgoing.classList.remove('active');
+
         incoming.classList.add('active');
-        outgoing.classList.add('leaving');
-      }
-      activeBackdropLayer = incomingIndex;
-      lastRenderedBackdrop = imgSrc;
-      if (fast) setTimeout(() => { layers.forEach(layer => layer.classList.remove('fast-transition')); }, 750);
+        if (!immediate) outgoing.classList.add('leaving');
+
+        activeBackdropLayer = incomingIndex;
+        lastRenderedBackdrop = imgSrc;
+
+        if (fast) {
+          setTimeout(() => { layers.forEach(layer => layer.classList.remove('fast-transition')); }, 750);
+        }
+      };
+
+      preloadImage(imgSrc, immediate ? 'high' : 'low').then(applyImage).catch(applyImage);
     }
 
     function syncBackdropToGlobalCycle(force = false) {
@@ -1998,6 +2086,10 @@
       const state = states[stateKey];
 
       welcome.style.setProperty('--welcome-bg', `url("${state.image}")`);
+      const welcomeBackgroundImage = document.getElementById('welcomeBackgroundImage');
+      if (welcomeBackgroundImage) {
+        welcomeBackgroundImage.src = state.image;
+      }
       document.getElementById('welcomeTitleBn').textContent = state.titleBn;
       document.getElementById('welcomeTitleEn').textContent = state.titleEn;
       document.getElementById('welcomeSubcopy').textContent = state.subcopy;
