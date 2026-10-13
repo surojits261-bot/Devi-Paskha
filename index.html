@@ -335,26 +335,67 @@
 
     .blessing-flower {
       position: absolute;
-      top: -9vh;
+      top: -10vh;
       left: var(--flower-left);
       font-size: var(--flower-size);
       line-height: 1;
       opacity: 0;
-      filter: drop-shadow(0 2px 5px rgba(20, 8, 0, 0.28));
-      animation: blessingFlowerFall var(--flower-duration) cubic-bezier(0.35, 0.05, 0.65, 0.95) var(--flower-delay) forwards;
+      filter: drop-shadow(0 2px 7px rgba(20, 8, 0, 0.38));
+      animation: blessingFlowerFall var(--flower-duration) cubic-bezier(0.32, 0.03, 0.62, 0.98) var(--flower-delay) forwards;
       will-change: transform, opacity;
       user-select: none;
     }
 
+    .blessing-mote {
+      position: absolute;
+      top: -3vh;
+      left: var(--mote-left);
+      width: var(--mote-size);
+      height: var(--mote-size);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,239,174,1) 0%, rgba(255,194,70,.78) 42%, rgba(255,194,70,0) 100%);
+      box-shadow: 0 0 12px rgba(255,207,92,.58);
+      opacity: 0;
+      animation: blessingMoteRiseFall var(--mote-duration) linear var(--mote-delay) forwards;
+      will-change: transform, opacity;
+    }
+
     @keyframes blessingFlowerFall {
-      0% { opacity: 0; transform: translate3d(0, -4vh, 0) rotate(0deg) scale(.72); }
-      12% { opacity: var(--flower-opacity, .88); }
-      78% { opacity: var(--flower-opacity, .88); }
-      100% { opacity: 0; transform: translate3d(var(--flower-drift), 112vh, 0) rotate(var(--flower-spin)) scale(1.08); }
+      0% { opacity: 0; transform: translate3d(0, -4vh, 0) rotate(0deg) scale(.55); }
+      10% { opacity: var(--flower-opacity, .92); }
+      70% { opacity: var(--flower-opacity, .92); }
+      100% { opacity: 0; transform: translate3d(var(--flower-drift), 116vh, 0) rotate(var(--flower-spin)) scale(1.14); }
+    }
+
+    @keyframes blessingMoteRiseFall {
+      0% { opacity: 0; transform: translate3d(0, -2vh, 0) scale(.45); }
+      12% { opacity: .82; }
+      72% { opacity: .62; }
+      100% { opacity: 0; transform: translate3d(var(--mote-drift), 108vh, 0) scale(1.35); }
+    }
+
+    .welcome-brand-mark { animation: blessingMarkGlow 2.8s ease-in-out infinite; }
+    .welcome-ornament { animation: blessingOrnamentGlow 3.2s ease-in-out infinite; }
+    .welcome-countdown, .welcome-state-card { animation: blessingCardGlow 4.5s ease-in-out infinite; }
+
+    @keyframes blessingMarkGlow {
+      0%, 100% { transform: rotate(0deg) scale(1); text-shadow: 0 0 9px rgba(248,214,110,.35); }
+      50% { transform: rotate(18deg) scale(1.16); text-shadow: 0 0 22px rgba(248,214,110,.88); }
+    }
+
+    @keyframes blessingOrnamentGlow {
+      0%, 100% { opacity: .62; filter: brightness(.9); transform: scaleX(.84); }
+      50% { opacity: 1; filter: brightness(1.4); transform: scaleX(1.12); }
+    }
+
+    @keyframes blessingCardGlow {
+      0%, 100% { box-shadow: inset 0 1px rgba(255,255,255,0.08), 0 18px 55px rgba(0,0,0,0.28), 0 0 0 rgba(248,214,110,0); }
+      50% { box-shadow: inset 0 1px rgba(255,255,255,0.10), 0 18px 55px rgba(0,0,0,0.28), 0 0 24px rgba(248,214,110,.12); }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .blessing-shower { display: none !important; }
+      .welcome-brand-mark, .welcome-ornament, .welcome-countdown, .welcome-state-card { animation: none !important; }
     }
 
     .welcome-bg-image {
@@ -2099,27 +2140,39 @@
       const welcome = document.getElementById('welcomeOverlay');
       if (!welcome) return;
 
-      // A brief shower of flower petals welcomes visitors without blocking taps,
-      // scrolling, audio controls, or the existing 10-second welcome screen.
+      // Richer blessing shower: layered flowers and warm golden light motes.
+      // Everything is decorative and pointer-transparent, so controls remain usable.
       const shower = document.getElementById('blessingShower');
       if (shower && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        const flowers = ['🌼', '🌺', '🌸', '🪷', '🌼', '🌸'];
-        const totalFlowers = 30;
+        const flowers = ['🌼', '🌺', '🌸', '🪷', '🌼', '🌸', '🌻', '🌷', '🌼'];
+        const totalFlowers = 84;
         for (let i = 0; i < totalFlowers; i++) {
           const petal = document.createElement('span');
           petal.className = 'blessing-flower';
           petal.textContent = flowers[Math.floor(Math.random() * flowers.length)];
           petal.style.setProperty('--flower-left', (Math.random() * 100).toFixed(2) + '%');
-          petal.style.setProperty('--flower-size', (18 + Math.random() * 17).toFixed(0) + 'px');
-          petal.style.setProperty('--flower-duration', (5.8 + Math.random() * 2.2).toFixed(2) + 's');
-          petal.style.setProperty('--flower-delay', (Math.random() * 1.5).toFixed(2) + 's');
-          petal.style.setProperty('--flower-drift', ((Math.random() - 0.5) * 26).toFixed(1) + 'vw');
-          petal.style.setProperty('--flower-spin', ((Math.random() < 0.5 ? -1 : 1) * (240 + Math.random() * 520)).toFixed(0) + 'deg');
-          petal.style.setProperty('--flower-opacity', (0.58 + Math.random() * 0.3).toFixed(2));
+          petal.style.setProperty('--flower-size', (17 + Math.random() * 24).toFixed(0) + 'px');
+          petal.style.setProperty('--flower-duration', (6.2 + Math.random() * 3.2).toFixed(2) + 's');
+          petal.style.setProperty('--flower-delay', (Math.random() * 3.1).toFixed(2) + 's');
+          petal.style.setProperty('--flower-drift', ((Math.random() - 0.5) * 34).toFixed(1) + 'vw');
+          petal.style.setProperty('--flower-spin', ((Math.random() < 0.5 ? -1 : 1) * (300 + Math.random() * 720)).toFixed(0) + 'deg');
+          petal.style.setProperty('--flower-opacity', (0.64 + Math.random() * 0.32).toFixed(2));
           shower.appendChild(petal);
           petal.addEventListener('animationend', () => petal.remove(), { once: true });
         }
-        window.setTimeout(() => shower.remove(), 10500);
+
+        for (let i = 0; i < 28; i++) {
+          const mote = document.createElement('span');
+          mote.className = 'blessing-mote';
+          mote.style.setProperty('--mote-left', (Math.random() * 100).toFixed(2) + '%');
+          mote.style.setProperty('--mote-size', (3 + Math.random() * 5).toFixed(1) + 'px');
+          mote.style.setProperty('--mote-duration', (5.5 + Math.random() * 3.2).toFixed(2) + 's');
+          mote.style.setProperty('--mote-delay', (Math.random() * 2.4).toFixed(2) + 's');
+          mote.style.setProperty('--mote-drift', ((Math.random() - 0.5) * 20).toFixed(1) + 'vw');
+          shower.appendChild(mote);
+          mote.addEventListener('animationend', () => mote.remove(), { once: true });
+        }
+        window.setTimeout(() => shower.remove(), 11500);
       }
 
       const dates = {
