@@ -1532,7 +1532,14 @@
         }`;
         item.onclick = () => {
           const idx = tracks.findIndex(t => t.id === track.id);
-          loadTrack(idx, true);
+          if (idx < 0) return;
+          // Clicking the currently selected row toggles playback instead of
+          // reloading the same audio from the beginning.
+          if (idx === currentTrackIndex) {
+            toggleMasterPlay();
+          } else {
+            loadTrack(idx, true);
+          }
         };
         item.innerHTML = `
           <div class="flex items-center space-x-3 truncate">
