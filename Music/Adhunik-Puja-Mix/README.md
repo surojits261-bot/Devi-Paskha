@@ -9,6 +9,6 @@ This folder contains the modern Bengali / contemporary Puja music collection for
 - MP3 format is recommended for reliable browser playback.
 
 ## Target collection
-The current curated collection is the 27-track Adhunik Puja Mix selected for the app.
+The current curated collection is the 29-track Adhunik Puja Mix selected for the app.
 
 🔱 Devi-Paskha • শুভ দেবীপক্ষ • জয় মা দুর্গা
