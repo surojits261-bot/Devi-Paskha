@@ -1380,7 +1380,8 @@
       setPlayerStatus('Ready', true);
 
       updateCountdown();
-      setInterval(updateCountdown, 1000);
+      // The hero timer displays minutes, so refresh once per minute rather than rewriting the DOM every second.
+      setInterval(updateCountdown, 60000);
 
       let lastAutomaticTithiIndex = openingTithiIndex;
       setInterval(() => {
