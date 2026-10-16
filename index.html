@@ -1666,6 +1666,7 @@
       currentTrackIndex = index;
       const playRequestId = ++playbackRequestId;
       audio.pause();
+      isPlaying = false;
       audio.preload = 'auto';
       audio.src = track.url;
       document.getElementById('playerTitle').innerText = track.title;
@@ -1677,6 +1678,7 @@
       audio.load();
 
       if (autoPlay) {
+        updatePlayButtons();
         audio.play().then(() => {
           if (playRequestId !== playbackRequestId) return;
           isPlaying = true;
