@@ -912,7 +912,7 @@
       
       <div id="heroBadgeContainer" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 border border-white/15 text-amber-300 text-sm sm:text-base font-medium mb-4 glassmorphism shadow-md">
         <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-        <span id="heroBadgeText">মহাদশমী (Oct 21, 2026) in <strong id="countdownInline" class="font-mono text-white text-base sm:text-lg font-semibold tracking-wide ml-1">31d 13h 46m</strong></span>
+        <span id="heroBadgeText">মহাদশমী (Oct 21, 2026) in <strong id="countdownInline" class="font-mono text-white text-lg sm:text-xl md:text-2xl font-bold tracking-wide ml-1">31d 13h 46m</strong></span>
       </div>
 
       <h2 id="heroTitle" class="text-[3.75rem] sm:text-[5.25rem] lg:text-[6rem] font-bold tracking-tight text-amber-300 accent-heading font-bengali italic drop-shadow-[0_4px_15px_rgba(0,0,0,0.8)] mb-2">মহাদশমী</h2>
@@ -1870,7 +1870,7 @@
       const mins = Math.floor((diff / 1000 / 60) % 60);
 
       const d = tithiData[currentTabIndex];
-      document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white text-base sm:text-lg font-semibold tracking-wide ml-1">${days}d ${hours}h ${mins}m</strong>`;
+      document.getElementById('heroBadgeText').innerHTML = `${d.name} (${d.dateStr}) in <strong class="font-mono text-white text-lg sm:text-xl md:text-2xl font-bold tracking-wide ml-1">${days}d ${hours}h ${mins}m</strong>`;
     }
 
 
