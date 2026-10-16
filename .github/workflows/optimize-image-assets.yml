@@ -30,6 +30,12 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
+          sparse-checkout: |
+            index.html
+            *.png
+            welcome/*.png
+            scripts/optimize-image-assets.py
+          sparse-checkout-cone-mode: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
