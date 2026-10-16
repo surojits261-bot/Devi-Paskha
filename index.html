@@ -1216,8 +1216,6 @@
       { id: 68, title: "Bondhu Chol", artist: "Anupam Roy", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Bondhu Chol.mp3" },
       { id: 69, title: "Chal Rastay Saji Tram-Line", artist: "Shreya Ghoshal", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Chal rastay sajI tram-line.mp3" },
       { id: 70, title: "Dhaker Taley", artist: "Abhijeet / Jeet Gannguli", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Dhaker Taley.mp3" },
-      { id: 87, title: "Dugga Elo", artist: "Monali Thakur", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Dugga Elo.mp3" },
-      { id: 88, title: "Dugga Ma Asche", artist: "Infra", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Dugga Ma asche.mp3" },
       { id: 71, title: "Egiye De", artist: "Arijit Singh / Shalmali Kholgade", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Egiye de.mp3" },
       { id: 72, title: "Ei Srabon", artist: "Rupam Islam", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Ei Srabon.mp3" },
       { id: 73, title: "Eita Tomar Gaan", artist: "Chandrabindoo", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Eita Tomar Gaan.mp3" },
@@ -1234,6 +1232,8 @@
       { id: 84, title: "Tomay Dilam", artist: "Mohiner Ghoraguli", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Tomay Dilam.mp3" },
       { id: 85, title: "Tumi Ashbe Bole", artist: "Nachiketa Chakraborty", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Tumi Ashbe Bole.mp3" },
       { id: 86, title: "Uthche Jege Sokalgulo", artist: "Shreya Ghoshal", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Uthche Jege Sokalgulo.mp3" },
+      { id: 87, title: "Dugga Elo", artist: "Monali Thakur", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Dugga Elo.mp3" },
+      { id: 88, title: "Dugga Ma Asche", artist: "Infra", category: "adhunik", url: "Music/Adhunik-Puja-Mix/Dugga Ma asche.mp3" },
 
       { id: 30, title: "Durga Puja Dhak Main", artist: "Traditional Dhak", category: "ambience", url: "Music/Ambience/durga-puja-dhak-main.mp3" },
       { id: 31, title: "Divine Puja Atmosphere", artist: "Ambient Music", category: "ambience", url: "Music/Ambience/Ambiant durga music-2.mp3" },
@@ -1248,6 +1248,8 @@
     let isPlaying = false;
     let audio = new Audio();
     audio.preload = 'none';
+    // Ignore stale play() callbacks when users switch or pause tracks quickly.
+    let playbackRequestId = 0;
     let currentFilter = 'devotional';
     let currentVolume = 1.0;
     let isMuted = false;
@@ -1658,10 +1660,11 @@
     }
 
     function loadTrack(index, autoPlay = true) {
-      currentTrackIndex = index;
-      const track = tracks[currentTrackIndex];
+      const track = tracks[index];
       if (!track) return;
 
+      currentTrackIndex = index;
+      const playRequestId = ++playbackRequestId;
       audio.pause();
       audio.preload = 'auto';
       audio.src = track.url;
@@ -1675,9 +1678,11 @@
 
       if (autoPlay) {
         audio.play().then(() => {
+          if (playRequestId !== playbackRequestId) return;
           isPlaying = true;
           updatePlayButtons();
         }).catch(() => {
+          if (playRequestId !== playbackRequestId) return;
           isPlaying = false;
           setPlayerStatus('Press play to retry', true);
           updatePlayButtons();
@@ -1690,7 +1695,8 @@
     }
 
     function toggleMasterPlay() {
-      if (isPlaying) {
+      if (isPlaying || (!audio.paused && !audio.ended)) {
+        ++playbackRequestId;
         audio.pause();
         isPlaying = false;
         updatePlayButtons();
@@ -1702,13 +1708,16 @@
 
         if (audio.error) audio.load();
 
+        const playRequestId = ++playbackRequestId;
         setPlayerStatus('Loading…');
         audio.play()
           .then(() => {
+            if (playRequestId !== playbackRequestId) return;
             isPlaying = true;
             updatePlayButtons();
           })
           .catch(() => {
+            if (playRequestId !== playbackRequestId) return;
             isPlaying = false;
             setPlayerStatus('Press play to retry', true);
             updatePlayButtons();
@@ -1833,6 +1842,8 @@
         currentFilter = 'mahalaya';
         updateCategoryButtonStyles('mahalaya');
         renderPlaylist();
+        const mahalayaTrackIndex = tracks.findIndex(track => track.category === 'mahalaya');
+        if (mahalayaTrackIndex >= 0) loadTrack(mahalayaTrackIndex, true);
       }
       
       const globalSlot = getGlobalImageSlot();
@@ -1884,21 +1895,21 @@
         kicker: 'DEVI PAKSHA • 2026',
         title: '🌅 শুভ মহালয়া',
         message: 'মায়ের আগমনী সুরে ভরে উঠুক আপনার জীবন।',
-        whatsapp: '🌅 শুভ মহালয়া\\nমায়ের আগমনী সুরে ভরে উঠুক আপনার জীবন।'
+        whatsapp: '🌅 শুভ মহালয়া\nমায়ের আগমনী সুরে ভরে উঠুক আপনার জীবন।'
       },
       puja: {
         image: 'welcome/welcome-durga-puja.png',
         kicker: 'DEVI PAKSHA • 2026',
         title: '🔱 শুভ দেবীপক্ষ',
         message: 'মায়ের আশীর্বাদে মঙ্গলময় হোক আপনার জীবন।',
-        whatsapp: '🔱 শুভ দেবীপক্ষ\\nমায়ের আশীর্বাদে মঙ্গলময় হোক আপনার জীবন।'
+        whatsapp: '🔱 শুভ দেবীপক্ষ\nমায়ের আশীর্বাদে মঙ্গলময় হোক আপনার জীবন।'
       },
       bijoya: {
         image: 'welcome/welcome-bijoya.png',
         kicker: 'DEVI PAKSHA • 2026',
         title: '🌺 শুভ বিজয়া',
         message: 'মা আবার এসো, আগামী শরতে।',
-        whatsapp: '🌺 শুভ বিজয়া\\nমা আবার এসো, আগামী শরতে।'
+        whatsapp: '🌺 শুভ বিজয়া\nমা আবার এসো, আগামী শরতে।'
       }
     };
 
@@ -1973,7 +1984,7 @@
     }
 
     function drawGreetingWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
-      const words = text.split(/\\s+/);
+      const words = text.split(/\s+/);
       const lines = [];
       let line = '';
 
@@ -2107,7 +2118,7 @@
         const blob = await buildGreetingBlob();
         if (!blob) return;
         const file = new File([blob], 'devi-paksha-greeting.png', { type: 'image/png' });
-        const text = `${getGreetingData().title}\\n${getGreetingData().message}\\n— ${getGreetingData().name}\\n\\nদেবীপক্ষ • জয় মা দুর্গা`;
+        const text = `${getGreetingData().title}\n${getGreetingData().message}\n— ${getGreetingData().name}\n\nদেবীপক্ষ • জয় মা দুর্গা`;
 
         if (navigator.share) {
           try {
@@ -2135,7 +2146,7 @@
     function openGreetingWhatsApp() {
       if (!greetingHasName()) return;
       const state = getGreetingData();
-      const text = `${state.whatsapp}\\n— ${state.name}\\n\\nদেবীপক্ষ • জয় মা দুর্গা\\n\\nhttps://devi-paskha.vercel.app/`;
+      const text = `${state.whatsapp}\n— ${state.name}\n\nদেবীপক্ষ • জয় মা দুর্গা\n\nhttps://devi-paskha.vercel.app/`;
       const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
       window.open(url, '_blank', 'noopener,noreferrer');
       setGreetingStatus('WhatsApp বার্তা প্রস্তুত করা হয়েছে। চাইলে PNG-টিও সংযুক্ত করুন।', 'ok');
