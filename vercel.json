@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/surajit-sarkar",
+      "destination": "/"
+    }
+  ]
+}
