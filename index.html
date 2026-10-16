@@ -8,7 +8,7 @@
   <!-- Social Media & WhatsApp Preview Tags -->
   <meta property="og:title" content="দেবীপক্ষ — Devi Paksha | Durga Puja Backdrop & Melodies" />
   <meta property="og:description" content="Live countdown to Mahalaya & Durga Puja with classic melodies, authentic Dhak, and immersive festive backdrops." />
-  <meta property="og:image" content="logo.png" />
+  <meta property="og:image" content="logo.webp" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#881337" />
 
@@ -27,8 +27,8 @@
       const mahalaya = new Date('2026-10-10T04:00:00+05:30');
       const dashamiEnd = new Date('2026-10-21T16:00:00+05:30');
       const welcomeSrc = now < mahalaya
-        ? 'welcome/welcome-mahalaya.png'
-        : (now <= dashamiEnd ? 'welcome/welcome-durga-puja.png' : 'welcome/welcome-bijoya.png');
+        ? 'welcome/welcome-mahalaya.webp'
+        : (now <= dashamiEnd ? 'welcome/welcome-durga-puja.webp' : 'welcome/welcome-bijoya.webp');
 
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const tithiStarts = [
@@ -40,12 +40,12 @@
         new Date(2026, 9, 21)
       ];
       const firstImages = [
-        'mahalaya-1.png',
-        'shashti-1.png',
-        'saptami-1.png',
-        'ashtami-1.png',
-        'nabami-1.png',
-        'dashami-1.png'
+        'mahalaya-1.webp',
+        'shashti-1.webp',
+        'saptami-1.webp',
+        'ashtami-1.webp',
+        'nabami-1.webp',
+        'dashami-1.webp'
       ];
       let tithiIndex = 0;
       tithiStarts.forEach((d, index) => { if (d <= today) tithiIndex = index; });
@@ -314,7 +314,7 @@
   
     /* --- Seasonal welcome experience: Arrival → Aradhona → Bijoya --- */
     #welcomeOverlay {
-      --welcome-bg: url("welcome/welcome-mahalaya.png");
+      --welcome-bg: url("welcome/welcome-mahalaya.webp");
       position: fixed;
       inset: 0;
       z-index: 9999;
@@ -863,7 +863,7 @@
   <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-3 flex items-center justify-between relative z-10">
     <div class="flex items-center space-x-3.5">
       <div class="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center justify-center overflow-hidden flex-shrink-0">
-        <img src="logo.png" alt="Devi Logo" class="w-full h-full object-cover rounded-full bg-stone-900" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23d4af37\'/><text x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23000\' font-family=\'sans-serif\'>মা</text></svg>';" />
+        <img src="logo.webp" alt="Devi Logo" class="w-full h-full object-cover rounded-full bg-stone-900" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23d4af37\'/><text x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23000\' font-family=\'sans-serif\'>মা</text></svg>';" />
       </div>
       <div>
         <h1 class="text-xl sm:text-2xl font-bold tracking-wide text-amber-400 accent-heading flex items-center gap-2">
@@ -1047,7 +1047,7 @@
       <!-- Track Info -->
       <div class="flex items-center gap-3 w-full sm:w-auto">
         <div class="w-10 h-10 rounded-lg bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-xl text-amber-400 shadow-md overflow-hidden">
-          <img src="logo.png" alt="Mini Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23d4af37\'/><text x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23000\' font-family=\'sans-serif\'>মা</text></svg>';" />
+          <img src="logo.webp" alt="Mini Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><circle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23d4af37\'/><text x=\'50\' y=\'55\' font-size=\'30\' text-anchor=\'middle\' fill=\'%23000\' font-family=\'sans-serif\'>মা</text></svg>';" />
         </div>
         <div class="overflow-hidden">
           <div id="playerTitle" class="text-sm font-semibold text-white accent-heading truncate">Mahishasura Mardini</div>
@@ -1096,7 +1096,7 @@
           "Many Bengali households traditionally begin the festive season before dawn by listening to Mahishasura Mardini and Chandi Path.",
           "Tarpan for ancestors is traditionally offered on Mahalaya morning at rivers and other sacred water bodies."
         ],
-        bgImages: ["mahalaya-1.png", "mahalaya-2.png", "mahalaya-3.png", "mahalaya-4.png"]
+        bgImages: ["mahalaya-1.webp", "mahalaya-2.webp", "mahalaya-3.webp", "mahalaya-4.webp"]
       },
       {
         name: "মহাষষ্ঠী", en: "Shashti", dateStr: "Oct 17, 2026", targetDate: new Date(2026, 9, 17, 8, 0, 0),
@@ -1107,7 +1107,7 @@
           "Amantran and Adhivas are part of the traditional Shashthi evening observances in many Bengali puja traditions.",
           "Shashthi marks the ceremonial beginning of the main Durga Puja festivities, with pandal visits and the first major darshan."
         ],
-        bgImages: ["shashti-1.png", "shashti-2.png", "shashti-3.png"]
+        bgImages: ["shashti-1.webp", "shashti-2.webp", "shashti-3.webp"]
       },
       {
         name: "মহাসপ্তমী", en: "Saptami", dateStr: "Oct 18, 2026", targetDate: new Date(2026, 9, 18, 7, 0, 0),
@@ -1118,7 +1118,7 @@
           "The Nabapatrika is traditionally wrapped in a sari and placed beside Lord Ganesha in the puja arrangement.",
           "Saptami is marked by morning rituals, pran pratishtha and the continuation of the main Durga Puja worship."
         ],
-        bgImages: ["saptami-1.png", "saptami-2.png", "saptami-3.png"]
+        bgImages: ["saptami-1.webp", "saptami-2.webp", "saptami-3.webp"]
       },
       {
         name: "মহাঅষ্টমী", en: "Ashtami", dateStr: "Oct 19, 2026", targetDate: new Date(2026, 9, 19, 10, 28, 0),
@@ -1129,7 +1129,7 @@
           "Sandhi Puja is observed at the transition between Ashtami and Nabami and is traditionally associated with 108 lamps and lotus offerings.",
           "In many pujas, devotees fast or eat specially prepared bhog before or after the main Ashtami rituals."
         ],
-        bgImages: ["ashtami-1.png", "ashtami-2.png", "ashtami-3.png"]
+        bgImages: ["ashtami-1.webp", "ashtami-2.webp", "ashtami-3.webp"]
       },
       {
         name: "মহানবমী", en: "Nabami", dateStr: "Oct 20, 2026", targetDate: new Date(2026, 9, 20, 12, 0, 0),
@@ -1140,7 +1140,7 @@
           "Homam or Homa is an important Nabami ritual in many traditional pujas.",
           "Dhunuchi Naach, dhak rhythms and communal bhog are among the most recognisable Nabami traditions in Bengal."
         ],
-        bgImages: ["nabami-1.png", "nabami-2.png", "nabami-3.png"]
+        bgImages: ["nabami-1.webp", "nabami-2.webp", "nabami-3.webp"]
       },
       {
         name: "মহাদশমী", en: "Dashami", dateStr: "Oct 21, 2026", targetDate: new Date(2026, 9, 21, 16, 0, 0),
@@ -1151,7 +1151,7 @@
           "Sindoor Khela is a well-known Bengali Dashami tradition performed in many community and household pujas before visarjan.",
           "After immersion, people exchange Bijoya Dashami greetings and visit relatives and friends as part of the farewell season."
         ],
-        bgImages: ["dashami-1.png", "dashami-2.png", "dashami-3.png", "dashami-4.png"]
+        bgImages: ["dashami-1.webp", "dashami-2.webp", "dashami-3.webp", "dashami-4.webp"]
       }
     ];
 
@@ -1935,21 +1935,21 @@
     // --- PERSONALIZED PUJA GREETINGS ---
     const greetingStates = {
       preMahalaya: {
-        image: 'welcome/welcome-mahalaya.png',
+        image: 'welcome/welcome-mahalaya.webp',
         kicker: 'DEVI PAKSHA • 2026',
         title: '🌅 শুভ মহালয়া',
         message: 'মায়ের আগমনী সুরে ভরে উঠুক আপনার জীবন।',
         whatsapp: '🌅 শুভ মহালয়া\nমায়ের আগমনী সুরে ভরে উঠুক আপনার জীবন।'
       },
       puja: {
-        image: 'welcome/welcome-durga-puja.png',
+        image: 'welcome/welcome-durga-puja.webp',
         kicker: 'DEVI PAKSHA • 2026',
         title: '🔱 শুভ দেবীপক্ষ',
         message: 'মায়ের আশীর্বাদে মঙ্গলময় হোক আপনার জীবন।',
         whatsapp: '🔱 শুভ দেবীপক্ষ\nমায়ের আশীর্বাদে মঙ্গলময় হোক আপনার জীবন।'
       },
       bijoya: {
-        image: 'welcome/welcome-bijoya.png',
+        image: 'welcome/welcome-bijoya.webp',
         kicker: 'DEVI PAKSHA • 2026',
         title: '🌺 শুভ বিজয়া',
         message: 'মা আবার এসো, আগামী শরতে।',
@@ -2246,7 +2246,7 @@
 
       const states = {
         preMahalaya: {
-          image: 'welcome/welcome-mahalaya.png',
+          image: 'welcome/welcome-mahalaya.webp',
           titleBn: 'দেবীপক্ষের শুভ সূচনা, মায়ের আগমন',
           titleEn: 'The Auspicious Beginning of Devipaksha, Maa’s Arrival',
           subcopy: 'শরৎকালের স্নিগ্ধতায় বেজে উঠেছে মায়ের আগমনী সুর। আসুন, ভক্তি ও শ্রদ্ধায় বরণ করে নিই দুর্গতিনাশিনী মাকে।',
@@ -2256,7 +2256,7 @@
           label: 'মহালয়া আসতে বাকি'
         },
         puja: {
-          image: 'welcome/welcome-durga-puja.png',
+          image: 'welcome/welcome-durga-puja.webp',
           titleBn: 'মহামায়ার শুভাগমনে দেবীর আরাধনা',
           titleEn: 'In the Auspicious Arrival of Mahamaya, Worship of the Goddess',
           subcopy: 'মায়ের আগমনে শুরু হয়েছে দেবীর আরাধনা। ভক্তি, শ্রদ্ধা ও মায়ের আশীর্বাদে মঙ্গলময় হোক সকলের জীবন।',
@@ -2267,7 +2267,7 @@
           specialLine: 'জয় মা দুর্গা'
         },
         bijoya: {
-          image: 'welcome/welcome-bijoya.png',
+          image: 'welcome/welcome-bijoya.webp',
           titleBn: 'বিজয়ার প্রণাম, মা আবার এসো',
           titleEn: 'Bijoya Pranam • Maa, Abar Esho',
           subcopy: 'বিদায়ের এই ক্ষণে মায়ের চরণে রইল প্রণাম। মায়ের আশীর্বাদে মঙ্গলময় হোক সকলের জীবন—আবার এসো মা, আগামী শারদে।',
