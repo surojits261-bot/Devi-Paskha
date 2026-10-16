@@ -288,9 +288,34 @@
       text-shadow: 0 1px 9px rgba(0,0,0,0.28);
     }
 
-    .site-signature span {
+    .site-signature a {
+      display: inline-block;
+      color: inherit;
+      text-decoration: none;
+      transition: color 180ms ease, filter 180ms ease;
+    }
+
+    .site-signature a:focus-visible {
+      outline: 1px solid rgba(233,185,68,0.8);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    .site-signature .site-signature-name {
+      display: inline-block;
       color: #E9B944;
+      font-family: 'Segoe Script', 'Brush Script MT', cursive;
+      font-size: 1.12em;
+      font-style: italic;
       font-weight: 600;
+      letter-spacing: 0;
+      transform: rotate(-2deg);
+      transition: color 180ms ease, text-shadow 180ms ease;
+    }
+
+    .site-signature a:hover .site-signature-name {
+      color: #F7D77C;
+      text-shadow: 0 0 12px rgba(233,185,68,0.24);
     }
 
     body::before {
@@ -1038,7 +1063,7 @@
 
   <!-- Sticky Bottom Audio Player Bar -->
   <div class="site-signature">
-    Crafted by <span>Surajit Sarkar</span> · with AI assistance
+    Crafted by <a href="/surajit-sarkar" aria-label="Devi Paksha creator link — Surajit Sarkar"><span class="site-signature-name">Surajit Sarkar</span></a> · with AI assistance
   </div>
 
   <footer class="bottom-bar glass-player w-full border-t px-4 sm:px-6 py-3 sticky bottom-0 z-50 transition">
