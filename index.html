@@ -954,7 +954,7 @@
       <div class="w-full max-w-2xl glassmorphism glass-card bg-black/45 border border-white/15 rounded-2xl p-4 sm:p-5 text-left shadow-2xl relative mt-4">
         <div class="flex items-center justify-between">
           <span class="text-[10px] sm:text-[11px] font-bold text-stone-300 uppercase tracking-wider font-mono">TAP A TRACK TO PLAY INLINE</span>
-          <button id="inlinePlaylistToggleBtn" onclick="toggleInlinePlaylist()" class="px-3 py-1.5 rounded-full border border-white/10 bg-black/40 text-[10px] text-stone-300 hover:text-white transition flex items-center gap-1">
+          <button id="inlinePlaylistToggleBtn" type="button" aria-controls="inlinePlaylistWrapper" aria-expanded="false" onclick="toggleInlinePlaylist()" class="px-3 py-1.5 rounded-full border border-white/10 bg-black/40 text-[10px] text-stone-300 hover:text-white transition flex items-center gap-1">
             <span id="toggleIcon">+</span> <span id="toggleText">Show list</span>
           </button>
         </div>
@@ -1060,24 +1060,24 @@
       <div class="flex-1 max-w-lg w-full flex flex-col items-center gap-1.5">
         <div class="flex items-center gap-6">
           <button type="button" onclick="prevTrack()" aria-label="Previous track" title="Previous track" class="player-nav-btn w-10 h-10 sm:w-11 sm:h-11 rounded-full border text-stone-300 hover:text-amber-400 hover:border-amber-400/50 hover:bg-amber-500/10 transition-all duration-200 active:scale-90 flex items-center justify-center text-lg sm:text-xl touch-manipulation select-none">⏮</button>
-          <button id="masterPlayBtn" onclick="toggleMasterPlay()" class="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold flex items-center justify-center transition shadow-lg active:scale-95 text-base">▶</button>
+          <button id="masterPlayBtn" type="button" aria-label="Play playback" aria-pressed="false" onclick="toggleMasterPlay()" class="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold flex items-center justify-center transition shadow-lg active:scale-95 text-base">▶</button>
           <button type="button" onclick="nextTrack()" aria-label="Next track" title="Next track" class="player-nav-btn w-10 h-10 sm:w-11 sm:h-11 rounded-full border text-stone-300 hover:text-amber-400 hover:border-amber-400/50 hover:bg-amber-500/10 transition-all duration-200 active:scale-90 flex items-center justify-center text-lg sm:text-xl touch-manipulation select-none">⏭</button>
         </div>
 
         <div class="w-full flex items-center gap-2.5 text-[11px] text-stone-400 sub-text font-mono">
           <span id="currentTime">0:00</span>
-          <input id="seekBar" type="range" min="0" max="100" value="0" class="w-full h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="seekAudio(this.value)" oninput="document.getElementById('currentTime').innerText = formatTime((this.value / 100) * audio.duration || 0);" />
+          <input id="seekBar" type="range" aria-label="Seek audio" min="0" max="100" value="0" class="w-full h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="seekAudio(this.value)" oninput="document.getElementById('currentTime').innerText = formatTime((this.value / 100) * audio.duration || 0);" />
           <span id="durationTime">0:00</span>
         </div>
       </div>
 
       <!-- Right utility buttons -->
       <div class="hidden sm:flex items-center gap-3">
-        <button id="muteBtn" onclick="toggleMute()" class="text-stone-400 hover:text-amber-400 transition text-sm">🔊</button>
-        <input id="volumeBar" type="range" min="0" max="100" value="100" class="w-16 h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="setVolume(this.value)" oninput="setVolume(this.value)" />
+        <button id="muteBtn" type="button" aria-label="Mute audio" aria-pressed="false" onclick="toggleMute()" class="text-stone-400 hover:text-amber-400 transition text-sm">🔊</button>
+        <input id="volumeBar" type="range" aria-label="Volume" min="0" max="100" value="100" class="w-16 h-1 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-amber-400" onchange="setVolume(this.value)" oninput="setVolume(this.value)" />
 
         <!-- Triggers the inline playlist dropdown smoothly -->
-        <button onclick="toggleInlinePlaylist(true)" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5 ml-2">
+        <button type="button" aria-controls="inlinePlaylistWrapper" aria-expanded="false" onclick="toggleInlinePlaylist(true)" class="px-3 py-1.5 rounded-lg border border-white/10 bg-black/40 text-xs text-amber-300 hover:border-amber-400 transition flex items-center gap-1.5 ml-2">
           <span>🎵</span> Tracks (<span id="playlistCount">0</span>)
         </button>
       </div>
@@ -1352,6 +1352,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       const tabNav = document.querySelector('nav');
       if (tabNav) {
+        tabNav.setAttribute('aria-label', 'Durga Puja days');
         tabNav.classList.add('nav-entrance');
         document.querySelectorAll('.tab-btn').forEach((btn, index) => {
           btn.style.setProperty('--stagger', (index * 70) + 'ms');
@@ -1359,7 +1360,7 @@
       }
 
       document.querySelectorAll('.cat-filter').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.setAttribute('aria-selected', 'false'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
 
       document.getElementById('playlistCount').innerText = tracks.length;
 
@@ -1587,6 +1588,10 @@
         icon.innerText = '+';
         text.innerText = 'Show list';
       }
+      const expanded = String(!wrapper.classList.contains('hidden'));
+      document.querySelectorAll('[aria-controls="inlinePlaylistWrapper"]').forEach(button => {
+        button.setAttribute('aria-expanded', expanded);
+      });
     }
 
     function renderPlaylist() {
@@ -1728,7 +1733,10 @@
     }
 
     function updatePlayButtons() {
-      document.getElementById('masterPlayBtn').innerText = isPlaying ? '❚❚' : '▶';
+      const button = document.getElementById('masterPlayBtn');
+      button.innerText = isPlaying ? '❚❚' : '▶';
+      button.setAttribute('aria-label', isPlaying ? 'Pause playback' : 'Play playback');
+      button.setAttribute('aria-pressed', String(isPlaying));
       renderPlaylist();
     }
 
@@ -1778,9 +1786,12 @@
 
     function updateVolumeIcon() {
       const btn = document.getElementById('muteBtn');
-      if (isMuted || audio.volume === 0) btn.innerText = '🔇';
+      const muted = isMuted || audio.volume === 0;
+      if (muted) btn.innerText = '🔇';
       else if (audio.volume < 0.5) btn.innerText = '🔉';
       else btn.innerText = '🔊';
+      btn.setAttribute('aria-label', muted ? 'Unmute audio' : 'Mute audio');
+      btn.setAttribute('aria-pressed', String(muted));
     }
 
     function updateCategoryButtonStyles(cat) {
@@ -1857,7 +1868,7 @@
         const isActive = parseInt(btn.dataset.index) === index;
         btn.classList.toggle('nav-tab-active', isActive);
         btn.classList.remove('selection-burst');
-        btn.setAttribute('aria-selected', String(isActive));
+        btn.setAttribute('aria-pressed', String(isActive));
         btn.tabIndex = isActive ? 0 : -1;
 
         if (isActive) {
