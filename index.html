@@ -23,12 +23,8 @@
   <!-- Early image warm-up: start fetching the first visible seasonal and hero images before DOMContentLoaded. -->
   <script>
     (() => {
-      const now = new Date();
-      const mahalaya = new Date('2026-10-10T04:00:00+05:30');
-      const dashamiEnd = new Date('2026-10-21T16:00:00+05:30');
-      const welcomeSrc = now < mahalaya
-        ? 'welcome/welcome-mahalaya.webp'
-        : (now <= dashamiEnd ? 'welcome/welcome-durga-puja.webp' : 'welcome/welcome-bijoya.webp');
+      // Post-Puja landing stays on the Bijoya artwork while counting down to Mahalaya 2027.
+      const welcomeSrc = 'welcome/welcome-bijoya.webp';
 
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const tithiStarts = [
@@ -840,13 +836,13 @@
 
   <body class="bg-[#09080F] text-stone-100 min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white relative">
 
-  <!-- Welcome page: Maa's arrival countdown -->
+  <!-- Locked welcome landing page: countdown to Mahalaya 2027 -->
   <section id="welcomeOverlay" aria-label="Welcome to Devi Paksha">
     <div id="blessingShower" class="blessing-shower" aria-hidden="true"></div>
     <img id="welcomeBackgroundImage" class="welcome-bg-image" alt="" fetchpriority="high" decoding="async" />
     <div class="welcome-shell">
       <div class="welcome-copy">
-        <div class="welcome-brand"><span class="welcome-brand-mark">✦</span> DEVI PAKSHA • 2026</div>
+        <div class="welcome-brand"><span class="welcome-brand-mark">✦</span> DEVI PAKSHA • 2027</div>
         <h2 id="welcomeTitleBn" class="welcome-title-bn"></h2>
         <div id="welcomeTitleEn" class="welcome-title-en"></div>
         <p id="welcomeSubcopy" class="welcome-subcopy"></p>
@@ -2230,96 +2226,34 @@
   </script>
 
   <script>
-    // Seasonal welcome page: automatically switch between Mahalaya, Puja, and Bijoya states.
+    // Locked post-Puja welcome page. It remains the landing screen and never auto-dismisses.
     window.addEventListener('DOMContentLoaded', () => {
       const welcome = document.getElementById('welcomeOverlay');
       if (!welcome) return;
 
-      // Richer blessing shower: layered flowers and warm golden light motes.
-      // Everything is decorative and pointer-transparent, so controls remain usable.
-      const shower = document.getElementById('blessingShower');
-      if (shower && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        const flowers = ['🌼', '🌺', '🌸', '🪷', '🌼', '🌸', '🌻', '🌷', '🌼'];
-        const totalFlowers = 84;
-        for (let i = 0; i < totalFlowers; i++) {
-          const petal = document.createElement('span');
-          petal.className = 'blessing-flower';
-          petal.textContent = flowers[Math.floor(Math.random() * flowers.length)];
-          petal.style.setProperty('--flower-left', (Math.random() * 100).toFixed(2) + '%');
-          petal.style.setProperty('--flower-size', (17 + Math.random() * 24).toFixed(0) + 'px');
-          petal.style.setProperty('--flower-duration', (6.2 + Math.random() * 3.2).toFixed(2) + 's');
-          petal.style.setProperty('--flower-delay', (Math.random() * 3.1).toFixed(2) + 's');
-          petal.style.setProperty('--flower-drift', ((Math.random() - 0.5) * 34).toFixed(1) + 'vw');
-          petal.style.setProperty('--flower-spin', ((Math.random() < 0.5 ? -1 : 1) * (300 + Math.random() * 720)).toFixed(0) + 'deg');
-          petal.style.setProperty('--flower-opacity', (0.64 + Math.random() * 0.32).toFixed(2));
-          shower.appendChild(petal);
-          petal.addEventListener('animationend', () => petal.remove(), { once: true });
-        }
+      // Keep the welcome screen as the only interactive/accessible page.
+      welcome.setAttribute('role', 'dialog');
+      welcome.setAttribute('aria-modal', 'true');
+      welcome.setAttribute('aria-label', 'Devi Paksha — countdown to Mahalaya 2027');
+      document.body.style.overflow = 'hidden';
+      Array.from(document.body.children).forEach(child => {
+        if (child !== welcome) child.setAttribute('inert', '');
+      });
 
-        for (let i = 0; i < 28; i++) {
-          const mote = document.createElement('span');
-          mote.className = 'blessing-mote';
-          mote.style.setProperty('--mote-left', (Math.random() * 100).toFixed(2) + '%');
-          mote.style.setProperty('--mote-size', (3 + Math.random() * 5).toFixed(1) + 'px');
-          mote.style.setProperty('--mote-duration', (5.5 + Math.random() * 3.2).toFixed(2) + 's');
-          mote.style.setProperty('--mote-delay', (Math.random() * 2.4).toFixed(2) + 's');
-          mote.style.setProperty('--mote-drift', ((Math.random() - 0.5) * 20).toFixed(1) + 'vw');
-          shower.appendChild(mote);
-          mote.addEventListener('animationend', () => mote.remove(), { once: true });
-        }
-        window.setTimeout(() => shower.remove(), 11500);
-      }
-
-      const dates = {
-        mahalaya: new Date('2026-10-10T04:00:00+05:30').getTime(),
-        dashamiEnd: new Date('2026-10-21T16:00:00+05:30').getTime()
+      const target = new Date('2027-09-29T04:00:00+05:30').getTime();
+      const state = {
+        image: 'welcome/welcome-bijoya.webp',
+        titleBn: 'মা আবার আসবেন, অপেক্ষায় রইলাম',
+        titleEn: 'Until Maa Returns • Mahalaya 2027',
+        subcopy: 'বিজয়ার বিদায়ে মন ভারী, তবু মায়ের আগমনের আশায় শুরু হলো নতুন অপেক্ষা। শিউলি-ভেজা ভোর, মহালয়ার চণ্ডীপাঠ আর ঢাকের সুরে আবার জেগে উঠবে বাংলার প্রাণ। মা আবার এসো, আগামী শরতে।',
+        footer: 'মা আবার এসো • জয় মা দুর্গা',
+        kicker: 'অপেক্ষার দিনগণনা',
+        label: 'মহালয়া ২০২৭ আসতে বাকি'
       };
 
-      const states = {
-        preMahalaya: {
-          image: 'welcome/welcome-mahalaya.webp',
-          titleBn: 'দেবীপক্ষের শুভ সূচনা, মায়ের আগমন',
-          titleEn: 'The Auspicious Beginning of Devipaksha, Maa’s Arrival',
-          subcopy: 'শরৎকালের স্নিগ্ধতায় বেজে উঠেছে মায়ের আগমনী সুর। আসুন, ভক্তি ও শ্রদ্ধায় বরণ করে নিই দুর্গতিনাশিনী মাকে।',
-          footer: 'শুভ দেবীপক্ষ • জয় মা দুর্গা',
-          countdown: true,
-          kicker: 'মা আসছেন…',
-          label: 'মহালয়া আসতে বাকি'
-        },
-        puja: {
-          image: 'welcome/welcome-durga-puja.webp',
-          titleBn: 'মহামায়ার শুভাগমনে দেবীর আরাধনা',
-          titleEn: 'In the Auspicious Arrival of Mahamaya, Worship of the Goddess',
-          subcopy: 'মায়ের আগমনে শুরু হয়েছে দেবীর আরাধনা। ভক্তি, শ্রদ্ধা ও মায়ের আশীর্বাদে মঙ্গলময় হোক সকলের জীবন।',
-          footer: 'শুভ দেবীপক্ষ • জয় মা দুর্গা',
-          countdown: false,
-          stateLine: 'দেবীর আরাধনা',
-          stateNote: 'মায়ের চরণে নিবেদিত হোক ভক্তি ও শ্রদ্ধা।',
-          specialLine: 'জয় মা দুর্গা'
-        },
-        bijoya: {
-          image: 'welcome/welcome-bijoya.webp',
-          titleBn: 'বিজয়ার প্রণাম, মা আবার এসো',
-          titleEn: 'Bijoya Pranam • Maa, Abar Esho',
-          subcopy: 'বিদায়ের এই ক্ষণে মায়ের চরণে রইল প্রণাম। মায়ের আশীর্বাদে মঙ্গলময় হোক সকলের জীবন—আবার এসো মা, আগামী শারদে।',
-          footer: 'শুভ দেবীপক্ষ • জয় মা দুর্গা',
-          countdown: false,
-          stateLine: 'মা, আবার এসো',
-          stateNote: 'মায়ের আশীর্বাদে মঙ্গলময় হোক সকলের জীবন।',
-          specialLine: 'মা, আবার এসো'
-        }
-      };
-
-      const now = Date.now();
-      const stateKey = now < dates.mahalaya ? 'preMahalaya'
-        : (now <= dates.dashamiEnd ? 'puja' : 'bijoya');
-      const state = states[stateKey];
-
-      welcome.style.setProperty('--welcome-bg', `url("${state.image}")`);
-      const welcomeBackgroundImage = document.getElementById('welcomeBackgroundImage');
-      if (welcomeBackgroundImage) {
-        welcomeBackgroundImage.src = state.image;
-      }
+      welcome.style.setProperty('--welcome-bg', 'url("welcome/welcome-bijoya.webp")');
+      const background = document.getElementById('welcomeBackgroundImage');
+      if (background) background.src = state.image;
       document.getElementById('welcomeTitleBn').textContent = state.titleBn;
       document.getElementById('welcomeTitleEn').textContent = state.titleEn;
       document.getElementById('welcomeSubcopy').textContent = state.subcopy;
@@ -2327,59 +2261,48 @@
 
       const countdown = document.getElementById('welcomeCountdown');
       const stateCard = document.getElementById('welcomeStateCard');
-      const stateLine = document.getElementById('welcomeStateLine');
-      const stateNote = document.getElementById('welcomeStateNote');
-      const specialLine = document.getElementById('welcomeSpecialLine');
+      countdown.hidden = false;
+      stateCard.hidden = true;
+      document.getElementById('welcomeCountdownKicker').textContent = state.kicker;
+      document.getElementById('welcomeCountdownLabel').textContent = state.label;
 
-      let countdownTimer = null;
-
-      if (state.countdown) {
-        countdown.hidden = false;
-        stateCard.hidden = true;
-
-        const days = document.getElementById('welcomeDays');
-        const hours = document.getElementById('welcomeHours');
-        const minutes = document.getElementById('welcomeMinutes');
-        const seconds = document.getElementById('welcomeSeconds');
-        const kicker = document.getElementById('welcomeCountdownKicker');
-        const label = document.getElementById('welcomeCountdownLabel');
-
-        kicker.textContent = state.kicker;
-        label.textContent = state.label;
-
-        const updateCountdown = () => {
-          const remaining = Math.max(0, dates.mahalaya - Date.now());
-          const totalSeconds = Math.floor(remaining / 1000);
-          const d = Math.floor(totalSeconds / 86400);
-          const h = Math.floor((totalSeconds % 86400) / 3600);
-          const m = Math.floor((totalSeconds % 3600) / 60);
-          const s = totalSeconds % 60;
-
-          days.textContent = String(d).padStart(2, '0');
-          hours.textContent = String(h).padStart(2, '0');
-          minutes.textContent = String(m).padStart(2, '0');
-          seconds.textContent = String(s).padStart(2, '0');
-        };
-
-        updateCountdown();
-        countdownTimer = window.setInterval(updateCountdown, 1000);
-      } else {
-        countdown.hidden = true;
-        stateCard.hidden = false;
-        stateLine.textContent = state.stateLine;
-        stateNote.textContent = state.stateNote;
-        specialLine.textContent = state.specialLine;
-      }
-
-      const dismissWelcome = () => {
-        if (welcome.classList.contains('welcome-hidden')) return;
-        if (countdownTimer) window.clearInterval(countdownTimer);
-        welcome.classList.add('welcome-hidden');
-        window.setTimeout(() => welcome.remove(), 1200);
+      const units = {
+        days: document.getElementById('welcomeDays'),
+        hours: document.getElementById('welcomeHours'),
+        minutes: document.getElementById('welcomeMinutes'),
+        seconds: document.getElementById('welcomeSeconds')
       };
+      const updateCountdown = () => {
+        const remaining = Math.max(0, target - Date.now());
+        const totalSeconds = Math.floor(remaining / 1000);
+        units.days.textContent = String(Math.floor(totalSeconds / 86400)).padStart(2, '0');
+        units.hours.textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, '0');
+        units.minutes.textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+        units.seconds.textContent = String(totalSeconds % 60).padStart(2, '0');
+      };
+      updateCountdown();
+      window.setInterval(updateCountdown, 1000);
 
-      // No skip control: transition automatically after 10 seconds.
-      window.setTimeout(dismissWelcome, 10000);
+      // No dismiss button and no timeout: keep this screen locked as the default landing page.
+      const shower = document.getElementById('blessingShower');
+      if (shower && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const flowers = ['🌼', '🌺', '🌸', '🪷', '🌼', '🌸'];
+        for (let i = 0; i < 36; i++) {
+          const petal = document.createElement('span');
+          petal.className = 'blessing-flower';
+          petal.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+          petal.style.setProperty('--flower-left', (Math.random() * 100).toFixed(2) + '%');
+          petal.style.setProperty('--flower-size', (17 + Math.random() * 20).toFixed(0) + 'px');
+          petal.style.setProperty('--flower-duration', (7 + Math.random() * 3).toFixed(2) + 's');
+          petal.style.setProperty('--flower-delay', (Math.random() * 2).toFixed(2) + 's');
+          petal.style.setProperty('--flower-drift', ((Math.random() - 0.5) * 30).toFixed(1) + 'vw');
+          petal.style.setProperty('--flower-spin', ((Math.random() < 0.5 ? -1 : 1) * (300 + Math.random() * 600)).toFixed(0) + 'deg');
+          petal.style.setProperty('--flower-opacity', (0.58 + Math.random() * 0.30).toFixed(2));
+          shower.appendChild(petal);
+          petal.addEventListener('animationend', () => petal.remove(), { once: true });
+        }
+        window.setTimeout(() => shower.remove(), 11000);
+      }
     });
   </script>
 
